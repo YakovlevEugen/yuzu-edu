@@ -1,6 +1,7 @@
+import { useAccount, useBalance } from 'wagmi'
+
 import Balance from '@/components/Balance'
 
-import { useWallet } from '@/providers/wallet/hook'
 import { cn } from '@/helpers/lib'
 
 export interface Props {
@@ -8,9 +9,10 @@ export interface Props {
 }
 
 export default function BalanceInfo({ className }: Props) {
-  const { wallet } = useWallet()
+  const { address } = useAccount()
+  const { data } = useBalance({ address })
 
   const classRoot = cn('', className)
 
-  return <Balance className={classRoot} value={wallet?.amount} />
+  return <Balance className={classRoot} value={data?.value} />
 }

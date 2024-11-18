@@ -1,4 +1,4 @@
-# YUZU EDU
+# YUZU
 
 ## System Requirements
 - NodeJS 18+
@@ -9,14 +9,14 @@
 - [React](https://react.dev/)
 - [React-Router](https://reactrouter.com/)
 - [React Hook Form](https://react-hook-form.com/)
-- [SWR](https://swr.vercel.app/)
+- [React Query](https://tanstack.com/query/latest/docs/framework/react/overview)
+- [Shadcn/ui](https://ui.shadcn.com/)
+- [Tailwind](https://tailwindui.com/)
 - [Zod](https://zod.dev/)
 - [Sass](https://sass-lang.com)
 - [Vite](https://vitejs.dev/)
 - [Vitest](https://vitest.dev/)
 - [Storybook](https://storybook.js.org/)
-- [Shadcn/ui](https://ui.shadcn.com/)
-- [Tailwind](https://tailwindui.com/)
 
 ## NPM
 
@@ -24,17 +24,17 @@
 
     npm install
 
-#### Run Mock API [Mock Service Worker](https://mswjs.io/)
+#### Run
 
     npm run dev
 
-After [http://localhost:5173](http://localhost:5173/)
+[http://localhost:5173](http://localhost:5173/)
 
 ### Run Storybook:
 
     npm run storybook
 
-After [http://localhost:6006](http://localhost:6006/)
+[http://localhost:6006](http://localhost:6006/)
 
 ### Run tests:
 

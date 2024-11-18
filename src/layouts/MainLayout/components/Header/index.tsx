@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import BorderBlock from '@/components/BorderBlock'
 import SvgIcon from '@/components/SvgIcon'
+import Menu from '@/containers/Menu'
 import WalletBlock from '@/containers/WalletBlock'
-import Menu from './components/Menu'
 
 import { cn } from '@/helpers/lib'
 import { Link } from 'react-router-dom'
@@ -31,7 +31,7 @@ export default function Header({ className }: Props) {
   return (
     <BorderBlock className={classRoot}>
       <div className="flex items-center">
-        <Link to={ROUTES.home}>
+        <Link to={ROUTES.dashboard}>
           <SvgIcon className="h-10 w-[114px] md:h-8 md:w-[83px]" name="logo" />
         </Link>
       </div>

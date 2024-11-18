@@ -7,7 +7,7 @@ const meta: Meta<typeof Balance> = {
   tags: ['autodocs'],
   argTypes: {
     value: {
-      control: { type: 'text' }
+      control: 'text'
     }
   }
 }

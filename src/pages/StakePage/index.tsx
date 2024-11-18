@@ -1,7 +1,7 @@
 import Earn from './components/Earn'
 import Stake from './components/Stake'
 
-export default function HomePage() {
+export default function StakePage() {
   return (
     <div>
       <div className="text-center text-4xl font-bold tracking-tighter md:text-6xl">

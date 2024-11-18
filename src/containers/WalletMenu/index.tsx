@@ -8,19 +8,21 @@ import {
 } from 'ui/dropdown-menu'
 import SvgIcon from '@/components/SvgIcon'
 
-import { useWallet } from '@/providers/wallet/hook'
 import { cn } from '@/helpers/lib'
 import { replaceCenterWithEllipsis } from '@/helpers/text'
+import { useAccount, useDisconnect } from 'wagmi'
 
 export interface Props {
   className?: string
 }
 
 export default function WalletMenu({ className }: Props) {
-  const { wallet } = useWallet()
+  const { address } = useAccount()
+  const { disconnect } = useDisconnect()
+
   const classRoot = cn('', className)
 
-  const shortenWalletNumber = replaceCenterWithEllipsis(wallet?.id, 5)
+  const shortenWalletNumber = replaceCenterWithEllipsis(address, 5)
 
   return (
     <DropdownMenu className={classRoot}>
@@ -29,11 +31,9 @@ export default function WalletMenu({ className }: Props) {
         <SvgIcon className="ml-3 text-gray" name="arrow-down" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>My Wallet</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Change Wallet</DropdownMenuItem>
-        <DropdownMenuItem>Operations</DropdownMenuItem>
-        <DropdownMenuItem>Exit</DropdownMenuItem>
+        <DropdownMenuItem onClick={disconnect}>Exit</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

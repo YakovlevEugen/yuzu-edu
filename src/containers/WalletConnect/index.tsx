@@ -1,17 +1,25 @@
-import ConnectWalletButton from '@/containers/ConnectWalletButton'
+import { VariantProps } from 'class-variance-authority'
 
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import WalletConnectOptions from '@/containers/WalletConnectOptions'
+
+import { buttonVariants } from 'ui/button'
 import { cn } from '@/helpers/lib'
 
-export interface Props {
-  className?: string
+interface Props {
+  triggerProps?: VariantProps<typeof buttonVariants>
 }
 
-export default function WalletConnect({ className }: Props) {
-  const classRoot = cn('', className)
-
+export default function WalletConnect({ triggerProps }: Props) {
   return (
-    <div className={classRoot}>
-      <ConnectWalletButton />
-    </div>
+    <Dialog>
+      <DialogTrigger className={cn(buttonVariants(triggerProps))}>Connect wallet</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="text-center">Connect</DialogTitle>
+        </DialogHeader>
+        <WalletConnectOptions className="mt-5" />
+      </DialogContent>
+    </Dialog>
   )
 }

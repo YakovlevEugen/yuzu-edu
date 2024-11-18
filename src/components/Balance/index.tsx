@@ -9,16 +9,13 @@ export interface Props {
 }
 
 export default function Balance({ className, value }: Props) {
-  const classRoot = cn(
-    'flex flex-wrap flex-col xs:flex-row items-center font-bold text-[40px] md:text-[56px]',
-    className
-  )
+  const classRoot = cn('flex flex-wrap items-center gap-x-3 font-bold text-[40px] md:text-[56px]', className)
   const formattedValue = formatNumberWithCommas(value)
 
   return (
     <div className={classRoot}>
       <div>{formattedValue ?? '--'}</div>
-      <div className="flex items-center xs:ml-3">
+      <div className="flex items-center">
         <SvgIcon name="coin" />
         <span className="text-orange">Yuzu</span>
       </div>

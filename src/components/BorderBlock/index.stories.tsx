@@ -7,7 +7,7 @@ const meta: Meta<typeof BorderBlock> = {
   tags: ['autodocs'],
   argTypes: {
     children: {
-      control: { type: 'text' }
+      control: 'text'
     }
   }
 }

@@ -1,16 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import TransformCurrency from './index'
+import MenuLink from './index'
 
-const meta: Meta<typeof TransformCurrency> = {
-  component: TransformCurrency,
+const meta: Meta<typeof MenuLink> = {
+  component: MenuLink,
   tags: ['autodocs'],
   argTypes: {
-    from: {
-      control: 'text'
-    },
-    to: {
-      control: 'text'
+    active: {
+      control: 'boolean'
     }
   }
 }
@@ -20,6 +17,6 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    variant: null
+    children: 'Link'
   }
 }

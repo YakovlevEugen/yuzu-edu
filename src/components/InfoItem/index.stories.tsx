@@ -7,10 +7,10 @@ const meta: Meta<typeof InfoItem> = {
   tags: ['autodocs'],
   argTypes: {
     title: {
-      control: { type: 'text' }
+      control: 'text'
     },
     value: {
-      control: { type: 'text' }
+      control: 'text'
     }
   }
 }
@@ -19,5 +19,8 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  args: {}
+  args: {
+    title: 'Some Title',
+    value: 'Some Value'
+  }
 }

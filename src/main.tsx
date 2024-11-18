@@ -4,35 +4,26 @@ import { BrowserRouter } from 'react-router-dom'
 import 'virtual:svg-icons-register'
 
 import { setDefaultOptions } from 'date-fns'
-import locale from 'date-fns/locale/ru'
+import locale from 'date-fns/locale/en-US'
 
+import { Toaster } from 'ui/toaster'
 import App from '@/App'
-import { Toaster } from '@/components/ui/toaster'
-
-import { RootContextProvider } from '@/providers/root'
-import { SWRConfig } from '@/providers/swr'
-import { WalletContextProvider } from '@/providers/wallet'
+import { QueryProvider } from '@/providers/QueryProvider'
+import { Web3Provider } from '@/providers/Web3Provider'
 
 setDefaultOptions({ locale })
 
-if (import.meta.env.VITE_API_HOST === 'msw') {
-  const { worker } = await import('./mocks/browser')
-  worker.start({
-    onUnhandledRequest: 'bypass'
-  })
-}
+const root = document.getElementById('root') as HTMLElement
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+ReactDOM.createRoot(root).render(
   <React.StrictMode>
-    <SWRConfig>
-      <BrowserRouter>
-        <RootContextProvider>
-          <WalletContextProvider>
-            <App />
-            <Toaster />
-          </WalletContextProvider>
-        </RootContextProvider>
-      </BrowserRouter>
-    </SWRConfig>
+    <Web3Provider>
+      <QueryProvider>
+        <BrowserRouter>
+          <App />
+          <Toaster />
+        </BrowserRouter>
+      </QueryProvider>
+    </Web3Provider>
   </React.StrictMode>
 )

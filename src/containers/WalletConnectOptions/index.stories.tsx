@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import ConnectWalletButton from './index'
+import WalletConnectOptions from './index'
 
-const meta: Meta<typeof ConnectWalletButton> = {
-  component: ConnectWalletButton,
+const meta: Meta<typeof WalletConnectOptions> = {
+  component: WalletConnectOptions,
   tags: ['autodocs']
 }
 

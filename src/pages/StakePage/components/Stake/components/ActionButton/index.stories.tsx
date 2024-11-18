@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 
 import ActionButton from './index'
 
-import { FormSchema } from '@/pages/HomePage/components/Stake'
+import { FormSchema } from '@/pages/StakePage/components/Stake'
 
 const meta: Meta<typeof ActionButton> = {
   component: (props) => {

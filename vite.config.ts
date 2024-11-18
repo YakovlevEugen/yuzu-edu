@@ -11,13 +11,13 @@ export default ({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
 
   let proxy = {}
-  if (process.env.VITE_API_HOST !== 'msw') {
+  if (process.env.VITE_API_HOST) {
     proxy = {
       '/api': {
         target: process.env.VITE_API_HOST,
         secure: false,
-        changeOrigin: true,
-      },
+        changeOrigin: true
+      }
     }
   }
 
@@ -26,30 +26,29 @@ export default ({ mode }) => {
       react(),
       createSvgIconsPlugin({
         iconDirs: [resolve(pathSrc, 'assets/svg')],
-        symbolId: 'icon-[name]',
+        symbolId: 'icon-[name]'
       }),
-      svgr(),
+      svgr()
     ],
     test: {
-      globals: true,
+      globals: true
     },
     resolve: {
       alias: {
-        'ui': resolve(pathSrc, 'components/ui'),
+        ui: resolve(pathSrc, 'components/ui'),
         '@': pathSrc,
-        '~': __dirname,
-      },
+        '~': __dirname
+      }
     },
     define: {
-      'process.env': {},
+      'process.env': {}
     },
     build: {
       outDir: 'build',
-      target: 'esnext',
+      target: 'esnext'
     },
     server: {
-      proxy,
-      port: 5174
-    },
+      proxy
+    }
   })
 }
