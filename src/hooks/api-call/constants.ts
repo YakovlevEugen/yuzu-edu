@@ -1,12 +1,12 @@
-export const DEFAULT_GENERAL_ERROR = 'Во время выполнения запроса произошла ошибка'
+export const DEFAULT_GENERAL_ERROR = 'Some error..'
 
 // The list from here: https://httpstatuses.com
 export const DEFAULT_ERRORS: Record<number, string> = {
-  400: 'Сервер не смог обработать запрос', // Bad Request
-  401: 'Для работы в системе необходимо авторизоваться', // Unauthorized
+  400: 'Bad Request',
+  401: 'Unauthorized',
   402: '', // Payment Required
-  403: 'Не хватает прав для выполнения запроса', // Forbidden
-  404: 'Запрос отправлен на неправильный адрес либо за несуществующими данными', // Not Found
+  403: 'Forbidden',
+  404: 'Not Found',
   405: '', // Method Not Allowed
   406: '', // Not Acceptable
   407: '', // Proxy Authentication Required

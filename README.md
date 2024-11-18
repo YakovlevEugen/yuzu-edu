@@ -1,10 +1,10 @@
-# Clean
+# YUZU EDU
 
-## Системные требования
+## System Requirements
 - NodeJS 18+
 - NPM 9+ / Yarn
 
-## Стек технологий
+## Tech Stack
 - [TypeScript](https://www.typescriptlang.org/)
 - [React](https://react.dev/)
 - [React-Router](https://reactrouter.com/)
@@ -15,29 +15,31 @@
 - [Vite](https://vitejs.dev/)
 - [Vitest](https://vitest.dev/)
 - [Storybook](https://storybook.js.org/)
+- [Shadcn/ui](https://ui.shadcn.com/)
+- [Tailwind](https://tailwindui.com/)
 
-## NPM скрипты
+## NPM
 
-### Установка зависимостей:
+### Install dependencies:
 
     npm install
 
-#### API "замокано" через [Mock Service Worker](https://mswjs.io/)
+#### Run Mock API [Mock Service Worker](https://mswjs.io/)
 
     npm run dev
 
-Далее открываем [http://localhost:5173](http://localhost:5173/) в браузере, и работаем 🙂
+After [http://localhost:5173](http://localhost:5173/)
 
-### Запуск Storybook:
+### Run Storybook:
 
     npm run storybook
 
-Далее идем сюда [http://localhost:6006](http://localhost:6006/)
+After [http://localhost:6006](http://localhost:6006/)
 
-### Запуск тестов:
+### Run tests:
 
     npm t
 
-### Сборка билда:
+### Build:
 
     npm run build
