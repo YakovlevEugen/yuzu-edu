@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "deploy:staging": "pnpm run -r deploy:staging"
+    "deploy:staging": "turbo run deploy:staging"
   },
   "lint-staged": {
     "*.+(css|scss)": [

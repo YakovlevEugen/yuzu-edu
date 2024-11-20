@@ -11,6 +11,11 @@
       "dependsOn": ["^build"],
       "outputs": ["build/**"],
       "cache": true
+    },
+    "deploy:staging": {
+      "dependsOn": ["build"],
+      "passThroughEnv": ["*"],
+      "cache": true
     }
   }
 }

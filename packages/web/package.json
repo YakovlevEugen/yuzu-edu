@@ -16,7 +16,8 @@
     "stylelint": "stylelint -f verbose --ignore-path .gitignore \"**/*.+(css|scss)\"",
     "svgo": "svgo -f ./src/assets/svg --config=./svgo.config.cjs",
     "test": "vitest",
-    "test-storybook": "test-storybook"
+    "test-storybook": "test-storybook",
+    "deploy:staging": "wrangler deploy --env staging"
   },
   "dependencies": {
     "@yuzu/api": "workspace:*",
