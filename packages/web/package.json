@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "vite build && mv build/files build/assets/files",
+    "build": "vite build",
     "build-storybook": "storybook build",
     "check-types": "tsc --noEmit",
     "dev": "vite",

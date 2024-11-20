@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "scripts": {
+    "build": "wrangler deploy --dry-run",
     "dev": "wrangler dev --port 5172",
     "deploy:staging": "wrangler deploy --env staging"
   },
