@@ -1,7 +1,7 @@
-import { isNumber } from "@/helpers/common";
+import { isNumber } from '@/helpers/common'
 
 export function formatNumberWithCommas(value: string): string {
-	if (!isNumber(value) && !isNumber(Number(value))) return value;
+  if (!isNumber(value) && !isNumber(Number(value))) return value
 
-	return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }

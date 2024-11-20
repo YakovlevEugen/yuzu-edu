@@ -1,6 +1,5 @@
 @use "fonts";
 @use "base";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -33,6 +32,7 @@
     --chart-5: 27 87% 67%;
     --radius: 8px;
     --beige: 31 81% 94%; // #FCF0E3
+    --grass: 149 100% 29%; // #009346
     --green: 139 69% 27%; // #157433
     --green-light: 89 100% 56%; // #91FF1E
     --green-toxic: 79 100% 72%; // #D2FF70

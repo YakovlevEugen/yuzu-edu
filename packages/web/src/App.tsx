@@ -1,4 +1,4 @@
-import AppRouter from '@/pages'
+import AppRouter from '@/services/router'
 
 import '@/assets/styles/index.scss'
 

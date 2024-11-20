@@ -11,9 +11,9 @@ export interface Props {
 
 export default function BalanceInfo({ className }: Props) {
   const { address } = useAccount()
-  const balance = useBalance(address)
+  const { data } = useBalance(address)
 
   const classRoot = cn('', className)
 
-  return <Balance className={classRoot} value={balance.data} />
+  return <Balance className={classRoot} value={data} currency="Yuzu" />
 }

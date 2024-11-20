@@ -1,7 +1,8 @@
-import { apiUrl } from '@/constants/config'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@yuzu/api'
 import { Hex } from 'viem'
+
+import { apiUrl } from '@/constants/config'
 
 const client = createClient(apiUrl)
 

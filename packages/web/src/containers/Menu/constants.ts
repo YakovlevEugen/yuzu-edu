@@ -8,5 +8,9 @@ export const MENU = [
   {
     to: ROUTES.stake,
     title: 'Stake'
+  },
+  {
+    to: ROUTES.faucet,
+    title: 'EDU Faucet'
   }
 ]
