@@ -8,8 +8,21 @@
     "dev": "turbo run dev",
     "deploy:staging": "pnpm run -r deploy:staging"
   },
+  "lint-staged": {
+    "*.+(css|scss)": [
+      "stylelint --fix"
+    ],
+    "*.+(ts|tsx)": [
+      "eslint --fix"
+    ],
+    "*.+(html|json|mdx|yml)": [
+      "prettier --write"
+    ]
+  },
   "packageManager": "pnpm@9.12.3",
   "dependencies": {
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
     "turbo": "^2.3.0"
   }
 }
