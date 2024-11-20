@@ -5,11 +5,12 @@ import { cn } from '@/helpers/lib'
 
 export interface Props {
   className?: string
-  value: number | string
+  value: string
 }
 
 export default function Balance({ className, value }: Props) {
   const classRoot = cn('flex flex-wrap items-center gap-x-3 font-bold text-[40px] md:text-[56px]', className)
+
   const formattedValue = formatNumberWithCommas(value)
 
   return (

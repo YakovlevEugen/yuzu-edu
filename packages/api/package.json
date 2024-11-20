@@ -1,0 +1,15 @@
+{
+  "name": "@yuzu/api",
+  "private": true,
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev --port 5172",
+    "deploy:staging": "wrangler deploy --env staging"
+  },
+  "dependencies": {
+    "hono": "^4.6.11",
+    "viem": "^2.21.47",
+    "wrangler": "^3.88.0"
+  }
+}
