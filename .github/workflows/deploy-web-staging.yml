@@ -56,7 +56,7 @@ jobs:
       - name: Build
         run: pnpm build
         env:
-          VITE_API_URL: https://yuzu-api-staging.r8edev.cc
+          VITE_API_URL: https://yuzu-api-staging.r8edev.xyz
 
       - name: Deploy
         run: pnpm run deploy:staging

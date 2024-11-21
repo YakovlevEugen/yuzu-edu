@@ -16,7 +16,7 @@ jobs:
 
     environment:
       name: staging
-      url: https://yuzu-api-staging.r8edev.cc
+      url: https://yuzu-api-staging.r8edev.xyz
 
     steps:
       - name: Checkout
