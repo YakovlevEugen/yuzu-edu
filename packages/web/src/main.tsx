@@ -4,14 +4,14 @@ import { BrowserRouter } from 'react-router-dom'
 import 'virtual:svg-icons-register'
 
 import { setDefaultOptions } from 'date-fns'
-import locale from 'date-fns/locale/en-US'
+import { enUS } from 'date-fns/locale/en-US'
 
 import { Toaster } from 'ui/toaster'
 import App from '@/App'
 import { QueryProvider } from '@/providers/QueryProvider'
 import { Web3Provider } from '@/providers/Web3Provider'
 
-setDefaultOptions({ locale })
+setDefaultOptions({ locale: enUS })
 
 const root = document.getElementById('root') as HTMLElement
 

@@ -4,21 +4,22 @@ import { formatNumberWithCommas } from '@/helpers/format'
 import { cn } from '@/helpers/lib'
 import { Currency } from '@/types/common'
 
-export interface Props {
+interface Props {
+  classAmount?: string
   className?: string
   currency?: Currency
   value: string
   withCoin?: boolean
 }
 
-export default function Balance({ withCoin = true, className, currency = 'Yuzu', value }: Props) {
+export default function Balance({ classAmount, className, currency = 'Yuzu', value, withCoin = true }: Props) {
   const classRoot = cn('flex flex-wrap items-center gap-x-3 font-bold text-[40px] md:text-[56px]', className)
   const classCurrency = cn({ 'text-orange': withCoin })
   const formattedValue = formatNumberWithCommas(value)
 
   return (
     <div className={classRoot}>
-      <div>{formattedValue ?? '--'}</div>
+      <div className={classAmount}>{formattedValue ?? '--'}</div>
       <div className="flex items-center">
         {withCoin && <SvgIcon name="coin" />}
         <span className={classCurrency}>{currency}</span>

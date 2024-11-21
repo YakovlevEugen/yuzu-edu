@@ -1,12 +1,12 @@
-import { cva } from 'class-variance-authority'
-import { NavLink } from 'react-router-dom'
+import { VariantProps, cva } from 'class-variance-authority'
+import { NavLinkProps, NavLink } from 'react-router-dom'
 
 import { cn } from '@/helpers/lib'
 
 const variants = cva('flex items-center text-gray-light font-semibold', {
   variants: {
     active: {
-      deafult: 'text-gray-light',
+      default: 'text-gray-light',
       true: 'text-gray'
     }
   },
@@ -15,12 +15,13 @@ const variants = cva('flex items-center text-gray-light font-semibold', {
   }
 })
 
-interface Props extends NavLink {
+interface Props extends NavLinkProps, VariantProps<typeof variants> {
   active?: boolean
+  className?: string
 }
 
 export default function MenuLink({ active, children, className, ...props }: Props) {
-  function getClassLink({ isActive }) {
+  function getClassLink({ isActive }: Omit<NavLinkProps['className'], string>) {
     return cn(variants({ active: active || isActive }), className)
   }
 

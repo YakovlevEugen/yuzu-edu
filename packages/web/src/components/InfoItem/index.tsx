@@ -2,9 +2,9 @@ import { ReactNode } from 'react'
 
 import { cn } from '@/helpers/lib'
 
-export interface Props {
+interface Props {
   className?: string
-  title?: number | string
+  title?: ReactNode | number | string
   value?: ReactNode | number | string
 }
 

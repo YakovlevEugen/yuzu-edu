@@ -16,28 +16,28 @@ const variants = cva('flex items-baseline gap-1', {
     }
   },
   defaultVariants: {
-    variant: 'default',
-    padding: 'default'
+    size: 'default',
+    variant: 'default'
   }
 })
 
-export interface Props extends VariantProps<typeof variants> {
+interface Props extends VariantProps<typeof variants> {
   className?: string
   currency?: Currency
-  from?: string | number
-  to?: string | number
+  from?: string
+  to?: string
 }
 
-export default function TransformCurrency({ className, currency = 'Yuzu', from = 0, size, to, variant }: Props) {
+export default function TransformCurrency({ className, currency = 'Yuzu', from = '0', size, to, variant }: Props) {
   const classRoot = cn(variants({ className, size, variant }))
 
   return (
     <div className={classRoot}>
-      <span>{formatNumberWithCommas(Number(from))}</span>
+      {Boolean(from) && <span>{formatNumberWithCommas(from!)}</span>}
       {Boolean(to) && (
         <>
           <span>→</span>
-          <span>{formatNumberWithCommas(Number(to))}</span>
+          {Boolean(to) && <span>{formatNumberWithCommas(to!)}</span>}
         </>
       )}
       {currency && <span className="currency">{currency}</span>}

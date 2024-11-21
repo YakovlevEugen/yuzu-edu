@@ -4,7 +4,7 @@ import Header from './components/Header'
 
 import { cn } from '@/helpers/lib'
 
-export interface Props {
+interface Props {
   className?: string
 }
 

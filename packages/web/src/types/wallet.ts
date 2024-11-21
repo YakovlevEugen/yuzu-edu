@@ -6,3 +6,9 @@ export interface Wallet {
 export interface WalletContext {
   wallet?: Wallet
 }
+
+export interface BridgeReward {
+  date: string
+  bridgedAmount: string
+  earnedAmount: string
+}

@@ -4,7 +4,7 @@ import { Button } from 'ui/button'
 
 import { cn } from '@/helpers/lib'
 
-export interface Props {
+interface Props {
   className?: string
 }
 

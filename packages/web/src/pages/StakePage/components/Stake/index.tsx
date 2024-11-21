@@ -12,11 +12,11 @@ import { cn } from '@/helpers/lib'
 import { formatNumberWithCommas } from '@/helpers/format'
 
 export const FormSchema = z.object({
-  value: z.string().optional()
+  topUp: z.string().optional()
 })
 export type FormSchema = z.infer<typeof FormSchema>
 
-export interface Props {
+interface Props {
   className?: string
 }
 
@@ -33,7 +33,7 @@ export default function Stake({ className }: Props) {
 
   const classRoot = cn('', className)
 
-  const topUp = watch('topUp')
+  const topUp: FormSchema['topUp'] = watch('topUp')
 
   return (
     <FormProvider {...formMethods}>
@@ -45,16 +45,12 @@ export default function Stake({ className }: Props) {
               value={
                 <>
                   <span>MAX </span>
-                  <span className="text-foreground">{formatNumberWithCommas(100000)} EDU</span>
+                  <span className="text-foreground">{formatNumberWithCommas('100000')} EDU</span>
                 </>
               }
             />
             <div>
-              <Controller
-                name="topUp"
-                control={control}
-                render={({ field, fieldState }) => <CurrencyInput error={fieldState.error?.message} {...field} />}
-              />
+              <Controller name="topUp" control={control} render={({ field }) => <CurrencyInput {...field} />} />
             </div>
           </div>
 

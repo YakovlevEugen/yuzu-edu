@@ -1,4 +1,4 @@
-export function replaceCenterWithEllipsis(str?: string, numChars?: number): string {
+export function replaceCenterWithEllipsis(str?: string, numChars: number): string {
   if (!str) return ''
 
   const maxAllowed = Math.floor(str.length / 2)

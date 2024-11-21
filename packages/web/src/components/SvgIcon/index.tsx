@@ -8,9 +8,9 @@ import { DetailedHTMLProps, HTMLAttributes } from 'react'
 
 import { cn } from '@/helpers/lib'
 
-type IconName = 'arrow-down' | 'burger' | 'close' | 'coin' | 'logo'
+type IconName = 'arrow-down' | 'burger' | 'close' | 'coin' | 'logo' | 'orange'
 
-export interface Props extends DetailedHTMLProps<HTMLAttributes<SVGSVGElement>, SVGSVGElement> {
+interface Props extends DetailedHTMLProps<HTMLAttributes<SVGSVGElement>, SVGSVGElement> {
   /** Icon name from svg icons folder */
   name: IconName
 }

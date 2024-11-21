@@ -3,7 +3,7 @@ import MenuLink from '@/containers/MenuLink'
 import { cn } from '@/helpers/lib'
 import { MENU } from './constants'
 
-export interface Props {
+interface Props {
   className?: string
 }
 

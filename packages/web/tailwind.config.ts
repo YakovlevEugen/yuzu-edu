@@ -56,6 +56,7 @@ export default {
         grass: 'hsl(var(--grass))',
         green: 'hsl(var(--green))',
         'green-light': 'hsl(var(--green-light))',
+        'green-muted': 'hsl(var(--green-muted))',
         'green-toxic': 'hsl(var(--green-toxic))',
         orange: 'hsl(var(--orange))',
         yellow: 'hsl(var(--yellow))',
@@ -65,10 +66,9 @@ export default {
       boxShadow: {
         'border-box': '0 4px 0 0 black'
       },
-      screens: {
-        xs: '480px'
-      },
       spacing: {
+        'border-box-sm': '16px 24px',
+        'border-box': '24px 40px',
         '5px': '5px',
         '10px': '10px'
       }

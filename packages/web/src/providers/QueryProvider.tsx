@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 // import { useApiCall } from '@/hooks/api-call'
 
-export interface Props {
+interface Props {
   children: ReactNode
 }
 

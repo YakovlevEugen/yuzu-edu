@@ -8,7 +8,7 @@ import WalletConnect from '@/containers/WalletConnect'
 import { cn } from '@/helpers/lib'
 import { useToast } from '@/hooks/use-toast'
 
-export interface Props {
+interface Props {
   className?: string
 }
 

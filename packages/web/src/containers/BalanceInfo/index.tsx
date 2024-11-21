@@ -5,7 +5,7 @@ import Balance from '@/components/Balance'
 import { cn } from '@/helpers/lib'
 import { useBalance } from '@/hooks/api'
 
-export interface Props {
+interface Props {
   className?: string
 }
 

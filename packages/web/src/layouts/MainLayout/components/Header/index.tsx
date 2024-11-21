@@ -9,7 +9,7 @@ import { cn } from '@/helpers/lib'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@/constants/routes'
 
-export interface Props {
+interface Props {
   className?: string
 }
 

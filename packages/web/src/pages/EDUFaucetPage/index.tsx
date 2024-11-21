@@ -2,7 +2,7 @@ import Claim from './components/Claim'
 
 import { cn } from '@/helpers/lib'
 
-export interface Props {
+interface Props {
   className?: string
 }
 
@@ -19,7 +19,7 @@ export default function EDUFaucetPage({ className }: Props) {
       </div>
 
       <div className="mt-[40px] flex items-center gap-x-5">
-        <div className="fixed bottom-[15%] left-[10%] lg:static lg:flex-[1]">
+        <div className="fixed bottom-[10%] left-[10%] -z-[1] md:static md:flex-[1]">
           <img
             className="mt-[40px] w-[218px] md:w-[327px]"
             src="/images/capybara-playing-guitar.png"

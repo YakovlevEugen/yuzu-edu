@@ -7,7 +7,7 @@ import WalletConnect from '@/containers/WalletConnect'
 import { cn } from '@/helpers/lib'
 import { useToast } from '@/hooks/use-toast'
 
-export interface Props {
+interface Props {
   className?: string
 }
 
@@ -37,7 +37,7 @@ export default function ActionButton({ className }: Props) {
   return (
     <div className={classRoot}>
       {isConnected ? (
-        <Button className="w-full" disabled={!value | isConfirming | isClaimed} size="lg" onClick={claim}>
+        <Button className="w-full" disabled={!value || isConfirming || isClaimed} size="lg" onClick={claim}>
           {isConfirming ? 'Confirm on Wallet...' : isClaimed ? 'Claimed' : 'Claim'}
         </Button>
       ) : (

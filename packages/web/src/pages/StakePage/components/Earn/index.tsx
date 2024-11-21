@@ -6,7 +6,7 @@ import { formatTimeToDate } from '@/helpers/date'
 import { formatNumberWithCommas } from '@/helpers/format'
 import { cn } from '@/helpers/lib'
 
-export interface Props {
+interface Props {
   className?: string
 }
 
@@ -16,7 +16,7 @@ export default function Earn({ className }: Props) {
   const earnInfo = [
     {
       title: 'Total EDU Staked',
-      value: `${formatNumberWithCommas(0)} EDU`
+      value: `${formatNumberWithCommas('0')} EDU`
     },
     {
       title: 'End-of-Semester Claim in',

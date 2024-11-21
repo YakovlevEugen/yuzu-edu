@@ -1,6 +1,6 @@
 import { cn } from '@/helpers/lib'
 
-export interface Props {
+interface Props {
   className?: string
 }
 
