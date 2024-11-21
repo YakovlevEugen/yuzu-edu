@@ -2,7 +2,7 @@ name = "yuzu-web"
 compatibility_date = "2024-11-06"
 account_id = "ec96c85e8eae01bdf4c37e6ce90a7cce"
 
-assets = { directory = "build" }
+assets = { directory = "build", not_found_handling = "single-page-application" }
 
 [env.staging]
 name = "yuzu-web-staging"
