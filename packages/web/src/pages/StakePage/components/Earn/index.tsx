@@ -5,6 +5,8 @@ import InfoItem from '@/components/InfoItem'
 import { formatTimeToDate } from '@/helpers/date'
 import { formatNumberWithCommas } from '@/helpers/format'
 import { cn } from '@/helpers/lib'
+import { useStakeBalance } from '@/hooks/api'
+import Big from 'big.js'
 
 interface Props {
   className?: string
@@ -13,10 +15,12 @@ interface Props {
 export default function Earn({ className }: Props) {
   const classRoot = cn('', className)
 
+  const balance = useStakeBalance()
+
   const earnInfo = [
     {
       title: 'Total EDU Staked',
-      value: `${formatNumberWithCommas('0')} EDU`
+      value: `${formatNumberWithCommas(new Big(balance.data).div(1e18).toFixed(4))} EDU`
     },
     {
       title: 'End-of-Semester Claim in',

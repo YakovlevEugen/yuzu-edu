@@ -8,14 +8,14 @@ interface Props {
   classAmount?: string
   className?: string
   currency?: Currency
-  value: string
+  value: number
   withCoin?: boolean
 }
 
 export default function Balance({ classAmount, className, currency = 'Yuzu', value, withCoin = true }: Props) {
   const classRoot = cn('flex flex-wrap items-center gap-x-3 font-bold text-[40px] md:text-[56px]', className)
   const classCurrency = cn({ 'text-orange': withCoin })
-  const formattedValue = formatNumberWithCommas(value)
+  const formattedValue = formatNumberWithCommas(value.toString())
 
   return (
     <div className={classRoot}>

@@ -1,5 +1,6 @@
-import { defineChain, Hex } from "viem";
+import { defineChain, getContract, Hex } from "viem";
 import { IContext } from "./types";
+import { abi } from "./abi/wedu";
 
 export const eduTestnet = defineChain({
 	id: 656476,
@@ -35,7 +36,23 @@ export type IChainName = "eduTestnet";
 
 export const chains = { eduTestnet } as const;
 
+const wedu = getContract({
+	client: publicClient,
+	address: "0x345E902846aC3805719483d80D664ABa0B6aF40C",
+	abi,
+});
+
 export const getBalance = async (c: IContext, address: Hex) => {
 	const balance = await publicClient.getBalance({ address });
 	return balance;
+};
+
+export const getStakeBalance = async (c: IContext, address: Hex) => {
+	const balance = await wedu.read.balanceOf([address]);
+	return balance;
+};
+
+export const getBlock = async (c: IContext) => {
+	const blockNumber = await publicClient.getBlockNumber();
+	return Number(blockNumber);
 };

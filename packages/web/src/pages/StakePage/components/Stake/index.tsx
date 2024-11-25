@@ -10,6 +10,8 @@ import ActionButton from './components/ActionButton'
 
 import { cn } from '@/helpers/lib'
 import { formatNumberWithCommas } from '@/helpers/format'
+import { useBalance, useStakeEstimate } from '@/hooks/api'
+import Big from 'big.js'
 
 export const FormSchema = z.object({
   topUp: z.string().optional()
@@ -35,6 +37,10 @@ export default function Stake({ className }: Props) {
 
   const topUp: FormSchema['topUp'] = watch('topUp')
 
+  const balance = useBalance()
+
+  // const estimate = useStakeEstimate(stakeBalance + topUp)
+
   return (
     <FormProvider {...formMethods}>
       <BorderBlock className={classRoot} variant="yellow" padding="none">
@@ -45,7 +51,9 @@ export default function Stake({ className }: Props) {
               value={
                 <>
                   <span>MAX </span>
-                  <span className="text-foreground">{formatNumberWithCommas('100000')} EDU</span>
+                  <span className="text-foreground">
+                    {formatNumberWithCommas(new Big(balance.data).div(1e18).toFixed(2))} EDU
+                  </span>
                 </>
               }
             />

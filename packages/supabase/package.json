@@ -1,0 +1,12 @@
+{
+  "name": "@yuzu/supabase",
+  "version": "1.0.0",
+  "description": "",
+  "main": "database.js",
+  "scripts": {
+    "typegen": "supabase gen types typescript --project-id enbmgxbedhmhxcdqxrpl > database.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

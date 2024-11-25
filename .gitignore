@@ -31,3 +31,4 @@ build-ssr
 
 .env
 .env.*
+.dev.vars

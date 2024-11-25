@@ -9,8 +9,14 @@
     "deploy:staging": "wrangler deploy --env staging"
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.4.1",
+    "@supabase/supabase-js": "^2.46.1",
+    "@types/big.js": "^6.2.2",
+    "@yuzu/supabase": "workspace:*",
+    "big.js": "^6.2.2",
     "hono": "^4.6.11",
     "viem": "^2.21.47",
-    "wrangler": "^3.88.0"
+    "wrangler": "^3.88.0",
+    "zod": "^3.23.8"
   }
 }
