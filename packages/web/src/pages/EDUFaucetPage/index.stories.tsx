@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import EDUFaucetPage from './index'
+import Component from './index'
 
-const meta: Meta<typeof EDUFaucetPage> = {
-  component: EDUFaucetPage,
+const meta: Meta<typeof Component> = {
+  component: Component,
   tags: ['autodocs']
 }
 

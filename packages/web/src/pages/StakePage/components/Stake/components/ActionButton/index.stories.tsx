@@ -2,11 +2,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import type { Meta, StoryObj } from '@storybook/react'
 
-import ActionButton from './index'
+import Component from './index'
 
 import { FormSchema } from '@/pages/StakePage/components/Stake'
 
-const meta: Meta<typeof ActionButton> = {
+const meta: Meta<typeof Component> = {
   component: (props) => {
     const formMethods = useForm<FormSchema>({
       defaultValues: {
@@ -17,7 +17,7 @@ const meta: Meta<typeof ActionButton> = {
 
     return (
       <FormProvider {...formMethods}>
-        <ActionButton {...props} />
+        <Component {...props} />
       </FormProvider>
     )
   },

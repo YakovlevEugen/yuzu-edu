@@ -8,7 +8,8 @@ interface Props {
 }
 
 export default function BalanceInfo({ className }: Props) {
+  const classRoot = cn('', className)
   const points = usePointBalance()
 
-  return <Balance className={cn('', className)} value={points.data} currency="Yuzu" />
+  return <Balance className={classRoot} value={points.data} currency="Yuzu" />
 }

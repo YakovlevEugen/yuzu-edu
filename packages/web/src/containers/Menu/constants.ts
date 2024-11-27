@@ -12,5 +12,9 @@ export const MENU = [
   {
     to: ROUTES.faucet,
     title: 'EDU Faucet'
+  },
+  {
+    to: ROUTES.land,
+    title: 'EDU Land'
   }
 ]

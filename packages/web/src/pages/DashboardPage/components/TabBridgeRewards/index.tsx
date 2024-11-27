@@ -22,7 +22,15 @@ export default function TabBridgeRewards({ className }: Props) {
           </div>
         </div>
         <div>
-          <Button>Bridge</Button>
+          <Button asChild>
+            <a
+              href="https://bridge.arbitrum.io/?destinationChain=edu-chain&sourceChain=arbitrum-one"
+              rel="nofollow noopener noreferrer"
+              target="_blank"
+            >
+              Bridge
+            </a>
+          </Button>
         </div>
       </BackgroundBlock>
 

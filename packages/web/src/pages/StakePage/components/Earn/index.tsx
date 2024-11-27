@@ -1,32 +1,35 @@
+import { useMemo } from 'react'
+
 import BalanceInfo from '@/containers/BalanceInfo'
 import BorderBlock from '@/components/BorderBlock'
 import InfoItem from '@/components/InfoItem'
 
 import { formatTimeToDate } from '@/helpers/date'
-import { formatNumberWithCommas } from '@/helpers/format'
+import { formatBigWithComas } from '@/helpers/format'
 import { cn } from '@/helpers/lib'
 import { useStakeBalance } from '@/hooks/api'
-import Big from 'big.js'
 
 interface Props {
   className?: string
 }
 
 export default function Earn({ className }: Props) {
-  const classRoot = cn('', className)
-
   const balance = useStakeBalance()
 
-  const earnInfo = [
-    {
-      title: 'Total EDU Staked',
-      value: `${formatNumberWithCommas(new Big(balance.data).div(1e18).toFixed(4))} EDU`
-    },
-    {
-      title: 'End-of-Semester Claim in',
-      value: formatTimeToDate(new Date(), new Date(Date.now() + 10000000))
-    }
-  ]
+  const classRoot = cn('', className)
+  const earnInfo = useMemo(
+    () => [
+      {
+        title: 'Total EDU Staked',
+        value: `${formatBigWithComas(balance.data)} EDU`
+      },
+      {
+        title: 'End-of-Semester Claim in',
+        value: formatTimeToDate(new Date(), new Date(Date.now() + 10000000))
+      }
+    ],
+    [balance.data]
+  )
 
   return (
     <BorderBlock className={classRoot}>

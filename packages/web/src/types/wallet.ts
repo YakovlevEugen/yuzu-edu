@@ -8,7 +8,7 @@ export interface WalletContext {
 }
 
 export interface BridgeReward {
-  date: string
-  bridgedAmount: string
-  earnedAmount: string
+  amount: string
+  points: string
+  timestamp: string
 }

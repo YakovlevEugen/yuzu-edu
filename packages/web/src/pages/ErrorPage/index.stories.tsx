@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import ErrorRoute from './index.tsx'
+import Component from './index.tsx'
 
-const meta: Meta<typeof ErrorRoute> = {
-  component: ErrorRoute,
+const meta: Meta<typeof Component> = {
+  component: Component,
   tags: ['autodocs'],
   decorators: [
     (Story) => (

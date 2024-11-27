@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+import { useMemo } from 'react'
 
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from 'ui/button'
@@ -6,7 +7,7 @@ import { Button } from 'ui/button'
 import { cn } from '@/helpers/lib'
 import { useBridgeHistory } from '@/hooks/api'
 import { BridgeReward } from '@/types/wallet'
-import { useMemo } from 'react'
+import { formatBigNumber } from '@/helpers/format'
 
 interface Props {
   className?: string
@@ -18,8 +19,6 @@ interface Props {
 //   earnedAmount: '1000'
 // })
 
-import { Big } from 'big.js'
-
 export default function HistoryTable({ className }: Props) {
   const classRoot = cn('', className)
 
@@ -27,10 +26,9 @@ export default function HistoryTable({ className }: Props) {
 
   const bridgeRewards = useMemo<BridgeReward[]>(
     () =>
-      query.data?.pages.flat().map((item) => ({
-        date: item.timestamp,
-        bridgedAmount: new Big(item.amount).div(1e18).toFixed(2),
-        earnedAmount: item.points
+      (query.data?.pages.flat() as BridgeReward[])?.map((item) => ({
+        ...item,
+        amount: formatBigNumber(item.amount)
       })) || [],
     [query]
   )
@@ -44,25 +42,33 @@ export default function HistoryTable({ className }: Props) {
           <TableHead className="text-right">You Earned</TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody>
-        {bridgeRewards.map(({ date, bridgedAmount, earnedAmount }) => (
-          <TableRow key={date}>
-            <TableCell>{format(date, 'do MMM uuuu')}</TableCell>
-            <TableCell>{bridgedAmount} EDU</TableCell>
-            <TableCell className="text-right">{earnedAmount} Yuzu</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
+
+      {bridgeRewards?.length > 0 && (
+        <TableBody>
+          {bridgeRewards.map(({ amount, points, timestamp }) => (
+            <TableRow key={timestamp}>
+              <TableCell>{format(timestamp, 'do MMM uuuu')}</TableCell>
+              <TableCell>{amount} EDU</TableCell>
+              <TableCell className="text-right">{points} Yuzu</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      )}
+
       <TableFooter>
         <TableRow>
           <TableCell className="text-center" colSpan={3}>
-            <Button
-              variant="link"
-              onClick={() => query.fetchNextPage()}
-              disabled={!query.hasNextPage || query.isFetching}
-            >
-              Load More
-            </Button>
+            {bridgeRewards?.length > 0 ? (
+              <Button
+                variant="link"
+                onClick={() => query.fetchNextPage()}
+                disabled={!query.hasNextPage || query.isFetching}
+              >
+                Load More
+              </Button>
+            ) : (
+              <div>No Data</div>
+            )}
           </TableCell>
         </TableRow>
       </TableFooter>

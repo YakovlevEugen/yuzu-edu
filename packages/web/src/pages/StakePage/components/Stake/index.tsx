@@ -9,9 +9,8 @@ import TransformCurrency from '@/components/TransformCurrency'
 import ActionButton from './components/ActionButton'
 
 import { cn } from '@/helpers/lib'
-import { formatNumberWithCommas } from '@/helpers/format'
-import { useBalance, useStakeEstimate } from '@/hooks/api'
-import Big from 'big.js'
+import { formatBigWithComas } from '@/helpers/format'
+import { useBalance, useStakeBalance, useStakeEstimate } from '@/hooks/api'
 
 export const FormSchema = z.object({
   topUp: z.string().optional()
@@ -25,6 +24,8 @@ interface Props {
 const BLOCK_PADDING = 'py-6 px-6 md:px-8'
 
 export default function Stake({ className }: Props) {
+  const balance = useBalance()
+  const stakeBalance = useStakeBalance()
   const formMethods = useForm<FormSchema>({
     defaultValues: {
       topUp: ''
@@ -34,12 +35,8 @@ export default function Stake({ className }: Props) {
   const { control, watch } = formMethods
 
   const classRoot = cn('', className)
-
   const topUp: FormSchema['topUp'] = watch('topUp')
-
-  const balance = useBalance()
-
-  // const estimate = useStakeEstimate(stakeBalance + topUp)
+  const estimate = useStakeEstimate(stakeBalance + topUp)
 
   return (
     <FormProvider {...formMethods}>
@@ -51,9 +48,7 @@ export default function Stake({ className }: Props) {
               value={
                 <>
                   <span>MAX </span>
-                  <span className="text-foreground">
-                    {formatNumberWithCommas(new Big(balance.data).div(1e18).toFixed(2))} EDU
-                  </span>
+                  <span className="text-foreground">{formatBigWithComas(balance.data)} EDU</span>
                 </>
               }
             />
@@ -67,11 +62,13 @@ export default function Stake({ className }: Props) {
               <>
                 <div className="mb-5px text-sm">Total EDU Staked</div>
                 <TransformCurrency currency="EDU" size="l" to={topUp} variant="greenLight" />
-                <InfoItem
-                  className="mb-6 mt-10px"
-                  title="Est. 24h Yuzu"
-                  value={<TransformCurrency className="font-medium" to="500" />}
-                />
+                {balance.data && estimate.data && (
+                  <InfoItem
+                    className="mb-6 mt-10px"
+                    title="Est. 24h Yuzu"
+                    value={<TransformCurrency className="font-medium" from={balance.data} to={estimate.data} />}
+                  />
+                )}
               </>
             )}
             <ActionButton />

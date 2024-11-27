@@ -25,7 +25,7 @@ export default function ErrorPage({ status }: Props) {
         <title>{title}</title>
       </Helmet>
 
-      <div className="h-screen w-screen flex-col items-center justify-center">
+      <div className="flex h-screen w-screen flex-col items-center justify-center">
         <h1 className="mb-5 text-2xl">
           {status} {description[status]}
         </h1>

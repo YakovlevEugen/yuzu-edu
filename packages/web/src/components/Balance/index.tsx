@@ -15,7 +15,7 @@ interface Props {
 export default function Balance({ classAmount, className, currency = 'Yuzu', value, withCoin = true }: Props) {
   const classRoot = cn('flex flex-wrap items-center gap-x-3 font-bold text-[40px] md:text-[56px]', className)
   const classCurrency = cn({ 'text-orange': withCoin })
-  const formattedValue = formatNumberWithCommas(value.toString())
+  const formattedValue = formatNumberWithCommas(String(value))
 
   return (
     <div className={classRoot}>
