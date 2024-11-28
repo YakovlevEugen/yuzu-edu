@@ -1,0 +1,15 @@
+name = "yuzu-indexer"
+main = "src/index.ts"
+compatibility_date = "2024-09-25"
+account_id = "626a537c566185c5b080ec4b85b8a037"
+workers_dev = true
+
+[triggers]
+crons = ["* * * * *"]
+
+[observability]
+enabled = true
+
+[env.staging]
+
+[env.production]

@@ -1,0 +1,7 @@
+.DS_Store
+.trubo
+.wrangler
+build
+node_modules
+.dev.vars
+.*.vars.json

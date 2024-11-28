@@ -9,6 +9,24 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      configs: {
+        Row: {
+          key: string
+          scope: string
+          value: Json | null
+        }
+        Insert: {
+          key: string
+          scope: string
+          value?: Json | null
+        }
+        Update: {
+          key?: string
+          scope?: string
+          value?: Json | null
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           address: string
@@ -39,6 +57,39 @@ export type Database = {
           transactionId?: string
           type?: string
           value?: number
+        }
+        Relationships: []
+      }
+      wedu_balance_changes: {
+        Row: {
+          address: string
+          amount: number
+          blockNumber: number
+          blockTimestamp: string
+          chain: string
+          logIndex: number
+          transactionHash: string
+          transactionIndex: string
+        }
+        Insert: {
+          address: string
+          amount: number
+          blockNumber: number
+          blockTimestamp: string
+          chain: string
+          logIndex: number
+          transactionHash: string
+          transactionIndex: string
+        }
+        Update: {
+          address?: string
+          amount?: number
+          blockNumber?: number
+          blockTimestamp?: string
+          chain?: string
+          logIndex?: number
+          transactionHash?: string
+          transactionIndex?: string
         }
         Relationships: []
       }
