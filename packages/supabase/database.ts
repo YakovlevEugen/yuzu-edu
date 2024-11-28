@@ -95,7 +95,47 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      wedu_agg_point_balances_view: {
+        Row: {
+          address: string | null
+          points: number | null
+          timestamp: string | null
+        }
+        Relationships: []
+      }
+      wedu_balances_changes_view: {
+        Row: {
+          address: string | null
+          amount: number | null
+          balance: number | null
+          blockNumber: number | null
+          blockTimestamp: string | null
+          chain: string | null
+          logIndex: number | null
+          rowNumber: number | null
+          transactionHash: string | null
+          transactionIndex: string | null
+          untilBlockTimestamp: string | null
+        }
+        Relationships: []
+      }
+      wedu_point_balances_view: {
+        Row: {
+          address: string | null
+          amount: number | null
+          balance: number | null
+          blockNumber: number | null
+          blockTimestamp: string | null
+          chain: string | null
+          logIndex: number | null
+          points: number | null
+          rowNumber: number | null
+          transactionHash: string | null
+          transactionIndex: string | null
+          untilBlockTimestamp: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
