@@ -1,13 +1,12 @@
-import { Hono } from "hono";
-import { getBalance, getBlock, getStakeBalance } from "./web3";
-import { Hex } from "viem";
-import type { IEnv, IPointsType } from "./types";
-import { cors } from "hono/cors";
 import { zValidator } from "@hono/zod-validator";
-import * as v from "zod";
 import { SupabaseClient } from "@supabase/supabase-js";
 import Big from "big.js";
-import { estimate } from "./points";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { Hex } from "viem";
+import * as v from "zod";
+import type { IEnv } from "./types";
+import { getBalance, getStakeBalance } from "./web3";
 
 const app = new Hono<IEnv>()
 	//
@@ -45,25 +44,12 @@ const app = new Hono<IEnv>()
 	.get("/wallet/:address/points", async (c) => {
 		const { address } = c.req.param();
 
-		const transactions = await c.var.db
-			.from("transactions")
+		const points = await c.var.db
+			.from("wedu_agg_point_balances_view")
 			.select("*")
 			.eq("address", address)
-			.order("createdAt", { ascending: false })
-			.then((res) => res.data || []);
-
-		const block = await getBlock(c);
-
-		const points = transactions
-			.map((t) =>
-				estimate({
-					fromBlock: t.block,
-					toBlock: block,
-					value: t.value,
-					type: t.type as IPointsType,
-				}),
-			)
-			.reduce((m, a) => m + a, 0);
+			.maybeSingle()
+			.then((res) => parseFloat(res.data?.points?.toFixed(6) || "0"));
 
 		return c.json(points);
 	})
@@ -72,18 +58,19 @@ const app = new Hono<IEnv>()
 		"/wallet/:address/estimate",
 		zValidator("query", v.object({ value: v.string() })),
 		async (c) => {
+			const { address } = c.req.param();
 			const { value } = c.req.valid("query");
 
-			const block = await getBlock(c);
+			const points = await c.var.db
+				.from("wedu_agg_point_balances_view")
+				.select("*")
+				.eq("address", address)
+				.maybeSingle()
+				.then((res) => parseFloat(res.data?.points?.toFixed(6) || "0"));
 
-			const points = estimate({
-				fromBlock: block,
-				toBlock: block + 600000,
-				value: parseInt(value),
-				type: "stake",
+			return c.json({
+				points: new Big(value).div(1e18).mul(24).add(points).toNumber(),
 			});
-
-			return c.json({ points });
 		},
 	);
 
