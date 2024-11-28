@@ -11,6 +11,7 @@ import ActionButton from './components/ActionButton'
 import { cn } from '@/helpers/lib'
 import { formatBigWithComas } from '@/helpers/format'
 import { useBalance, useStakeBalance, useStakeEstimate } from '@/hooks/api'
+import { useMemo } from 'react'
 
 export const FormSchema = z.object({
   topUp: z.string().optional()
@@ -36,7 +37,14 @@ export default function Stake({ className }: Props) {
 
   const classRoot = cn('', className)
   const topUp: FormSchema['topUp'] = watch('topUp')
-  const estimate = useStakeEstimate(stakeBalance + topUp)
+
+  const amount = useMemo(() => {
+    const balance = parseFloat(stakeBalance.data || '0')
+    const increase = parseFloat(topUp || '0') * 1e18
+    return (balance + increase).toString()
+  }, [stakeBalance.data, topUp])
+
+  const estimate = useStakeEstimate(amount)
 
   return (
     <FormProvider {...formMethods}>
@@ -66,7 +74,9 @@ export default function Stake({ className }: Props) {
                   <InfoItem
                     className="mb-6 mt-10px"
                     title="Est. 24h Yuzu"
-                    value={<TransformCurrency className="font-medium" from={balance.data} to={estimate.data} />}
+                    value={
+                      <TransformCurrency className="font-medium" from={balance.data} to={estimate.data.toString()} />
+                    }
                   />
                 )}
               </>

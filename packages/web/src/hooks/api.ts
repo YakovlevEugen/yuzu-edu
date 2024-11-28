@@ -41,11 +41,11 @@ export const useStakeEstimate = (value: string) => {
   const { address } = useAccount()
 
   return useQuery({
-    queryKey: ['stake', 'estimate', address],
+    queryKey: ['stake', 'estimate', address, value],
     queryFn: () =>
       client.wallet[':address'].estimate
         .$get({
-          param: { address: address! },
+          param: { address: address as string },
           query: { value }
         })
         .then((res) => res.json())
@@ -63,7 +63,7 @@ export const useBridgeHistory = () => {
     queryFn: ({ pageParam }) =>
       client.wallet[':address'].transfers
         .$get({
-          param: { address: address! },
+          param: { address: address as string },
           query: { page: pageParam.toString() }
         })
         .then((res) => res.json()),
@@ -81,7 +81,7 @@ export const usePointBalance = () => {
     queryFn: () =>
       client.wallet[':address'].points
         .$get({
-          param: { address: address! }
+          param: { address: address as string }
         })
         .then((res) => res.json()),
     enabled: Boolean(address),
