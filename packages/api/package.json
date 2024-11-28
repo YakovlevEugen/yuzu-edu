@@ -6,7 +6,7 @@
   "scripts": {
     "build": "wrangler deploy --dry-run",
     "dev": "wrangler dev --port 5172",
-    "deploy:staging": "wrangler deploy --env staging"
+    "deploy:staging": "wrangler secret bulk .staging.vars.json --env staging && wrangler deploy --env staging"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.1",
