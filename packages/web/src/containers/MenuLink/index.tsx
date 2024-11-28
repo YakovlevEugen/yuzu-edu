@@ -1,5 +1,5 @@
 import { VariantProps, cva } from 'class-variance-authority'
-import { NavLinkProps, NavLink } from 'react-router-dom'
+import { NavLinkProps, NavLinkRenderProps, NavLink } from 'react-router-dom'
 
 import { cn } from '@/helpers/lib'
 
@@ -21,7 +21,7 @@ interface Props extends NavLinkProps, VariantProps<typeof variants> {
 }
 
 export default function MenuLink({ active, children, className, ...props }: Props) {
-  function getClassLink({ isActive }: Omit<NavLinkProps['className'], string>) {
+  function getClassLink({ isActive }: NavLinkRenderProps) {
     return cn(variants({ active: active || isActive }), className)
   }
 

@@ -8,7 +8,7 @@ interface Props {
   classAmount?: string
   className?: string
   currency?: Currency
-  value: number
+  value: number | string
   withCoin?: boolean
 }
 

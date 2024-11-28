@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import Balance from './index'
+import Component from './index'
 
-const meta: Meta<typeof Balance> = {
-  component: Balance,
+const meta: Meta<typeof Component> = {
+  component: Component,
   tags: ['autodocs'],
   argTypes: {
     value: {

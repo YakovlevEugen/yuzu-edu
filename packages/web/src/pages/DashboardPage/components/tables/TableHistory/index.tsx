@@ -1,32 +1,32 @@
 import { format } from 'date-fns'
 import { useMemo } from 'react'
 
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from 'ui/table'
 import { Button } from 'ui/button'
 
+import { formatBigNumber } from '@/helpers/format'
 import { cn } from '@/helpers/lib'
 import { useBridgeHistory } from '@/hooks/api'
-import { BridgeReward } from '@/types/wallet'
-import { formatBigNumber } from '@/helpers/format'
+import { IBridgeReward } from '@/types/wallet'
 
 interface Props {
   className?: string
 }
 
-// const bridgeRewards: BridgeReward[] = new Array(15).fill({
+// const data: IBridgeReward[] = new Array(15).fill({
 //   date: '2024-09-24T20:58:43Z',
 //   bridgedAmount: '1000',
 //   earnedAmount: '1000'
 // })
 
-export default function HistoryTable({ className }: Props) {
+export default function TableHistory({ className }: Props) {
   const classRoot = cn('', className)
 
   const query = useBridgeHistory()
 
-  const bridgeRewards = useMemo<BridgeReward[]>(
+  const data = useMemo<IBridgeReward[]>(
     () =>
-      (query.data?.pages.flat() as BridgeReward[])?.map((item) => ({
+      (query.data?.pages.flat() as IBridgeReward[])?.map((item) => ({
         ...item,
         amount: formatBigNumber(item.amount)
       })) || [],
@@ -43,9 +43,9 @@ export default function HistoryTable({ className }: Props) {
         </TableRow>
       </TableHeader>
 
-      {bridgeRewards?.length > 0 && (
+      {data?.length > 0 && (
         <TableBody>
-          {bridgeRewards.map(({ amount, points, timestamp }) => (
+          {data.map(({ amount, points, timestamp }) => (
             <TableRow key={timestamp}>
               <TableCell>{format(timestamp, 'do MMM uuuu')}</TableCell>
               <TableCell>{amount} EDU</TableCell>
@@ -58,7 +58,7 @@ export default function HistoryTable({ className }: Props) {
       <TableFooter>
         <TableRow>
           <TableCell className="text-center" colSpan={3}>
-            {bridgeRewards?.length > 0 ? (
+            {data?.length > 0 ? (
               <Button
                 variant="link"
                 onClick={() => query.fetchNextPage()}

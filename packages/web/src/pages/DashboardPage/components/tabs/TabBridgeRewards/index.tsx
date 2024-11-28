@@ -1,7 +1,7 @@
 import { Button } from 'ui/button'
 import BackgroundBlock from '@/components/BackgroundBlock'
 import SvgIcon from '@/components/SvgIcon'
-import HistoryTable from '../HistoryTable'
+import TableHistory from '../../tables/TableHistory'
 
 import { cn } from '@/helpers/lib'
 
@@ -34,7 +34,7 @@ export default function TabBridgeRewards({ className }: Props) {
         </div>
       </BackgroundBlock>
 
-      <HistoryTable />
+      <TableHistory />
     </div>
   )
 }

@@ -41,7 +41,7 @@ export default function ActionButton({ className }: Props) {
           {isConfirming ? 'Confirm on Wallet...' : isClaimed ? 'Claimed' : 'Claim'}
         </Button>
       ) : (
-        <WalletConnect triggerProps={{ className: 'w-full', size: 'lg' }} />
+        <WalletConnect triggerClass="w-full" triggerProps={{ size: 'lg' }} />
       )}
     </div>
   )

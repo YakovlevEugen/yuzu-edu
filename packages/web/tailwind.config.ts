@@ -6,6 +6,10 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      backgroundImage: {
+        'edu-land-background': `url('/images/edu-land-background.svg')`,
+        'edu-faucet-background': `url('/images/edu-faucet-background.svg')`
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

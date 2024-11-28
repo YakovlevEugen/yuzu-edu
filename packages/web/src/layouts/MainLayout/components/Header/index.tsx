@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { useClickAway } from 'react-use'
 
 import BorderBlock from '@/components/BorderBlock'
 import SvgIcon from '@/components/SvgIcon'
@@ -24,6 +25,11 @@ export default function Header({ className }: Props) {
     isMenuOpen ? 'flex' : 'hidden'
   )
 
+  const menuRef = useRef(null)
+  useClickAway(menuRef, () => {
+    setIsMenuOpen(false)
+  })
+
   function toggleMenu() {
     setIsMenuOpen((prevValue) => !prevValue)
   }
@@ -42,7 +48,7 @@ export default function Header({ className }: Props) {
           name={isMenuOpen ? 'close' : 'burger'}
           onClick={toggleMenu}
         />
-        <div className={classMenuWrapper}>
+        <div ref={menuRef} className={classMenuWrapper}>
           <Menu className="order-1 md:order-none" />
           <WalletBlock />
         </div>

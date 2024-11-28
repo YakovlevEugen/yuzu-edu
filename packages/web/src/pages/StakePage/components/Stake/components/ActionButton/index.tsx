@@ -41,7 +41,7 @@ export default function ActionButton({ className }: Props) {
           Stake
         </Button>
       ) : (
-        <WalletConnect triggerProps={{ className: 'w-full', size: 'lg' }} />
+        <WalletConnect triggerClass="w-full" triggerProps={{ size: 'lg' }} />
       )}
     </div>
   )

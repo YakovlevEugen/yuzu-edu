@@ -1,5 +1,5 @@
 import DashboardBalance from './components/DashboardBalance'
-import DashboardTabs from './components/DashboardTabs'
+import DashboardTabs from './components/tabs/TabsDashboard'
 
 import { cn } from '@/helpers/lib'
 

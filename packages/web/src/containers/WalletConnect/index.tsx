@@ -7,13 +7,14 @@ import { buttonVariants } from 'ui/button'
 import { cn } from '@/helpers/lib'
 
 interface Props {
+  triggerClass?: string
   triggerProps?: VariantProps<typeof buttonVariants>
 }
 
-export default function WalletConnect({ triggerProps }: Props) {
+export default function WalletConnect({ triggerClass, triggerProps }: Props) {
   return (
     <Dialog>
-      <DialogTrigger className={cn(buttonVariants(triggerProps))}>Connect wallet</DialogTrigger>
+      <DialogTrigger className={cn(triggerClass, buttonVariants(triggerProps))}>Connect wallet</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-center">Connect</DialogTitle>

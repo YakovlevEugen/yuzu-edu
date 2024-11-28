@@ -1,5 +1,6 @@
 import { Controller, FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMemo } from 'react'
 import { z } from 'zod'
 
 import BorderBlock from '@/components/BorderBlock'
@@ -11,7 +12,6 @@ import ActionButton from './components/ActionButton'
 import { cn } from '@/helpers/lib'
 import { formatBigWithComas } from '@/helpers/format'
 import { useBalance, useStakeBalance, useStakeEstimate } from '@/hooks/api'
-import { useMemo } from 'react'
 
 export const FormSchema = z.object({
   topUp: z.string().optional()
@@ -74,9 +74,7 @@ export default function Stake({ className }: Props) {
                   <InfoItem
                     className="mb-6 mt-10px"
                     title="Est. 24h Yuzu"
-                    value={
-                      <TransformCurrency className="font-medium" from={balance.data} to={estimate.data.toString()} />
-                    }
+                    value={<TransformCurrency className="font-medium" from={balance.data} />}
                   />
                 )}
               </>

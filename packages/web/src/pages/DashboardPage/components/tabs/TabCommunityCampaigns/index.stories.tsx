@@ -4,12 +4,7 @@ import Component from './index'
 
 const meta: Meta<typeof Component> = {
   component: Component,
-  tags: ['autodocs'],
-  argTypes: {
-    children: {
-      control: 'text'
-    }
-  }
+  tags: ['autodocs']
 }
 
 export default meta

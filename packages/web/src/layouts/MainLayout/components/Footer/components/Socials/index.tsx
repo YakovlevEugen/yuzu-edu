@@ -6,7 +6,12 @@ interface Props {
   className?: string
 }
 
-const SOCIALS = [
+interface Social {
+  link: string
+  iconName: 'linked-in' | 'telegram' | 'x' | 'youtube'
+}
+
+const SOCIALS: Social[] = [
   {
     iconName: 'x',
     link: 'https://x.com/'

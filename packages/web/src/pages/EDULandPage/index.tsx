@@ -24,7 +24,7 @@ export default function EDULandPage({ className }: Props) {
           <div className="mt-5 text-center">
             <span className="text-orange">Yuzu</span> earned from community partnerships
           </div>
-          <Balance className="mt-5 justify-center" value={'0.1'} />
+          <Balance className="mt-5 justify-center" value={0.1} />
         </BorderBlock>
       </div>
     </div>

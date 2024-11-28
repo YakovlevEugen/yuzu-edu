@@ -16,7 +16,7 @@ export default function WalletMenu() {
   const { address } = useAccount()
   const { disconnect } = useDisconnect()
 
-  const shortenWalletNumber = replaceCenterWithEllipsis(address, 5)
+  const shortenWalletNumber = address ? replaceCenterWithEllipsis(address, 5) : ''
 
   return (
     <DropdownMenu>

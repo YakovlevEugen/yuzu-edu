@@ -6,7 +6,16 @@ interface Props {
   className?: string
 }
 
-const MENU = new Array(4).fill({
+interface MenuChild {
+  label: string
+  link: string
+}
+interface Menu {
+  title: string
+  children: MenuChild[]
+}
+
+const MENU: Menu[] = new Array(4).fill({
   title: 'Products',
   children: [
     {

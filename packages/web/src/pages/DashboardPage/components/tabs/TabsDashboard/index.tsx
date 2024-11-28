@@ -1,8 +1,10 @@
-import { ReactNode, useRef, useEffect } from 'react'
+import { FC, useRef, useEffect } from 'react'
 
 import { TabsList, TabsTrigger, TabsContent, Tabs } from 'ui/tabs'
 import BorderBlock from '@/components/BorderBlock'
 import TabBridgeRewards from '../TabBridgeRewards'
+import TabCommunityCampaigns from '../TabCommunityCampaigns'
+import TabDApps from '../TabDApps'
 
 import { cn } from '@/helpers/lib'
 
@@ -12,16 +14,16 @@ interface Props {
 
 interface Tab {
   id: string
-  contentComponent: ReactNode
-  disabled: boolean
+  contentComponent: FC
+  disabled?: boolean
   title: string
 }
 
 const TABS: Tab[] = [
   {
     id: 'dApps',
-    contentComponent: () => <div>DApps</div>,
-    disabled: true,
+    contentComponent: TabDApps,
+    disabled: false,
     title: 'DApps'
   },
   {
@@ -32,7 +34,7 @@ const TABS: Tab[] = [
   },
   {
     id: 'communityCampaigns',
-    contentComponent: () => <div>Community Campaigns</div>,
+    contentComponent: TabCommunityCampaigns,
     disabled: false,
     title: 'Community Campaigns'
   },
@@ -44,15 +46,15 @@ const TABS: Tab[] = [
   }
 ]
 
-export default function DashboardTabs({ className }: Props) {
-  const refTabs = useRef<HTMLElement>()
+export default function TabsDashboard({ className }: Props) {
+  const refTabs = useRef<HTMLDivElement>()
 
   const classRoot = cn('', className)
 
   useEffect(() => {
     if (refTabs.current) {
-      const activeTabElement = refTabs.current?.querySelector('[data-state="active"]')
-      const scrollPosition = activeTabElement?.offsetLeft - refTabs.current.offsetLeft
+      const activeTabElement = refTabs.current?.querySelector('[data-state="active"]') as HTMLElement
+      const scrollPosition = activeTabElement?.offsetLeft - refTabs.current?.offsetLeft
 
       refTabs.current.scrollTo({
         left: scrollPosition,
@@ -62,11 +64,11 @@ export default function DashboardTabs({ className }: Props) {
   }, [])
 
   return (
-    <Tabs className={classRoot} defaultValue="bridgeRewards">
+    <Tabs className={classRoot} defaultValue={TABS[0].id}>
       <BorderBlock className="overflow-hidden rounded-[100px] shadow-none" padding="none">
         <TabsList ref={refTabs} className="flex justify-normal overflow-x-scroll">
           {TABS.map(({ id, disabled, title }) => (
-            <TabsTrigger className="flex-[1]" key={id} disabled={disabled} value={id}>
+            <TabsTrigger key={id} className="flex-[1]" disabled={disabled} value={id}>
               {title}
             </TabsTrigger>
           ))}
