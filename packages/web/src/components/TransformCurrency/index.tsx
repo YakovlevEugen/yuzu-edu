@@ -25,7 +25,7 @@ interface Props extends VariantProps<typeof variants> {
   className?: string
   currency?: TCurrency
   from?: string
-  to?: string
+  to: string
 }
 
 export default function TransformCurrency({ className, currency = 'Yuzu', from = '0', size, to, variant }: Props) {
@@ -33,11 +33,11 @@ export default function TransformCurrency({ className, currency = 'Yuzu', from =
 
   return (
     <div className={classRoot}>
-      {Boolean(from) && <span>{formatNumberWithCommas(from!)}</span>}
+      {Boolean(from) && <span>{formatNumberWithCommas(from)}</span>}
       {Boolean(to) && (
         <>
           <span>→</span>
-          {Boolean(to) && <span>{formatNumberWithCommas(to!)}</span>}
+          {Boolean(to) && <span>{formatNumberWithCommas(to)}</span>}
         </>
       )}
       {currency && <span className="currency">{currency}</span>}
