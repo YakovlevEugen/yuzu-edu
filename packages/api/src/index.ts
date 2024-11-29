@@ -68,9 +68,9 @@ const app = new Hono<IEnv>()
 				.maybeSingle()
 				.then((res) => parseFloat(res.data?.points?.toFixed(6) || "0"));
 
-			return c.json({
-				points: new Big(value).div(1e18).mul(24).add(points).toNumber(),
-			});
+			const output = new Big(value).div(1e18).mul(24).add(points).toString();
+			console.log({ points, value, output });
+			return c.json({ points: output });
 		},
 	);
 

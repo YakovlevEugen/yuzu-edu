@@ -25,7 +25,7 @@ interface Props extends VariantProps<typeof variants> {
   className?: string
   currency?: TCurrency
   from?: string
-  to: string
+  to?: string
 }
 
 export default function TransformCurrency({ className, currency = 'Yuzu', from = '0', size, to, variant }: Props) {

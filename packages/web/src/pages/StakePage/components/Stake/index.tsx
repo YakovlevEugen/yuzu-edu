@@ -86,7 +86,7 @@ export default function Stake({ className }: Props) {
                   <InfoItem
                     className="mt-10px"
                     title="Est. 24h Yuzu"
-                    value={<TransformCurrency className="font-medium" from={balance.data} />}
+                    value={<TransformCurrency className="font-medium" from={estimate.data} />}
                   />
                 )}
               </>
