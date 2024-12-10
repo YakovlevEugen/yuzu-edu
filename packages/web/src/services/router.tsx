@@ -6,6 +6,7 @@ import EDULandPage from '@/pages/EDULandPage'
 import EDUFaucetPage from '@/pages/EDUFaucetPage'
 import ErrorPage from '@/pages/ErrorPage'
 import StakePage from '@/pages/StakePage'
+import BridgePage from '@/pages/BridgePage'
 
 import { ROUTES } from '@/constants/routes'
 
@@ -17,6 +18,7 @@ export default function AppRouter() {
         <Route path={ROUTES.stake} element={<StakePage />} />
         <Route path={ROUTES.land} element={<EDULandPage />} />
         <Route path={ROUTES.faucet} element={<EDUFaucetPage />} />
+        <Route path={ROUTES.bridge} element={<BridgePage />} />
       </Route>
       <Route path="*" element={<ErrorPage status={404} />} />
     </Routes>

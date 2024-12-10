@@ -14,19 +14,19 @@ interface Social {
 const SOCIALS: Social[] = [
   {
     iconName: 'x',
-    link: 'https://x.com/'
+    link: 'https://x.com/opencampus_xyz'
   },
   {
     iconName: 'youtube',
-    link: 'https://www.youtube.com/'
+    link: 'https://www.youtube.com/@OpenCampusxyz'
   },
   {
     iconName: 'telegram',
-    link: 'https://t.me'
+    link: 'https://t.me/opencampustg'
   },
   {
     iconName: 'linked-in',
-    link: 'https://www.linkedin.com/'
+    link: 'https://www.linkedin.com/company/opencampus-xyz/about'
   }
 ]
 

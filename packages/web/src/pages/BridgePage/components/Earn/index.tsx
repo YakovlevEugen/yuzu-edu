@@ -4,7 +4,6 @@ import BalanceInfo from '@/containers/BalanceInfo'
 import BorderBlock from '@/components/BorderBlock'
 import InfoItem from '@/components/InfoItem'
 
-import { formatTimeToDate } from '@/helpers/date'
 import { formatBigWithComas } from '@/helpers/format'
 import { cn } from '@/helpers/lib'
 import { useStakeBalance } from '@/hooks/api'
@@ -20,12 +19,8 @@ export default function Earn({ className }: Props) {
   const earnInfo = useMemo(
     () => [
       {
-        title: 'Total EDU Staked',
+        title: 'Total EDU Bridged',
         value: `${formatBigWithComas(balance.data)} EDU`
-      },
-      {
-        title: 'End-of-Semester Claim in',
-        value: formatTimeToDate(new Date(), new Date(Date.now() + 10000000))
       }
     ],
     [balance.data]

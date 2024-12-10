@@ -16,5 +16,9 @@ export const MENU = [
   {
     to: ROUTES.land,
     title: 'EDU Land'
+  },
+  {
+    to: ROUTES.bridge,
+    title: 'Bridge'
   }
 ]

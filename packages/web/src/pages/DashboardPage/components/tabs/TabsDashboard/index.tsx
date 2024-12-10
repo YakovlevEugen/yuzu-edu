@@ -1,25 +1,20 @@
-import { FC, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 
-import { TabsList, TabsTrigger, TabsContent, Tabs } from 'ui/tabs'
+import { TabsContent, Tabs } from 'ui/tabs'
 import BorderBlock from '@/components/BorderBlock'
+import RoundedTabs from '@/components/RoundedTabs'
 import TabBridgeRewards from '../TabBridgeRewards'
 import TabCommunityCampaigns from '../TabCommunityCampaigns'
 import TabDApps from '../TabDApps'
 
 import { cn } from '@/helpers/lib'
+import { ITab } from '@/types/components'
 
 interface Props {
   className?: string
 }
 
-interface Tab {
-  id: string
-  contentComponent: FC
-  disabled?: boolean
-  title: string
-}
-
-const TABS: Tab[] = [
+const TABS: ITab[] = [
   {
     id: 'dApps',
     contentComponent: TabDApps,
@@ -65,15 +60,7 @@ export default function TabsDashboard({ className }: Props) {
 
   return (
     <Tabs className={classRoot} defaultValue={TABS[0].id}>
-      <BorderBlock className="overflow-hidden rounded-[100px] shadow-none" padding="none">
-        <TabsList ref={refTabs} className="flex justify-normal overflow-x-scroll">
-          {TABS.map(({ id, disabled, title }) => (
-            <TabsTrigger key={id} className="flex-[1]" disabled={disabled} value={id}>
-              {title}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </BorderBlock>
+      <RoundedTabs ref={refTabs} tabs={TABS} />
 
       {TABS.map(({ id, contentComponent: Content }) => (
         <TabsContent key={id} className="mt-2" value={id}>

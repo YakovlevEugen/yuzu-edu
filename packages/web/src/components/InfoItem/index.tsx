@@ -1,11 +1,8 @@
-import { ReactNode } from 'react'
-
 import { cn } from '@/helpers/lib'
+import { IInfoItem } from '@/types/components'
 
-interface Props {
+interface Props extends IInfoItem {
   className?: string
-  title?: ReactNode | number | string
-  value?: ReactNode | number | string
 }
 
 export default function InfoItem({ className, title = '', value = '' }: Props) {

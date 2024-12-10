@@ -8,7 +8,8 @@ export default {
     extend: {
       backgroundImage: {
         'edu-land-background': `url('/images/edu-land-background.svg')`,
-        'edu-faucet-background': `url('/images/edu-faucet-background.svg')`
+        'edu-faucet-background': `url('/images/edu-faucet-background.svg')`,
+        'bridge-background': `url('/images/bridge-background.svg')`
       },
       borderRadius: {
         lg: 'var(--radius)',

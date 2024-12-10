@@ -1,41 +1,9 @@
-import { Link } from 'react-router-dom'
-
 import { cn } from '@/helpers/lib'
+import { MENU } from './constants'
 
 interface Props {
   className?: string
 }
-
-interface MenuChild {
-  label: string
-  link: string
-}
-interface Menu {
-  title: string
-  children: MenuChild[]
-}
-
-const MENU: Menu[] = new Array(4).fill({
-  title: 'Products',
-  children: [
-    {
-      label: 'OC ID',
-      link: '#'
-    },
-    {
-      label: 'OC-X',
-      link: '#'
-    },
-    {
-      label: 'Publisher NFT',
-      link: '#'
-    },
-    {
-      label: 'Whitepaper',
-      link: '#'
-    }
-  ]
-})
 
 export default function Menu({ className }: Props) {
   const classRoot = cn('flex flex-wrap gap-x-10 lg:gap-x-[60px] gap-y-6', className)
@@ -49,7 +17,9 @@ export default function Menu({ className }: Props) {
             <ul className="flex flex-col">
               {children.map(({ label, link }) => (
                 <li key={label} className="mt-1 text-lg font-normal">
-                  <Link to={link}>{label}</Link>
+                  <a href={link} target="_blank" rel="noopenner noreferrer">
+                    {label}
+                  </a>
                 </li>
               ))}
             </ul>

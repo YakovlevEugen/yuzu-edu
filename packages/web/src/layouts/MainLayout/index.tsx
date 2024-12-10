@@ -21,6 +21,8 @@ export default function MainLayout({ className }: Props) {
       backgroundClass += 'md:bg-top bg-edu-land-background'
     } else if (pathname === ROUTES.faucet) {
       backgroundClass += 'bg-edu-faucet-background'
+    } else if (pathname === ROUTES.bridge) {
+      backgroundClass += 'bg-bridge-background'
     }
 
     return backgroundClass
