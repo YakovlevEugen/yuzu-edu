@@ -2,12 +2,12 @@ import { cva, VariantProps } from 'class-variance-authority'
 
 import { formatNumberWithCommas } from '@/helpers/format'
 import { cn } from '@/helpers/lib'
-import { Currency } from '@/types/common'
+import { TCurrency } from '@/types/common'
 
 const variants = cva('flex items-baseline gap-1', {
   variants: {
     variant: {
-      default: 'text-white',
+      white: 'text-white',
       greenLight: 'text-green-light'
     },
     size: {
@@ -17,13 +17,13 @@ const variants = cva('flex items-baseline gap-1', {
   },
   defaultVariants: {
     size: 'default',
-    variant: 'default'
+    variant: 'white'
   }
 })
 
 interface Props extends VariantProps<typeof variants> {
   className?: string
-  currency?: Currency
+  currency?: TCurrency
   from?: string
   to?: string
 }

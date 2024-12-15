@@ -1,22 +1,26 @@
+import { useMemo, useState } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
+import { format } from 'date-fns'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMemo } from 'react'
 import { z } from 'zod'
 
 import BorderBlock from '@/components/BorderBlock'
 import CurrencyInput from '@/components/CurrencyInput'
-import InfoItem from '@/components/InfoItem'
+import CurrencySelect from '@/components/CurrencySelect'
+import InfoItem, { Props as PropsInfoItem } from '@/components/InfoItem'
 import TransformCurrency from '@/components/TransformCurrency'
+import TransformFromTo from '@/components/TransformFromTo'
 import ActionButton from './components/ActionButton'
-import TransferTabs from './components/TransferTabs'
+import TransferTabs, { TTransferTabId } from './components/TransferTabs'
 
+import { CURRENCY_TITLE } from '@/constants/currencies'
 import { cn } from '@/helpers/lib'
 import { formatBigWithComas } from '@/helpers/format'
-import { useBalance, useStakeBalance, useStakeEstimate } from '@/hooks/api'
-// import { IInfoItem } from '@/types/components'
+import { useBalance } from '@/hooks/api'
 
 export const FormSchema = z.object({
-  topUp: z.string().optional()
+  currency: z.string(),
+  topUp: z.string()
 })
 export type FormSchema = z.infer<typeof FormSchema>
 
@@ -26,18 +30,11 @@ interface Props {
 
 const BLOCK_PADDING = 'py-6 px-6 md:px-8'
 
-// const INFO_ITEMS: IInfoItem[] = [
-//   {
-//     title: '',
-//     value: ''
-//   }
-// ]
-
 export default function Transfer({ className }: Props) {
   const balance = useBalance()
-  const stakeBalance = useStakeBalance()
   const formMethods = useForm<FormSchema>({
     defaultValues: {
+      currency: '',
       topUp: ''
     },
     resolver: zodResolver(FormSchema)
@@ -45,22 +42,46 @@ export default function Transfer({ className }: Props) {
   const { control, watch } = formMethods
 
   const classRoot = cn('', className)
+  const [, setTabId] = useState<TTransferTabId>('deposit')
   const topUp: FormSchema['topUp'] = watch('topUp')
+  const currency = watch('currency')
 
-  const amount = useMemo(() => {
-    const balance = parseFloat(stakeBalance.data || '0')
-    const increase = parseFloat(topUp || '0') * 1e18
-    return (balance + increase).toString()
-  }, [stakeBalance.data, topUp])
+  const infoItems = useMemo<PropsInfoItem[]>(
+    () => [
+      {
+        title: 'To',
+        value: CURRENCY_TITLE?.['edu'],
+        variant: 'white'
+      },
+      {
+        title: 'Receive',
+        value: <TransformCurrency className="font-medium" currency="EDU" from="500" />
+      },
+      {
+        title: 'Transfer time',
+        value: `${format(12312312, 'm')} min`,
+        variant: 'white'
+      },
+      {
+        title: 'Estimated fees',
+        value: <TransformCurrency className="font-medium" currency="EDU" from="0.1" />
+      }
+    ],
+    []
+  )
 
-  const estimate = useStakeEstimate(amount)
+  function handleTabChange(value: TTransferTabId) {
+    setTabId(value)
+  }
 
   return (
     <FormProvider {...formMethods}>
       <BorderBlock className={classRoot} variant="yellow" padding="none">
         <div>
           <div className={BLOCK_PADDING}>
-            <TransferTabs />
+            <TransferTabs onChange={handleTabChange} />
+
+            <TransformFromTo className="mt-4" from="arb" to="edu" />
 
             <InfoItem
               className="mt-4"
@@ -73,23 +94,32 @@ export default function Transfer({ className }: Props) {
               }
             />
             <div>
-              <Controller name="topUp" control={control} render={({ field }) => <CurrencyInput {...field} />} />
+              <Controller
+                name="topUp"
+                control={control}
+                render={({ field }) => (
+                  <CurrencyInput
+                    {...field}
+                    currency={
+                      <Controller
+                        name="currency"
+                        control={control}
+                        render={({ field: currencyField }) => <CurrencySelect {...currencyField} />}
+                      />
+                    }
+                  />
+                )}
+              />
             </div>
           </div>
 
           <div className={cn(BLOCK_PADDING, 'bg-foreground text-white')}>
-            {topUp && (
-              <>
-                <div className="mb-5px text-sm">Total EDU Staked</div>
-                <TransformCurrency currency="EDU" size="l" to={topUp} variant="greenLight" />
-                {balance.data && estimate.data && (
-                  <InfoItem
-                    className="mb-6 mt-10px"
-                    title="Est. 24h Yuzu"
-                    value={<TransformCurrency className="font-medium" from={balance.data} />}
-                  />
-                )}
-              </>
+            {Boolean(topUp) && Boolean(currency) && (
+              <div className="mb-6">
+                {infoItems.map((item) => (
+                  <InfoItem className="mt-3" {...item} />
+                ))}
+              </div>
             )}
             <ActionButton />
           </div>

@@ -1,13 +1,16 @@
-import { ComponentProps, forwardRef } from 'react'
+import { ComponentProps, FC, forwardRef } from 'react'
 
 import { cn } from '@/helpers/lib'
-import { Currency } from '@/types/common'
+import { TCurrency } from '@/types/common'
 
 interface Props extends ComponentProps<'input'> {
-  currency?: Currency
+  currency?: TCurrency | FC
 }
 
 const CurrencyInput = forwardRef<HTMLInputElement, Props>(({ className, currency = 'EDU', ...otherProps }, ref) => {
+  const isCurrencyFunction = typeof currency === 'function'
+  const CurrencyComponent = isCurrencyFunction ? currency : null
+
   return (
     <div className="flex items-center">
       <input
@@ -19,7 +22,11 @@ const CurrencyInput = forwardRef<HTMLInputElement, Props>(({ className, currency
         placeholder="0"
         {...otherProps}
       />
-      {currency && <div className="ml-1 text-3xl font-semibold text-green">{currency}</div>}
+      {isCurrencyFunction && CurrencyComponent ? (
+        <CurrencyComponent />
+      ) : (
+        <div className="ml-1 text-3xl font-semibold text-green">{currency}</div>
+      )}
     </div>
   )
 })

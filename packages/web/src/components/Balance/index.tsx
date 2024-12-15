@@ -2,12 +2,12 @@ import SvgIcon from '@/components/SvgIcon'
 
 import { formatNumberWithCommas } from '@/helpers/format'
 import { cn } from '@/helpers/lib'
-import { Currency } from '@/types/common'
+import { TCurrency } from '@/types/common'
 
 interface Props {
   classAmount?: string
   className?: string
-  currency?: Currency
+  currency?: TCurrency
   value: number | string
   withCoin?: boolean
 }

@@ -57,6 +57,8 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))'
         },
+        black: 'hsl(var(--black))',
+        white: 'hsl(var(--white))',
         beige: 'hsl(var(--beige))',
         grass: 'hsl(var(--grass))',
         green: 'hsl(var(--green))',
