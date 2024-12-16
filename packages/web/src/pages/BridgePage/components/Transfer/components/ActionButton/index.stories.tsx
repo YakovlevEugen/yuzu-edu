@@ -4,13 +4,13 @@ import type { Meta, StoryObj } from '@storybook/react'
 
 import Component from './index'
 
-import { FormSchema } from '@/pages/StakePage/components/Stake'
+import { FormSchema } from '../../index'
 
 const meta: Meta<typeof Component> = {
   component: (props) => {
     const formMethods = useForm<FormSchema>({
       defaultValues: {
-        topUp: ''
+        amount: ''
       },
       resolver: zodResolver(FormSchema)
     })

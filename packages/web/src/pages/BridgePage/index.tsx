@@ -6,7 +6,7 @@ import Transfer from './components/Transfer'
 export default function BridgePage() {
   return (
     <div>
-      <div className="text-center text-4xl font-bold tracking-tighter md:text-6xl">
+      <div className="mb-10 text-center text-4xl font-bold tracking-tighter md:text-6xl">
         Bridge to <span className="text-green-light">EDUChain</span>
       </div>
 
@@ -20,12 +20,12 @@ export default function BridgePage() {
           <Earn />
         </div>
 
-        <div className="flex-[1] pt-0 md:pt-[115px]">
+        <div className="mt-6 flex-[1] md:mt-0">
           <Transfer />
         </div>
       </div>
 
-      <BorderBlock className="mt-10 !px-4 !py-6 shadow-none" padding="none">
+      <BorderBlock className="mt-6 !px-4 !py-6 shadow-none md:mt-10" padding="none">
         <div className="ml-2 font-semibold">Reward History</div>
         <TableRewardsHistory className="mt-4" />
       </BorderBlock>

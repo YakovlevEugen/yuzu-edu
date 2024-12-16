@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
 import { format } from 'date-fns'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -11,18 +11,26 @@ import InfoItem, { Props as PropsInfoItem } from '@/components/InfoItem'
 import TransformCurrency from '@/components/TransformCurrency'
 import TransformFromTo from '@/components/TransformFromTo'
 import ActionButton from './components/ActionButton'
-import TransferTabs, { TTransferTabId } from './components/TransferTabs'
+import TransferTabs from './components/TransferTabs'
 
 import { CURRENCY_TITLE } from '@/constants/currencies'
-import { cn } from '@/helpers/lib'
 import { formatBigWithComas } from '@/helpers/format'
+import { cn } from '@/helpers/lib'
 import { useBalance } from '@/hooks/api'
+import { TTokens } from '@/types/common'
+import { DEFAULT_ACTIVE_TAB } from './components/TransferTabs/constants'
 
 export const FormSchema = z.object({
-  currency: z.string(),
-  topUp: z.string()
+  activeTabId: z.string(),
+  amount: z.string(),
+  currency: z.string()
 })
 export type FormSchema = z.infer<typeof FormSchema>
+
+interface ITransferCurrencies {
+  from: TTokens
+  to: TTokens
+}
 
 interface Props {
   className?: string
@@ -30,21 +38,38 @@ interface Props {
 
 const BLOCK_PADDING = 'py-6 px-6 md:px-8'
 
+const DEFAULT_TRANSFER_CYRRENCY_FROM = 'arb'
+
 export default function Transfer({ className }: Props) {
   const balance = useBalance()
   const formMethods = useForm<FormSchema>({
     defaultValues: {
-      currency: '',
-      topUp: ''
+      activeTabId: DEFAULT_ACTIVE_TAB,
+      amount: '',
+      currency: 'edu'
     },
     resolver: zodResolver(FormSchema)
   })
   const { control, watch } = formMethods
 
   const classRoot = cn('', className)
-  const [, setTabId] = useState<TTransferTabId>('deposit')
-  const topUp: FormSchema['topUp'] = watch('topUp')
-  const currency = watch('currency')
+  const activeTabId: FormSchema['activeTabId'] = watch('activeTabId')
+  const currency: FormSchema['currency'] = watch('currency')
+  const amount: FormSchema['amount'] = watch('amount')
+
+  const transferCurrencies = useMemo<ITransferCurrencies>(
+    () =>
+      activeTabId === 'deposit'
+        ? {
+            from: DEFAULT_TRANSFER_CYRRENCY_FROM,
+            to: currency as TTokens
+          }
+        : {
+            from: currency as TTokens,
+            to: DEFAULT_TRANSFER_CYRRENCY_FROM
+          },
+    [activeTabId, currency]
+  )
 
   const infoItems = useMemo<PropsInfoItem[]>(
     () => [
@@ -70,18 +95,18 @@ export default function Transfer({ className }: Props) {
     []
   )
 
-  function handleTabChange(value: TTransferTabId) {
-    setTabId(value)
-  }
-
   return (
     <FormProvider {...formMethods}>
       <BorderBlock className={classRoot} variant="yellow" padding="none">
         <div>
           <div className={BLOCK_PADDING}>
-            <TransferTabs onChange={handleTabChange} />
+            <Controller
+              name="activeTabId"
+              control={control}
+              render={({ field }) => <TransferTabs {...field} className="mb-4" />}
+            />
 
-            <TransformFromTo className="mt-4" from="arb" to="edu" />
+            <TransformFromTo from={transferCurrencies.from} to={transferCurrencies.to} />
 
             <InfoItem
               className="mt-4"
@@ -95,7 +120,7 @@ export default function Transfer({ className }: Props) {
             />
             <div>
               <Controller
-                name="topUp"
+                name="amount"
                 control={control}
                 render={({ field }) => (
                   <CurrencyInput
@@ -114,7 +139,7 @@ export default function Transfer({ className }: Props) {
           </div>
 
           <div className={cn(BLOCK_PADDING, 'bg-foreground text-white')}>
-            {Boolean(topUp) && Boolean(currency) && (
+            {Boolean(amount) && Boolean(currency) && (
               <div className="mb-6">
                 {infoItems.map((item) => (
                   <InfoItem className="mt-3" {...item} />

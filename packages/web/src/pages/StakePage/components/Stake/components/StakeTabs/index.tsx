@@ -5,24 +5,24 @@ import { cn } from '@/helpers/lib'
 import { ITab } from '@/types/components'
 import { DEFAULT_ACTIVE_TAB, TABS } from './constants'
 
-export type TTransferTabId = 'deposit' | 'withdraw'
+export type TStakeTabId = 'stake' | 'unwrap'
 
-export interface TTransferTab extends Omit<ITab, 'id'> {
-  id: TTransferTabId
+export interface TStakeTabs extends Omit<ITab, 'id'> {
+  id: TStakeTabId
 }
 
 interface Props {
   className?: string
   value?: string
-  onChange?: (tabId: TTransferTabId) => void
+  onChange?: (tabId: TStakeTabId) => void
 }
 
-export default function TransferTabs({ className, value, onChange }: Props) {
+export default function StakeTabs({ className, value, onChange }: Props) {
   const classRoot = cn('', className)
   const resultValue = value ?? DEFAULT_ACTIVE_TAB
 
   function handleChange(tabId: string) {
-    onChange?.(tabId as TTransferTabId)
+    onChange?.(tabId as TStakeTabId)
   }
 
   return (

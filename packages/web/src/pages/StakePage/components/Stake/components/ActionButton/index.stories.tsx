@@ -10,7 +10,7 @@ const meta: Meta<typeof Component> = {
   component: (props) => {
     const formMethods = useForm<FormSchema>({
       defaultValues: {
-        topUp: ''
+        amount: ''
       },
       resolver: zodResolver(FormSchema)
     })

@@ -8,13 +8,16 @@ import CurrencyInput from '@/components/CurrencyInput'
 import InfoItem from '@/components/InfoItem'
 import TransformCurrency from '@/components/TransformCurrency'
 import ActionButton from './components/ActionButton'
+import StakeTabs from './components/StakeTabs'
 
-import { cn } from '@/helpers/lib'
 import { formatBigWithComas } from '@/helpers/format'
+import { cn } from '@/helpers/lib'
 import { useBalance, useStakeBalance, useStakeEstimate } from '@/hooks/api'
+import { DEFAULT_ACTIVE_TAB } from './components/StakeTabs/constants'
 
 export const FormSchema = z.object({
-  topUp: z.string().optional()
+  activeTabId: z.string(),
+  amount: z.string()
 })
 export type FormSchema = z.infer<typeof FormSchema>
 
@@ -29,57 +32,66 @@ export default function Stake({ className }: Props) {
   const stakeBalance = useStakeBalance()
   const formMethods = useForm<FormSchema>({
     defaultValues: {
-      topUp: ''
+      activeTabId: DEFAULT_ACTIVE_TAB,
+      amount: ''
     },
     resolver: zodResolver(FormSchema)
   })
   const { control, watch } = formMethods
 
   const classRoot = cn('', className)
-  const topUp: FormSchema['topUp'] = watch('topUp')
+  const amount: FormSchema['amount'] = watch('amount')
 
-  const amount = useMemo(() => {
+  const resultAmount = useMemo(() => {
     const balance = parseFloat(stakeBalance.data || '0')
-    const increase = parseFloat(topUp || '0') * 1e18
+    const increase = parseFloat(amount || '0') * 1e18
     return (balance + increase).toString()
-  }, [stakeBalance.data, topUp])
+  }, [stakeBalance.data, amount])
 
-  const estimate = useStakeEstimate(amount)
+  const estimate = useStakeEstimate(resultAmount)
 
   return (
     <FormProvider {...formMethods}>
       <BorderBlock className={classRoot} variant="yellow" padding="none">
         <div>
           <div className={BLOCK_PADDING}>
-            <InfoItem
-              title={<span className="fs-14">Available to Stake</span>}
-              value={
-                <>
-                  <span>MAX </span>
-                  <span className="text-foreground">{formatBigWithComas(balance.data)} EDU</span>
-                </>
-              }
+            <Controller
+              name="activeTabId"
+              control={control}
+              render={({ field }) => <StakeTabs {...field} className="mb-4" />}
             />
+
             <div>
-              <Controller name="topUp" control={control} render={({ field }) => <CurrencyInput {...field} />} />
+              <InfoItem
+                title={<span className="fs-14">Available to Stake</span>}
+                value={
+                  <>
+                    <span>MAX </span>
+                    <span className="text-foreground">{formatBigWithComas(balance.data)} EDU</span>
+                  </>
+                }
+              />
+            </div>
+            <div>
+              <Controller name="amount" control={control} render={({ field }) => <CurrencyInput {...field} />} />
             </div>
           </div>
 
           <div className={cn(BLOCK_PADDING, 'bg-foreground text-white')}>
-            {topUp && (
+            {Boolean(amount) && (
               <>
                 <div className="mb-5px text-sm">Total EDU Staked</div>
-                <TransformCurrency currency="EDU" size="l" to={topUp} variant="greenLight" />
-                {balance.data && estimate.data && (
+                <TransformCurrency currency="EDU" size="l" to={amount} variant="greenLight" />
+                {Boolean(balance.data) && Boolean(estimate.data) && (
                   <InfoItem
-                    className="mb-6 mt-10px"
+                    className="mt-10px"
                     title="Est. 24h Yuzu"
                     value={<TransformCurrency className="font-medium" from={balance.data} />}
                   />
                 )}
               </>
             )}
-            <ActionButton />
+            <ActionButton className="mt-6" />
           </div>
         </div>
       </BorderBlock>

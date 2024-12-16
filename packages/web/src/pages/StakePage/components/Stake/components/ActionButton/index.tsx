@@ -7,6 +7,7 @@ import WalletConnect from '@/containers/WalletConnect'
 
 import { cn } from '@/helpers/lib'
 import { useToast } from '@/hooks/use-toast'
+import { FormSchema } from '@/pages/StakePage/components/Stake'
 
 interface Props {
   className?: string
@@ -19,13 +20,14 @@ export default function ActionButton({ className }: Props) {
   const { toast } = useToast()
 
   const classRoot = cn('', className)
-  const topUp = watch('topUp')
+  const activeTabId: FormSchema['activeTabId'] = watch('activeTabId')
+  const amount: FormSchema['amount'] = watch('amount')
 
   async function stake() {
     try {
       await sendTransactionAsync({
         to: '0xDbD8e8bc1A1b6a563d4b9F75F72E577C42890fF7',
-        value: parseEther(topUp)
+        value: parseEther(amount)
       })
       toast({ title: 'EDU Successfully Staked', variant: 'success' })
     } catch (error) {
@@ -34,10 +36,26 @@ export default function ActionButton({ className }: Props) {
     }
   }
 
+  async function unwrap() {
+    try {
+      // TODO: add unwrap method
+      // await sendTransactionAsync({
+      //   to: '0xDbD8e8bc1A1b6a563d4b9F75F72E577C42890fF7',
+      //   value: parseEther(amount)
+      // })
+      toast({ title: 'EDU Successfully Unwrapped', variant: 'success' })
+    } catch (error) {
+      toast({ title: 'EDU Unwrapped Failed', variant: 'destructive' })
+      console.error(error)
+    }
+  }
+
+  const actionFunction = activeTabId === 'stake' ? stake : unwrap
+
   return (
     <div className={classRoot}>
       {isConnected ? (
-        <Button className="w-full" disabled={!topUp} size="lg" onClick={stake}>
+        <Button className="w-full" disabled={!amount} size="lg" onClick={actionFunction}>
           Stake
         </Button>
       ) : (

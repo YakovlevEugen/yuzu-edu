@@ -1,12 +1,13 @@
 import { useFormContext } from 'react-hook-form'
-import { parseEther } from 'viem'
-import { useAccount, useSendTransaction } from 'wagmi'
+// import { parseEther } from 'viem'
+import { useAccount } from 'wagmi'
 
 import { Button } from 'ui/button'
 import WalletConnect from '@/containers/WalletConnect'
 
 import { cn } from '@/helpers/lib'
 import { useToast } from '@/hooks/use-toast'
+import { FormSchema } from '@/pages/BridgePage/components/Transfer'
 
 interface Props {
   className?: string
@@ -15,30 +16,47 @@ interface Props {
 export default function ActionButton({ className }: Props) {
   const { isConnected } = useAccount()
   const { watch } = useFormContext()
-  const { sendTransactionAsync } = useSendTransaction()
   const { toast } = useToast()
 
   const classRoot = cn('', className)
-  const topUp = watch('topUp')
+  const activeTabId: FormSchema['activeTabId'] = watch('activeTabId')
+  const amount: FormSchema['amount'] = watch('amount')
 
-  async function stake() {
+  async function deposit() {
     try {
-      await sendTransactionAsync({
-        to: '0xDbD8e8bc1A1b6a563d4b9F75F72E577C42890fF7',
-        value: parseEther(topUp)
-      })
-      toast({ title: 'EDU Successfully Staked', variant: 'success' })
+      // TODO: add deposit method
+      // await sendTransactionAsync({
+      //   to: '0xDbD8e8bc1A1b6a563d4b9F75F72E577C42890fF7',
+      //   value: parseEther(amount)
+      // })
+      toast({ title: 'Success Deposit', variant: 'success' })
     } catch (error) {
-      toast({ title: 'EDU Stake Failed', variant: 'destructive' })
+      toast({ title: 'Deposit Failed', variant: 'destructive' })
       console.error(error)
     }
   }
 
+  async function withdraw() {
+    try {
+      // TODO: add withdraw method
+      // await sendTransactionAsync({
+      //   to: '0xDbD8e8bc1A1b6a563d4b9F75F72E577C42890fF7',
+      //   value: parseEther(amount)
+      // })
+      toast({ title: 'Success Withdraw', variant: 'success' })
+    } catch (error) {
+      toast({ title: 'Withdraw Failed', variant: 'destructive' })
+      console.error(error)
+    }
+  }
+
+  const actionFunction = activeTabId === 'deposit' ? deposit : withdraw
+
   return (
     <div className={classRoot}>
       {isConnected ? (
-        <Button className="w-full" disabled={!topUp} size="lg" onClick={stake}>
-          Stake
+        <Button className="w-full" disabled={!amount} size="lg" onClick={actionFunction}>
+          Bridge
         </Button>
       ) : (
         <WalletConnect triggerClass="w-full" triggerProps={{ size: 'lg' }} />

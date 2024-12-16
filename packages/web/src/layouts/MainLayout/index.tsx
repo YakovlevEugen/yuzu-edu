@@ -36,7 +36,7 @@ export default function MainLayout({ className }: Props) {
         <div className="mx-auto flex w-full max-w-[1116px] flex-col overflow-hidden md:px-5 md:py-8">
           <Header />
 
-          <div className="mt-5 px-4 md:mt-[100px] md:p-0">
+          <div className="mt-5 px-4 pb-6 md:mt-[100px] md:p-0">
             <Outlet />
           </div>
         </div>
