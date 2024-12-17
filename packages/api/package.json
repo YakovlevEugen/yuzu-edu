@@ -5,8 +5,13 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "wrangler deploy --dry-run",
-    "dev": "wrangler dev --port 5172",
+    "dev": "tunnel wrangler dev --port 5172",
     "deploy:staging": "wrangler secret bulk .staging.vars.json --env staging && wrangler deploy --env staging"
+  },
+  "cloudflared": {
+    "name": "yuzu-api-$USER",
+    "hostname": "yuzu-api-$USER.r8edev.xyz",
+    "target": "http://localhost:5172"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.1",
