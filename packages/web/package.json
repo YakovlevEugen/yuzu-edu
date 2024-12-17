@@ -7,7 +7,7 @@
     "build": "vite build",
     "build-storybook": "storybook build",
     "check-types": "tsc --noEmit",
-    "dev": "vite",
+    "dev": "tunnel vite",
     "lint": "eslint src --report-unused-disable-directives --max-warnings 0",
     "prepare": "husky",
     "prettier": "prettier --check --ignore-path .gitignore \"**/*.+(html|json|mdx|yml)\"",
@@ -18,6 +18,11 @@
     "test": "vitest",
     "test-storybook": "test-storybook",
     "deploy:staging": "wrangler deploy --env staging"
+  },
+  "cloudflared": {
+    "name": "yuzu-web-$USER",
+    "hostname": "yuzu-web-$USER.r8edev.xyz",
+    "target": "http://localhost:5173"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

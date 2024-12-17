@@ -1,0 +1,23 @@
+{
+  "name": "@yuzu/tunnel",
+  "version": "1.0.0",
+  "description": "Cloudflared tunnel to local env",
+  "bin": {
+    "tunnel": "./cli.ts"
+  },
+  "scripts": {
+    "prepare": "mkdir -p ~/.cloudflared && pnpm add tsx --global && pnpm link --global",
+    "clean": "rm -rf node_modules"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cloudflared": "^0.5.3",
+    "ora": "^8.0.1",
+    "tsx": "^4.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.7"
+  }
+}
