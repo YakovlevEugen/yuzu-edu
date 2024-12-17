@@ -1,24 +1,43 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.20;
 
 import {Test, console} from "forge-std/Test.sol";
-import {Counter} from "../src/Counter.sol";
+import {Faucet} from "../src/Faucet.sol";
 
-contract CounterTest is Test {
-    Counter public counter;
+contract FaucetTest is Test {
+    Faucet public faucet;
+
+    address constant SIGNER = address(0xBBED9678e14027A48c1f294D0468bBc402E3e4ef);
+    uint256 constant SIGNER_PK = 0x98b8a9c18e38fc621fd142ae6df307d52404c621743f6f6891cc8def49a77e0c;
+    address constant USER = address(30001);
+    address constant HACKER = address(30002);
 
     function setUp() public {
-        counter = new Counter();
-        counter.setNumber(0);
+        faucet = new Faucet(SIGNER);
+        vm.deal(address(faucet), 1 ether);
     }
 
-    function test_Increment() public {
-        counter.increment();
-        assertEq(counter.number(), 1);
+    function test_Claim() public {
+        vm.startPrank(USER);
+
+        bytes32 digest = faucet.getWithdrawalHash(USER);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(SIGNER_PK, digest);
+
+        faucet.claim(abi.encodePacked(r, s, v));
+        uint256 balance = address(USER).balance;
+        assertEq(balance, 0.1 ether);
     }
 
-    function testFuzz_SetNumber(uint256 x) public {
-        counter.setNumber(x);
-        assertEq(counter.number(), x);
+    function test_Claim_FAIL() public {
+        vm.startPrank(HACKER);
+
+        bytes32 digest = faucet.getWithdrawalHash(USER);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(SIGNER_PK, digest);
+
+        vm.expectRevert();
+        faucet.claim(abi.encodePacked(r, s, v));
+
+        uint256 balance = address(HACKER).balance;
+        assertEq(balance, 0 ether);
     }
 }
