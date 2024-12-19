@@ -4,17 +4,24 @@ import { Hex } from "viem";
 import { useAccount } from "wagmi";
 
 import { apiUrl } from "@/constants/config";
+import { IChainId } from "@yuzu/sdk";
 
 const client = createClient(apiUrl);
 
-export const useBalance = () => {
+export const useTokenBalance = (chainId: IChainId, symbol: string) => {
 	const { address } = useAccount();
 
 	return useQuery({
-		queryKey: ["balance", address],
+		queryKey: ["balance", chainId, address, symbol],
 		queryFn: () =>
-			client.wallet[":address"].balance
-				.$get({ param: { address: address as Hex } })
+			client.balance[":chainId"][":address"][":symbol"]
+				.$get({
+					param: {
+						chainId,
+						address: address as string,
+						symbol,
+					},
+				})
 				.then((res) => res.json())
 				.then((res) => res.balance),
 		enabled: Boolean(address),

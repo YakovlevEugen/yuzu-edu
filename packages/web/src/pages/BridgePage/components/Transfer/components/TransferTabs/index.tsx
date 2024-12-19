@@ -1,32 +1,38 @@
-import { Tabs } from 'ui/tabs'
 import RoundedTabs from '@/components/RoundedTabs'
-
 import { cn } from '@/helpers/lib'
-import { ITab } from '@/types/components'
-import { DEFAULT_ACTIVE_TAB, TABS } from './constants'
+import { Tabs } from 'ui/tabs'
 
-export type TTransferTabId = 'deposit' | 'withdraw'
-
-export interface TTransferTab extends Omit<ITab, 'id'> {
-  id: TTransferTabId
-}
-
-interface Props {
-  className?: string
-  value?: string
-  onChange?: (tabId: TTransferTabId) => void
-}
-
-export default function TransferTabs({ className, value, onChange }: Props) {
-  const classRoot = cn('', className)
-  const resultValue = value ?? DEFAULT_ACTIVE_TAB
-
-  function handleChange(tabId: string) {
-    onChange?.(tabId as TTransferTabId)
+export const TABS = [
+  {
+    id: 'deposit' as const,
+    disabled: false,
+    title: 'Deposit'
+  },
+  {
+    id: 'withdraw' as const,
+    disabled: false,
+    title: 'Withdraw'
   }
+]
 
+type ITabId = (typeof TABS)[number]['id']
+
+export default function TransferTabs({
+  className,
+  value,
+  onChange
+}: {
+  className?: string
+  value: ITabId
+  onChange: (v: ITabId) => void
+}) {
   return (
-    <Tabs className={classRoot} defaultValue={DEFAULT_ACTIVE_TAB} value={resultValue} onValueChange={handleChange}>
+    <Tabs
+      className={cn('', className)}
+      defaultValue={TABS[0].id}
+      value={value}
+      onValueChange={(v) => onChange?.(v as ITabId)}
+    >
       <RoundedTabs tabs={TABS} />
     </Tabs>
   )

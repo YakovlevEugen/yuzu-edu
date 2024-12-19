@@ -1,28 +1,28 @@
 import SvgIcon from '@/components/SvgIcon'
-
-import { CURRENCY_TITLE } from '@/constants/currencies'
+import { IBlockchain, blockchains } from '@/constants/currencies'
 import { cn } from '@/helpers/lib'
-import { TTokens } from '@/types/common'
 
-interface Props {
+export default function TransformFromTo({
+  className,
+  from,
+  to
+}: {
   className?: string
-  from: TTokens
-  to: TTokens
-}
-
-export default function TransformFromTo({ className, from, to }: Props) {
-  const classRoot = cn(
-    'items-center flex flex-col gap-y-7 p-6 bg-green-toxic rounded-2xl md:justify-between md:flex-row md:gap-y-0',
-    className
-  )
-
+  from: IBlockchain
+  to: IBlockchain
+}) {
   return (
-    <div className={classRoot}>
+    <div
+      className={cn(
+        'flex flex-col items-center gap-y-7 rounded-2xl bg-green-toxic p-6 md:flex-row md:justify-between md:gap-y-0',
+        className
+      )}
+    >
       <div className="flex-[1]">
         <div className="text-center text-sm md:text-left">From</div>
         <div className="mt-2 flex items-center gap-x-1">
           <SvgIcon className="h-6 w-6" name={from} />
-          <span>{CURRENCY_TITLE?.[from]}</span>
+          <span>{blockchains[from]}</span>
         </div>
       </div>
 
@@ -32,7 +32,7 @@ export default function TransformFromTo({ className, from, to }: Props) {
         <div className="text-center text-sm md:text-left">To</div>
         <div className="mt-2 flex items-center gap-x-1">
           <SvgIcon className="h-6 w-6" name={to} />
-          <span>{CURRENCY_TITLE?.[to]}</span>
+          <span>{blockchains[to]}</span>
         </div>
       </div>
     </div>

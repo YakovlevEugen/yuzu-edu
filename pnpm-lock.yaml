@@ -205,6 +205,9 @@ importers:
       '@yuzu/api':
         specifier: workspace:*
         version: link:../api
+      '@yuzu/sdk':
+        specifier: workspace:*
+        version: link:../sdk
       big.js:
         specifier: ^6.2.2
         version: 6.2.2

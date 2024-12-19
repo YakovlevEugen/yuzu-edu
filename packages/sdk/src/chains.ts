@@ -1,4 +1,4 @@
-import { defineChain } from "viem";
+import { defineChain, Hex } from "viem";
 import { arbitrumSepolia, arbitrum } from "viem/chains";
 
 export const eduTestnet = defineChain({
@@ -108,3 +108,12 @@ export const toChainId = (chain: IChain) => {
 };
 
 export const getChain = (chainId: IChainId) => chains[chainId];
+
+export const getTokenAddress = (
+	chainId: IChainId,
+	symbol: string,
+): Hex | undefined => {
+	const chain = getChain(chainId);
+	const contracts = chain.contracts as Record<string, { address: Hex }>;
+	return contracts[symbol.trim().toLowerCase()]?.address;
+};

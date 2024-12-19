@@ -8,30 +8,32 @@ import { Button } from 'ui/button'
 import { cn } from '@/helpers/lib'
 import { useBridgeHistory } from '@/hooks/api'
 import { IBridgeReward } from '@/types/wallet'
+import { useMemo } from 'react'
+import { formatBigNumber } from '@/helpers/format'
 
 interface Props {
   className?: string
 }
 
-const data: IBridgeReward[] = new Array(10).fill({
-  timestamp: '2024-09-24T20:58:43Z',
-  amount: '1000',
-  points: '1000'
-})
+// const data: IBridgeReward[] = new Array(10).fill({
+//   timestamp: '2024-09-24T20:58:43Z',
+//   amount: '1000',
+//   points: '1000'
+// })
 
 export default function TableRewardsHistory({ className }: Props) {
   const classRoot = cn('', className)
 
   const query = useBridgeHistory()
 
-  // const data = useMemo<IBridgeReward[]>(
-  //   () =>
-  //     (query.data?.pages.flat() as IBridgeReward[])?.map((item) => ({
-  //       ...item,
-  //       amount: formatBigNumber(item.amount)
-  //     })) || [],
-  //   [query]
-  // )
+  const data = useMemo<IBridgeReward[]>(
+    () =>
+      (query.data?.pages.flat() as IBridgeReward[])?.map((item) => ({
+        ...item,
+        amount: formatBigNumber(item.amount)
+      })) || [],
+    [query]
+  )
 
   return (
     <Table className={classRoot}>

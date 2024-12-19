@@ -6,7 +6,8 @@ import { cors } from "hono/cors";
 import { Hex } from "viem";
 import * as v from "zod";
 import type { IEnv } from "./types";
-import { getBalance, getStakeBalance } from "./web3";
+import { getStakeBalance, getTokenBalance } from "./web3";
+import { IChainId } from "@yuzu/sdk";
 
 const app = new Hono<IEnv>()
 	//
@@ -18,14 +19,20 @@ const app = new Hono<IEnv>()
 		return next();
 	})
 
-	.get("/wallet/:address/balance", async (c) => {
-		const balance = await getBalance(c, c.req.param("address") as Hex);
-		return c.json({ balance: balance.toString() });
+	.get("/balance/:chainId/:address/:symbol", async (c) => {
+		const balance = await getTokenBalance(c, {
+			chainId: c.req.param("chainId") as IChainId,
+			address: c.req.param("address") as Hex,
+			symbol: c.req.param("symbol"),
+		});
+
+		return c.json({ balance });
 	})
 
 	.get("/wallet/:address/stake", async (c) => {
-		const balance = await getStakeBalance(c, c.req.param("address") as Hex);
-		return c.json({ balance: balance.toString() });
+		const address = c.req.param("address") as Hex;
+		const balance = await getStakeBalance(c, address);
+		return c.json({ balance });
 	})
 
 	.get(

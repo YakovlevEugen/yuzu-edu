@@ -1,149 +1,127 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
-import { format } from 'date-fns'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
 import BorderBlock from '@/components/BorderBlock'
 import CurrencyInput from '@/components/CurrencyInput'
 import CurrencySelect from '@/components/CurrencySelect'
-import InfoItem, { Props as PropsInfoItem } from '@/components/InfoItem'
+import InfoItem from '@/components/InfoItem'
 import TransformCurrency from '@/components/TransformCurrency'
-import TransformFromTo from '@/components/TransformFromTo'
 import ActionButton from './components/ActionButton'
-import TransferTabs from './components/TransferTabs'
+import TransferTabs, { TABS } from './components/TransferTabs'
 
-import { CURRENCY_TITLE } from '@/constants/currencies'
-import { formatBigWithComas } from '@/helpers/format'
+import TransformFromTo from '@/components/TransformFromTo'
+import { IBlockchain, blockchains, tokens } from '@/constants/currencies'
 import { cn } from '@/helpers/lib'
-import { useBalance } from '@/hooks/api'
-import { TTokens } from '@/types/common'
-import { DEFAULT_ACTIVE_TAB } from './components/TransferTabs/constants'
+import { useTokenBalance } from '@/hooks/api'
 
 export const FormSchema = z.object({
-  activeTabId: z.string(),
+  intent: z.enum([TABS[0].id, TABS[1].id]),
   amount: z.string(),
-  currency: z.string()
+  token: z.enum(['edu', 'weth', 'usdc', 'usdt'])
 })
+
 export type FormSchema = z.infer<typeof FormSchema>
 
-interface ITransferCurrencies {
-  from: TTokens
-  to: TTokens
-}
-
-interface Props {
-  className?: string
-}
-
-const BLOCK_PADDING = 'py-6 px-6 md:px-8'
-
-const DEFAULT_TRANSFER_CYRRENCY_FROM = 'arb'
-
-export default function Transfer({ className }: Props) {
-  const balance = useBalance()
-  const formMethods = useForm<FormSchema>({
+export default function Transfer({ className }: { className?: string }) {
+  const form = useForm<FormSchema>({
     defaultValues: {
-      activeTabId: DEFAULT_ACTIVE_TAB,
+      intent: TABS[0].id,
       amount: '',
-      currency: 'edu'
+      token: 'edu'
     },
     resolver: zodResolver(FormSchema)
   })
-  const { control, watch } = formMethods
 
-  const classRoot = cn('', className)
-  const activeTabId: FormSchema['activeTabId'] = watch('activeTabId')
-  const currency: FormSchema['currency'] = watch('currency')
-  const amount: FormSchema['amount'] = watch('amount')
+  const intent = form.watch('intent')
+  const token = form.watch('token')
+  const amount = form.watch('amount')
 
-  const transferCurrencies = useMemo<ITransferCurrencies>(
-    () =>
-      activeTabId === 'deposit'
-        ? {
-            from: DEFAULT_TRANSFER_CYRRENCY_FROM,
-            to: currency as TTokens
-          }
-        : {
-            from: currency as TTokens,
-            to: DEFAULT_TRANSFER_CYRRENCY_FROM
-          },
-    [activeTabId, currency]
-  )
+  const sourceChainId = useMemo(() => (intent === 'deposit' ? 'arbMainnet' : 'eduMainnet'), [intent])
+  const sourceTokenBalance = useTokenBalance(sourceChainId, token)
 
-  const infoItems = useMemo<PropsInfoItem[]>(
-    () => [
-      {
-        title: 'To',
-        value: CURRENCY_TITLE?.['edu'],
-        variant: 'white'
-      },
-      {
-        title: 'Receive',
-        value: <TransformCurrency className="font-medium" currency="EDU" from="500" />
-      },
-      {
-        title: 'Transfer time',
-        value: `${format(12312312, 'm')} min`,
-        variant: 'white'
-      },
-      {
-        title: 'Estimated fees',
-        value: <TransformCurrency className="font-medium" currency="EDU" from="0.1" />
-      }
-    ],
-    []
-  )
+  // const targetChainId = useMemo(() => (intent === 'deposit' ? 'eduMainnet' : 'arbMainnet'), [intent])
+  // const targetTokenBalance = useTokenBalance(targetChainId, token)
+
+  const from: IBlockchain = useMemo(() => (intent === 'deposit' ? 'arb' : 'edu'), [intent])
+  const to: IBlockchain = useMemo(() => (intent === 'deposit' ? 'edu' : 'arb'), [intent])
 
   return (
-    <FormProvider {...formMethods}>
-      <BorderBlock className={classRoot} variant="yellow" padding="none">
+    <FormProvider {...form}>
+      <BorderBlock className={cn(className)} variant="yellow" padding="none">
         <div>
-          <div className={BLOCK_PADDING}>
+          <div className="px-6 py-6 md:px-8">
             <Controller
-              name="activeTabId"
-              control={control}
+              name="intent"
+              control={form.control}
               render={({ field }) => <TransferTabs {...field} className="mb-4" />}
             />
 
-            <TransformFromTo from={transferCurrencies.from} to={transferCurrencies.to} />
+            <TransformFromTo from={from} to={to} />
 
-            <InfoItem
-              className="mt-4"
-              title={<span className="fs-14">Available to Bridge</span>}
-              value={
-                <>
-                  <span>MAX </span>
-                  <span className="text-foreground">{formatBigWithComas(balance.data)} EDU</span>
-                </>
-              }
-            />
+            <button
+              type="button"
+              className="block w-full"
+              onClick={() => form.setValue('amount', sourceTokenBalance.data)}
+            >
+              <InfoItem
+                className="mt-4"
+                title={<span className="fs-14">Available to Bridge</span>}
+                value={
+                  <>
+                    <span>MAX </span>
+                    <span className="text-foreground">
+                      {parseFloat(sourceTokenBalance.data).toLocaleString()} {tokens[token]}
+                    </span>
+                  </>
+                }
+              />
+            </button>
+
             <div>
               <Controller
                 name="amount"
-                control={control}
+                control={form.control}
                 render={({ field }) => (
                   <CurrencyInput
                     {...field}
-                    currency={
+                    currency={() => (
                       <Controller
-                        name="currency"
-                        control={control}
+                        name="token"
+                        control={form.control}
                         render={({ field: currencyField }) => <CurrencySelect {...currencyField} />}
                       />
-                    }
+                    )}
                   />
                 )}
               />
             </div>
           </div>
 
-          <div className={cn(BLOCK_PADDING, 'bg-foreground text-white')}>
-            {Boolean(amount) && Boolean(currency) && (
+          <div className="bg-foreground px-6 py-6 text-white md:px-8">
+            {token && amount && (
               <div className="mb-6">
-                {infoItems.map((item) => (
-                  <InfoItem className="mt-3" {...item} />
-                ))}
+                <InfoItem className="mt-3" title="To" value={blockchains[to]} variant="white" />
+
+                <InfoItem
+                  className="mt-3"
+                  title="Receive"
+                  value={<TransformCurrency className="font-medium" currency={tokens[token]} from={amount} />}
+                />
+
+                <InfoItem
+                  className="mt-3"
+                  title="Transfer time"
+                  value={intent === 'deposit' ? '~15 sec' : '~15 min'}
+                  variant="white"
+                />
+
+                <InfoItem
+                  className="mt-3"
+                  title="Estimated fees"
+                  value={<TransformCurrency className="font-medium" currency="EDU" from="0.1" />}
+                />
               </div>
             )}
             <ActionButton />

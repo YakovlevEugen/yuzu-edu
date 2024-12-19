@@ -12,7 +12,7 @@ import StakeTabs from './components/StakeTabs'
 
 import { formatBigWithComas } from '@/helpers/format'
 import { cn } from '@/helpers/lib'
-import { useBalance, useStakeBalance, useStakeEstimate } from '@/hooks/api'
+import { useStakeBalance, useStakeEstimate, useTokenBalance } from '@/hooks/api'
 import { DEFAULT_ACTIVE_TAB } from './components/StakeTabs/constants'
 
 export const FormSchema = z.object({
@@ -28,7 +28,7 @@ interface Props {
 const BLOCK_PADDING = 'py-6 px-6 md:px-8'
 
 export default function Stake({ className }: Props) {
-  const balance = useBalance()
+  const balance = useTokenBalance('eduMainnet', 'edu')
   const stakeBalance = useStakeBalance()
   const formMethods = useForm<FormSchema>({
     defaultValues: {

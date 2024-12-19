@@ -1,10 +1,10 @@
 import { ComponentProps, FC, forwardRef } from 'react'
 
 import { cn } from '@/helpers/lib'
-import { TCurrency } from '@/types/common'
+import { IToken } from '@/constants/currencies'
 
 interface Props extends ComponentProps<'input'> {
-  currency?: TCurrency | FC
+  currency?: IToken | FC
 }
 
 const CurrencyInput = forwardRef<HTMLInputElement, Props>(({ className, currency = 'EDU', ...otherProps }, ref) => {

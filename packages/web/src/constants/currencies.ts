@@ -1,17 +1,15 @@
-import { TTokens } from '@/types/common'
+export const blockchains = {
+	arb: "Arbitrum One",
+	edu: "EDU Chain",
+};
 
-export const CURRENCY_TITLE: Partial<Record<TTokens, string>> = {
-  arb: 'Arbitrum One',
-  edu: 'EDUChain',
-  usdc: 'USDC',
-  usdt: 'USDT',
-  yuzu: 'Yuzu',
-  weth: 'Wrapped Etherium'
-}
+export type IBlockchain = keyof typeof blockchains;
 
-export const CURRENCY_TOKEN: Partial<Record<TTokens, string>> = {
-  edu: 'EDU',
-  usdc: 'USDC',
-  usdt: 'USDT',
-  weth: 'WETH'
-}
+export const tokens = {
+	edu: "EDU",
+	usdc: "USDC",
+	usdt: "USDT",
+	weth: "WETH",
+};
+
+export type IToken = keyof typeof tokens;
