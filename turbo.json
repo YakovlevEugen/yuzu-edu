@@ -9,7 +9,7 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["build/**"],
+      "outputs": ["build/**", "dist/**"],
       "cache": true
     },
     "deploy:staging": {

@@ -2,7 +2,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import type { IContext, IEnv } from "./types";
 import type { Json } from "@yuzu/supabase";
 import type { Hex, Log } from "viem";
-import { IChain } from "./web3";
+import { IChain } from "@yuzu/sdk";
 
 (BigInt.prototype as unknown as Record<string, unknown>).toJSON = function () {
 	return this.toString();
@@ -80,106 +80,6 @@ export const toChunks = (params: {
 
 	return out;
 };
-
-// export const upsertCampaign = (
-// 	c: IContext,
-// 	chain: IChain,
-// 	params: {
-// 		campaignId: bigint;
-// 		campaign: {
-// 			creatorPool: bigint;
-// 			engagerPool: bigint;
-// 			treasury: Hex;
-// 			startsAt: bigint;
-// 			token: Hex;
-// 			endsAt: bigint;
-// 		};
-// 	},
-// ) =>
-// 	c.var.db
-// 		.from("campaigns")
-// 		.upsert(
-// 			{
-// 				id: Number(params.campaignId),
-// 				chain: chain.name,
-// 				creatorPool: params.campaign.creatorPool.toString(),
-// 				engagerPool: params.campaign.engagerPool.toString(),
-// 				treasury: params.campaign.treasury,
-// 				token: params.campaign.token,
-// 				startsAt: new Date(
-// 					parseInt(params.campaign.startsAt.toString()) * 1000,
-// 				).toISOString(),
-// 				endsAt: new Date(
-// 					parseInt(params.campaign.endsAt.toString()) * 1000,
-// 				).toISOString(),
-// 				details: {},
-// 			},
-// 			{
-// 				onConflict: "id, chain",
-// 				ignoreDuplicates: false,
-// 			},
-// 		)
-// 		.then((res) => {
-// 			if (res.error) throw new Error(res.error.message);
-// 		});
-
-// export const incCampaignBalance = (
-// 	c: IContext,
-// 	chain: IChain,
-// 	params: {
-// 		campaignId: bigint;
-// 		recipient: Hex;
-// 		amount: bigint;
-// 		role: number;
-// 	},
-// ) =>
-// 	c.var.db
-// 		.rpc("incrementcampaignbalance", {
-// 			chain: chain.name,
-// 			campaign_id: Number(params.campaignId),
-// 			recipient: params.recipient,
-// 			creator_amount: params.role === 0 ? Number(params.amount) : 0,
-// 			engager_amount: params.role === 1 ? Number(params.amount) : 0,
-// 		})
-// 		.then((res) => {
-// 			if (res.error) throw new Error(res.error.message);
-// 		});
-
-// export const claimCampaignBalance = (
-// 	c: IContext,
-// 	chain: IChain,
-// 	params: {
-// 		campaignId: bigint;
-// 		recipient: Hex;
-// 		wallet: Hex;
-// 	},
-// ) =>
-// 	c.var.db
-// 		.from("campaign_balances")
-// 		.update({ claimedBy: params.wallet })
-// 		.eq("recipient", params.recipient)
-// 		.eq("chain", chain.name)
-// 		.eq("campaignId", Number(params.campaignId))
-// 		.then((res) => {
-// 			if (res.error) throw new Error(res.error.message);
-// 		});
-
-// export const upsertWEDUTx = (c: IContext, chain: IChain, log: Log) =>
-// 	c.var.db.from("wedu_txs").upsert(
-// 		{
-// 			...({ chain: chain.name } as { chain: string }),
-// 			txHash: log.transactionHash,
-// 			txIndex: log.transactionIndex,
-// 			logIndex: log.logIndex,
-// 			address: log.address,
-// 			blockNumber: log.blockNumber,
-// 			data: log,
-// 		},
-// 		{
-// 			onConflict: "chain,txHash,txIndex,logIndex",
-// 			ignoreDuplicates: false,
-// 		},
-// 	);
 
 export const upsertWEDUBalance = (
 	c: IContext,

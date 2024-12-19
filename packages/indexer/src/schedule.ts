@@ -3,6 +3,14 @@
  */
 
 import {
+	eduMainnet,
+	getPublicClient,
+	getWEDUAddress,
+	getWETHLogs,
+	IChain,
+	toChainId,
+} from "@yuzu/sdk";
+import {
 	createContext,
 	getLastIndexedBlock,
 	setLastIndexedBlock,
@@ -11,7 +19,6 @@ import {
 } from "./helpers";
 
 import type { IContext, IEnv } from "./types";
-import { chains, getPublicClient, getWEDULogs, IChain } from "./web3";
 
 export const scheduled = (
 	event: ScheduledEvent,
@@ -24,12 +31,12 @@ export const runScheduledJobs = async (c: IContext) => {
 };
 
 const indexBlocks = async (c: IContext) => {
-	for (const chain of Object.values(chains)) {
+	for (const chain of [eduMainnet]) {
 		console.log(`Indexing ${chain.name}`);
 
 		const [from, to] = await Promise.all([
 			getLastIndexedBlock(c, chain.name),
-			getPublicClient(chain).getBlockNumber(),
+			getPublicClient(toChainId(chain)).getBlockNumber(),
 		]);
 
 		const blockRanges = toChunks({ from, to, chunkSize: 10000 });
@@ -50,9 +57,13 @@ const indexWEDULogs = async (
 	},
 ) => {
 	const { chain, fromBlock, toBlock } = params;
-	const logs = await getWEDULogs(params);
+
+	const chainId = toChainId(chain);
+	const address = getWEDUAddress(chainId);
+	const client = getPublicClient(chainId);
+
+	const logs = await getWETHLogs({ chainId, address, fromBlock, toBlock });
 	console.log(`Got: ${logs.length} logs from ${fromBlock} to ${toBlock}`);
-	const client = getPublicClient(chain);
 
 	for (const log of logs.filter((l) => !l.removed)) {
 		const timestamp = await client

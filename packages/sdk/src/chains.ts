@@ -1,5 +1,5 @@
-import { createPublicClient, defineChain, getContract, http } from "viem";
-import { abi } from "./abi/wedu";
+import { defineChain } from "viem";
+import { arbitrumSepolia, arbitrum } from "viem/chains";
 
 export const eduTestnet = defineChain({
 	id: 656476,
@@ -51,37 +51,50 @@ export const eduMainnet = defineChain({
 	},
 });
 
-export type IChain = typeof eduMainnet;
+export const arbTestnet = defineChain({
+	...arbitrumSepolia,
+	contracts: {
+		weth: { address: "0x2A1b409Cd444Be8F4388c50997e0Ff87e9e718Ad" },
+	},
+});
+
+export const arbMainnet = defineChain({
+	...arbitrum,
+	contracts: {
+		weth: { address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1" },
+	},
+});
+
+export type IChain =
+	| typeof eduMainnet
+	| typeof eduTestnet
+	| typeof arbMainnet
+	| typeof arbTestnet;
+
 export type IChainName = IChain["name"];
-export const chains = { eduMainnet } as const;
 
-export const getPublicClient = (chain: IChain) =>
-	createPublicClient({
-		chain,
-		transport: http(),
-	});
+export const chains = {
+	eduMainnet,
+	eduTestnet,
+	arbMainnet,
+	arbTestnet,
+} as const;
 
-export const wedu = (chain: IChain) =>
-	getContract({
-		client: getPublicClient(chain),
-		address: chain.contracts.wedu.address,
-		abi,
-	});
+export type IChainId = keyof typeof chains;
 
-export const getWEDULogs = (params: {
-	fromBlock: bigint;
-	toBlock: bigint;
-	chain: IChain;
-}) => {
-	const { chain, fromBlock, toBlock } = params;
-	const { address, abi } = wedu(chain);
-	const client = getPublicClient(chain);
-
-	return client.getContractEvents({
-		address,
-		abi,
-		fromBlock,
-		toBlock,
-		strict: true,
-	});
+export const toChainId = (chain: IChain) => {
+	switch (chain) {
+		case eduMainnet:
+			return "eduMainnet";
+		case eduTestnet:
+			return "eduTestnet";
+		case arbMainnet:
+			return "arbMainnet";
+		case arbTestnet:
+			return "arbTestnet";
+		default:
+			throw new Error("unsupported chain");
+	}
 };
+
+export const getChain = (chainId: IChainId) => chains[chainId];

@@ -1,0 +1,29 @@
+{
+  "name": "@yuzu/cli",
+  "bin": {
+    "yuzu": "src/cli.ts"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "setup": "pnpm link --global"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@commander-js/extra-typings": "^12.1.0",
+    "@types/big.js": "^6.2.2",
+    "@types/cli-progress": "^3.11.6",
+    "@yuzu/sdk": "workspace:*",
+    "big.js": "^6.2.2",
+    "bs58": "^6.0.0",
+    "cli-progress": "^3.12.0",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "mkdirp": "^3.0.1",
+    "terminal-link": "^3.0.0",
+    "tsx": "^4.17.0",
+    "viem": "^2.21.55"
+  },
+  "devDependencies": {
+    "@types/node": "^22.4.1"
+  }
+}

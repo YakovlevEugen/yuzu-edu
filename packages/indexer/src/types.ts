@@ -1,7 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Context } from "hono";
 import type { Database } from "@yuzu/supabase";
-import { Chain } from "viem";
+import type { Context } from "hono";
 
 export type IEnv = {
 	SUPABASE_URL: string;

@@ -32,3 +32,5 @@ build-ssr
 .env
 .env.*
 .dev.vars
+
+tsconfig.tsbuildinfo

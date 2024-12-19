@@ -6,9 +6,11 @@ export type IEnv = {
 	Bindings: {
 		SUPABASE_URL: string;
 		SUPABASE_KEY: string;
+		CONTRACTS_ENV: "mainnet" | "testnet";
 	};
 	Variables: {
 		db: SupabaseClient<Database>;
+		mainnet: boolean;
 	};
 };
 

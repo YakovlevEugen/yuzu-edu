@@ -9,7 +9,6 @@
     "check-types": "tsc --noEmit",
     "dev": "tunnel vite",
     "lint": "eslint src --report-unused-disable-directives --max-warnings 0",
-    "prepare": "husky",
     "prettier": "prettier --check --ignore-path .gitignore \"**/*.+(html|json|mdx|yml)\"",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",

@@ -1,0 +1,6 @@
+{
+  "name": "@yuzu/contracts",
+  "scripts": {
+    "build": "forge build"
+  }
+}
