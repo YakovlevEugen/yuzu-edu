@@ -76,5 +76,3 @@ const app = new Hono<IEnv>()
 	);
 
 export default app;
-export * from "./client";
-export * from "./types";
