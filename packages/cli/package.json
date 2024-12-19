@@ -5,6 +5,7 @@
   },
   "scripts": {
     "build": "tsc -b",
+    "clean": "rm -rf .turbo node_modules",
     "setup": "pnpm link --global"
   },
   "license": "UNLICENSED",

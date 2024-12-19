@@ -1,6 +1,7 @@
 {
   "name": "@yuzu/contracts",
   "scripts": {
-    "build": "forge build"
+    "build": "forge build",
+    "clean": "rm -rf .turbo cache out build node_modules"
   }
 }

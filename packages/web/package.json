@@ -7,6 +7,7 @@
     "build": "vite build",
     "build-storybook": "storybook build",
     "check-types": "tsc --noEmit",
+    "clean": "rm -rf .turbo .wrangler build node_modules",
     "dev": "tunnel vite",
     "lint": "eslint src --report-unused-disable-directives --max-warnings 0",
     "prettier": "prettier --check --ignore-path .gitignore \"**/*.+(html|json|mdx|yml)\"",

@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc -b && wrangler deploy --dry-run --outdir=build",
+    "clean": "rm -rf .turbo .wrangler build node_modules",
     "dev": "tunnel wrangler dev --port 5172",
     "deploy:staging": "wrangler secret bulk .staging.vars.json --env staging && wrangler deploy --env staging"
   },
