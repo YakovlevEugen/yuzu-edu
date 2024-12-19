@@ -48,20 +48,30 @@ export const eduMainnet = defineChain({
 	},
 	contracts: {
 		wedu: { address: "0xd02E8c38a8E3db71f8b2ae30B8186d7874934e12" },
+		// bridged assets
+		weth: { address: "0xa572BF655F61930B6f0d4546A67cD1376220081a" },
+		usdc: { address: "0x836d275563bAb5E93Fd6Ca62a95dB7065Da94342" },
+		usdt: { address: "0x7277Cc818e3F3FfBb169c6Da9CC77Fc2d2a34895" },
 	},
 });
 
 export const arbTestnet = defineChain({
 	...arbitrumSepolia,
 	contracts: {
+		edu: { address: "0x0000000000000000000000000000000000000000" },
 		weth: { address: "0x2A1b409Cd444Be8F4388c50997e0Ff87e9e718Ad" },
+		usdc: { address: "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d" },
+		usdt: { address: "0x93d67359A0f6F117150a70fDde6BB96782497248" },
 	},
 });
 
 export const arbMainnet = defineChain({
 	...arbitrum,
 	contracts: {
+		edu: { address: "0xf8173a39c56a554837C4C7f104153A005D284D11" },
 		weth: { address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1" },
+		usdc: { address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831" },
+		usdt: { address: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9" },
 	},
 });
 

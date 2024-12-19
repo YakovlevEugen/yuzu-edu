@@ -1,4 +1,4 @@
-import { eduMainnet, eduTestnet, IChainId } from "./chains";
+import { IChainId, eduMainnet, eduTestnet } from "./chains";
 
 export const getWEDUAddress = (chainId: IChainId) => {
 	switch (chainId) {
