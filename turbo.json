@@ -9,7 +9,7 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["build/**", "dist/**"],
+      "outputs": ["build/**", "dist/**", "tsconfig.tsbuildinfo", "out/**"],
       "cache": true
     },
     "deploy:staging": {
