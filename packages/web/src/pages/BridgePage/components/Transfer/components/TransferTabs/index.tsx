@@ -1,19 +1,8 @@
-import RoundedTabs from '@/components/RoundedTabs'
-import { cn } from '@/helpers/lib'
 import { Tabs } from 'ui/tabs'
+import RoundedTabs from '@/components/RoundedTabs'
 
-export const TABS = [
-  {
-    id: 'deposit' as const,
-    disabled: false,
-    title: 'Deposit'
-  },
-  {
-    id: 'withdraw' as const,
-    disabled: false,
-    title: 'Withdraw'
-  }
-]
+import { cn } from '@/helpers/lib'
+import { TABS } from './constants'
 
 type ITabId = (typeof TABS)[number]['id']
 

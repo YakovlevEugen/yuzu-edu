@@ -1,15 +1,15 @@
 export const blockchains = {
-	arb: "Arbitrum One",
-	edu: "EDU Chain",
-};
+  arb: 'Arbitrum One',
+  edu: 'EDU Chain'
+}
 
-export type IBlockchain = keyof typeof blockchains;
+export type IBlockchain = keyof typeof blockchains
 
 export const tokens = {
-	edu: "EDU",
-	usdc: "USDC",
-	usdt: "USDT",
-	weth: "WETH",
-};
+  edu: 'EDU',
+  usdc: 'USDC',
+  usdt: 'USDT',
+  weth: 'WETH'
+}
 
-export type IToken = keyof typeof tokens;
+export type IToken = keyof typeof tokens

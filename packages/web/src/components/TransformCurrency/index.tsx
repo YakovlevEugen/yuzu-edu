@@ -1,8 +1,8 @@
 import { cva, VariantProps } from 'class-variance-authority'
 
+import { IToken } from '@/constants/currencies'
 import { formatNumberWithCommas } from '@/helpers/format'
 import { cn } from '@/helpers/lib'
-import { TCurrency } from '@/types/common'
 
 const variants = cva('flex items-baseline gap-1', {
   variants: {
@@ -23,7 +23,7 @@ const variants = cva('flex items-baseline gap-1', {
 
 interface Props extends VariantProps<typeof variants> {
   className?: string
-  currency?: TCurrency
+  currency?: IToken
   from?: string
   to?: string
 }

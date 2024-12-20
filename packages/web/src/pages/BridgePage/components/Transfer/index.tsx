@@ -9,12 +9,13 @@ import CurrencySelect from '@/components/CurrencySelect'
 import InfoItem from '@/components/InfoItem'
 import TransformCurrency from '@/components/TransformCurrency'
 import ActionButton from './components/ActionButton'
-import TransferTabs, { TABS } from './components/TransferTabs'
+import TransferTabs from './components/TransferTabs'
 
 import TransformFromTo from '@/components/TransformFromTo'
 import { IBlockchain, blockchains, tokens } from '@/constants/currencies'
 import { cn } from '@/helpers/lib'
 import { useTokenBalance } from '@/hooks/api'
+import { TABS } from './components/TransferTabs/constants'
 
 export const FormSchema = z.object({
   intent: z.enum([TABS[0].id, TABS[1].id]),
@@ -25,7 +26,7 @@ export const FormSchema = z.object({
 export type FormSchema = z.infer<typeof FormSchema>
 
 export default function Transfer({ className }: { className?: string }) {
-  const form = useForm<FormSchema>({
+  const formMethods = useForm<FormSchema>({
     defaultValues: {
       intent: TABS[0].id,
       amount: '',
@@ -33,10 +34,11 @@ export default function Transfer({ className }: { className?: string }) {
     },
     resolver: zodResolver(FormSchema)
   })
+  const { control, setValue, watch } = formMethods
 
-  const intent = form.watch('intent')
-  const token = form.watch('token')
-  const amount = form.watch('amount')
+  const amount: FormSchema['amount'] = watch('amount')
+  const intent: FormSchema['intent'] = watch('intent')
+  const token: FormSchema['token'] = watch('token')
 
   const sourceChainId = useMemo(() => (intent === 'deposit' ? 'arbMainnet' : 'eduMainnet'), [intent])
   const sourceTokenBalance = useTokenBalance(sourceChainId, token)
@@ -48,23 +50,19 @@ export default function Transfer({ className }: { className?: string }) {
   const to: IBlockchain = useMemo(() => (intent === 'deposit' ? 'edu' : 'arb'), [intent])
 
   return (
-    <FormProvider {...form}>
+    <FormProvider {...formMethods}>
       <BorderBlock className={cn(className)} variant="yellow" padding="none">
         <div>
           <div className="px-6 py-6 md:px-8">
             <Controller
               name="intent"
-              control={form.control}
+              control={control}
               render={({ field }) => <TransferTabs {...field} className="mb-4" />}
             />
 
             <TransformFromTo from={from} to={to} />
 
-            <button
-              type="button"
-              className="block w-full"
-              onClick={() => form.setValue('amount', sourceTokenBalance.data)}
-            >
+            <button type="button" className="block w-full" onClick={() => setValue('amount', sourceTokenBalance.data)}>
               <InfoItem
                 className="mt-4"
                 title={<span className="fs-14">Available to Bridge</span>}
@@ -82,14 +80,14 @@ export default function Transfer({ className }: { className?: string }) {
             <div>
               <Controller
                 name="amount"
-                control={form.control}
+                control={control}
                 render={({ field }) => (
                   <CurrencyInput
                     {...field}
                     currency={() => (
                       <Controller
                         name="token"
-                        control={form.control}
+                        control={control}
                         render={({ field: currencyField }) => <CurrencySelect {...currencyField} />}
                       />
                     )}
@@ -100,7 +98,7 @@ export default function Transfer({ className }: { className?: string }) {
           </div>
 
           <div className="bg-foreground px-6 py-6 text-white md:px-8">
-            {token && amount && (
+            {!!token && !!amount && (
               <div className="mb-6">
                 <InfoItem className="mt-3" title="To" value={blockchains[to]} variant="white" />
 

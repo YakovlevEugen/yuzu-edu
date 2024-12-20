@@ -1,8 +1,13 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from 'ui/select'
 import SvgIcon from '@/components/SvgIcon'
+
 import { IToken, tokens } from '@/constants/currencies'
 
-export default function CurrencySelect({ onChange, ...otherProps }: { onChange: (value: IToken) => void }) {
+export interface Props {
+  onChange: (value: IToken) => void
+}
+
+export default function CurrencySelect({ onChange, ...otherProps }: Props) {
   return (
     <Select {...otherProps} onValueChange={(v) => onChange?.(v as IToken)}>
       <SelectTrigger className="w-[130px] rounded-[100px] text-xl font-semibold ring-2 ring-black focus:ring-offset-0">
