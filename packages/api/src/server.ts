@@ -80,6 +80,45 @@ const app = new Hono<IEnv>()
 			console.log({ points, value, output });
 			return c.json({ points: output });
 		},
+	)
+
+	.post(
+		'/verify-captcha',
+		zValidator("query", v.object({ token: v.string() })),
+		async (c) => {
+			try {
+				const { token } = c.req.valid("query");
+				if (!token) {
+					return c.json({ success: false, message: 'Token is required' }, 400);
+				}
+
+				const verificationResponse = await fetch(
+					'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+					{
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							secret: c.env.TURNSTILE_SERVER_KEY,
+							response: token,
+						}),
+					}
+				);
+				const result = await verificationResponse.json();
+
+				if (result.success) {
+					return c.json({ success: true, message: 'Verification successful' });
+				} else {
+					return c.json({
+						success: false,
+						message: 'Verification failed',
+						errors: result['error-codes'] || [],
+					}, 400);
+				}
+			} catch (error) {
+				console.error('Error verifying Turnstile token:', error);
+				return c.json({ success: false, message: 'Internal server error' }, 500);
+			}
+		}
 	);
 
 export default app;

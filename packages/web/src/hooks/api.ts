@@ -95,3 +95,17 @@ export const usePointBalance = () => {
     initialData: 0
   })
 }
+
+export const useVerifyCaptcha = () => {
+  return useQuery({
+    queryKey: ['points', address],
+    queryFn: () =>
+      client.wallet[':address'].points
+        .$get({
+          param: { address: address as string }
+        })
+        .then((res) => res.json()),
+    enabled: Boolean(address),
+    initialData: 0
+  })
+}

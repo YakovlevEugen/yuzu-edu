@@ -7,6 +7,7 @@ export type IEnv = {
 		SUPABASE_URL: string;
 		SUPABASE_KEY: string;
 		CONTRACTS_ENV: "mainnet" | "testnet";
+		TURNSTILE_SERVER_KEY: string;
 	};
 	Variables: {
 		db: SupabaseClient<Database>;

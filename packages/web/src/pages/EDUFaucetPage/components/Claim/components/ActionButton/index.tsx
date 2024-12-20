@@ -71,9 +71,30 @@ export default function ActionButton({ className }: Props) {
     console.log('error', error)
   }
 
-  function onSubmit(data: FormSchema) {
-    console.log('Form submitted:', data)
-    // claim()
+  async function verifyCaptcha(token) {
+    const response = await fetch('/verify-captcha', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token }),
+    })
+
+    const data = await response.json()
+    if (data.success) {
+      console.log('CAPTCHA verification passed!')
+    } else {
+      console.error('CAPTCHA verification failed:', data.message)
+      throw new Error(data.message)
+    }
+  }
+
+  async function onSubmit(data: FormSchema) {
+    try {
+      console.log('Form submitted:', data)
+      await verifyCaptcha(data?.token)
+      // claim()
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
