@@ -1,6 +1,12 @@
-import { cn } from '@/helpers/lib'
+import { useMemo } from 'react'
+
 import Balance from '@/components/Balance'
 import BorderBlock from '@/components/BorderBlock'
+import CommunityBalance from './components/CommunityBalance'
+import TableRewardHistory from './components/TableRewardHistory'
+
+import { cn } from '@/helpers/lib'
+import { rewardsHistory } from './constants'
 
 interface Props {
   className?: string
@@ -8,6 +14,20 @@ interface Props {
 
 export default function EDULandPage({ className }: Props) {
   const classRoot = cn('pb-10', className)
+
+  const rewardsByCommunity = useMemo(
+    () =>
+      rewardsHistory.reduce((acc, item) => {
+        if (acc?.[item.community]) {
+          acc[item.community] += Number(item.points)
+        } else {
+          acc[item.community] = Number(item.points)
+        }
+
+        return acc
+      }, {}),
+    []
+  )
 
   return (
     <div className={classRoot}>
@@ -25,6 +45,17 @@ export default function EDULandPage({ className }: Props) {
             <span className="text-orange">Yuzu</span> earned from community partnerships
           </div>
           <Balance className="mt-5 justify-center" value={0.1} />
+        </BorderBlock>
+
+        <div className="mt-[55px] flex w-full columns-3 flex-wrap gap-x-2 gap-y-3">
+          {Object.entries(rewardsByCommunity).map(([title, balance]) => (
+            <CommunityBalance className="flex-[1_0_calc(33.333%-8px)]" balance={balance} title={title} />
+          ))}
+        </div>
+
+        <BorderBlock className="mt-5 w-full">
+          <h3 className="mb-5 ml-2 font-semibold">Reward History</h3>
+          <TableRewardHistory />
         </BorderBlock>
       </div>
     </div>

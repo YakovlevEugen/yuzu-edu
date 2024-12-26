@@ -16,6 +16,7 @@ export interface IBridgeReward {
 export interface ICommunityCampaign {
   community: string
   points: string
+  pointsDistributed?: string
   type: string
 }
 
