@@ -8,6 +8,7 @@ export interface IWalletContext {
 }
 
 export interface IBridgeReward {
+  address?: string;
   amount: string;
   points: string;
   timestamp: string;
