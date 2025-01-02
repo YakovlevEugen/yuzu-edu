@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-// import { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from 'ui/table'
 import { Button } from 'ui/button'
@@ -8,8 +8,8 @@ import { Button } from 'ui/button'
 import { cn } from '@/helpers/lib'
 import { useBridgeHistory } from '@/hooks/api'
 import { IBridgeReward } from '@/types/wallet'
-import { useMemo } from 'react'
 import { formatBigNumber } from '@/helpers/format'
+import { replaceCenterWithEllipsis } from '@/helpers/text'
 
 interface Props {
   className?: string
@@ -41,6 +41,7 @@ export default function TableRewardsHistory({ className }: Props) {
         <TableRow>
           <TableHead>Date</TableHead>
           <TableHead>Bridged Amount</TableHead>
+          <TableHead>Wallet Address</TableHead>
           <TableHead className="text-right">You Earned</TableHead>
         </TableRow>
       </TableHeader>
@@ -51,6 +52,7 @@ export default function TableRewardsHistory({ className }: Props) {
             <TableRow key={timestamp}>
               <TableCell>{format(timestamp, 'do MMM uuuu')}</TableCell>
               <TableCell>{amount} EDU</TableCell>
+              <TableCell>{/* TODO: add wallet address */ replaceCenterWithEllipsis('0x11BAGHA7123e185', 8)}</TableCell>
               <TableCell className="text-right">{points} Yuzu</TableCell>
             </TableRow>
           ))}
@@ -59,7 +61,7 @@ export default function TableRewardsHistory({ className }: Props) {
 
       <TableFooter>
         <TableRow>
-          <TableCell className="text-center" colSpan={3}>
+          <TableCell className="text-center" colSpan={4}>
             {data?.length > 0 ? (
               <Button
                 variant="link"
