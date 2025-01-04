@@ -1,30 +1,40 @@
-import { forwardRef } from 'react'
+import { forwardRef } from 'react';
 
-import { TabsList, TabsTrigger } from 'ui/tabs'
-import BorderBlock from '@/components/BorderBlock'
+import BorderBlock from '@/components/BorderBlock';
+import { TabsList, TabsTrigger } from 'ui/tabs';
 
-import { cn } from '@/helpers/lib'
-import { ITab } from '@/types/components'
+import { cn } from '@/helpers/lib';
+import type { ITab } from '@/types/components';
 
 interface Props {
-  className?: string
-  tabs: ITab[]
+  className?: string;
+  tabs: ITab[];
 }
 
-const RoundedTabs = forwardRef<HTMLInputElement, Props>(({ className, tabs }, ref) => {
-  const classRoot = cn('overflow-hidden rounded-[100px] shadow-none', className)
+const RoundedTabs = forwardRef<HTMLInputElement, Props>(
+  ({ className, tabs }, ref) => {
+    const classRoot = cn(
+      'overflow-hidden rounded-[100px] shadow-none',
+      className
+    );
 
-  return (
-    <BorderBlock className={classRoot} padding="none">
-      <TabsList ref={ref} className="flex justify-normal overflow-x-scroll">
-        {tabs.map(({ id, disabled, title }) => (
-          <TabsTrigger key={id} className="flex-[1]" disabled={disabled} value={id}>
-            {title}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-    </BorderBlock>
-  )
-})
+    return (
+      <BorderBlock className={classRoot} padding="none">
+        <TabsList ref={ref} className="flex justify-normal overflow-x-scroll">
+          {tabs.map(({ id, disabled, title }) => (
+            <TabsTrigger
+              key={id}
+              className="flex-[1]"
+              disabled={disabled}
+              value={id}
+            >
+              {title}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </BorderBlock>
+    );
+  }
+);
 
-export default RoundedTabs
+export default RoundedTabs;

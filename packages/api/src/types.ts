@@ -1,18 +1,18 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { Context } from "hono";
-import { Database } from "@yuzu/supabase";
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@yuzu/supabase';
+import type { Context } from 'hono';
 
 export type IEnv = {
-	Bindings: {
-		SUPABASE_URL: string;
-		SUPABASE_KEY: string;
-		CONTRACTS_ENV: "mainnet" | "testnet";
-	};
-	Variables: {
-		db: SupabaseClient<Database>;
-		mainnet: boolean;
-	};
+  Bindings: {
+    SUPABASE_URL: string;
+    SUPABASE_KEY: string;
+    CONTRACTS_ENV: 'mainnet' | 'testnet';
+  };
+  Variables: {
+    db: SupabaseClient<Database>;
+    mainnet: boolean;
+  };
 };
 
 export type IContext = Context<IEnv>;
-export type IPointsType = "stake" | "bridge";
+export type IPointsType = 'stake' | 'bridge';

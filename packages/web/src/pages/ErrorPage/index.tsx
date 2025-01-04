@@ -1,23 +1,25 @@
-import { Link } from 'react-router-dom'
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 
-import { ROUTES } from '@/constants/routes'
+import { ROUTES } from '@/constants/routes';
 
-type Status = 403 | 404
+type Status = 403 | 404;
 
 export type Props = {
   /** Error status */
-  status: Status
-}
+  status: Status;
+};
 
 const description: Record<Status, string> = {
   403: 'Forbidden',
   404: 'Not Found'
-}
+};
 
 export default function ErrorPage({ status }: Props) {
-  const statusDescription = description?.[status] ?? ''
-  const title = `${status}${statusDescription ? ' - ' + statusDescription : ''}`
+  const statusDescription = description?.[status] ?? '';
+  const title = `${status}${
+    statusDescription ? ' - ' + statusDescription : ''
+  }`;
 
   return (
     <>
@@ -30,11 +32,14 @@ export default function ErrorPage({ status }: Props) {
           {status} {description[status]}
         </h1>
         <nav>
-          <Link className="text-orange underline hover:no-underline" to={ROUTES.dashboard}>
+          <Link
+            className="text-orange underline hover:no-underline"
+            to={ROUTES.dashboard}
+          >
             Home
           </Link>
         </nav>
       </div>
     </>
-  )
+  );
 }

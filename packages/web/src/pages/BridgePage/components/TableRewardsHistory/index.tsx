@@ -1,18 +1,26 @@
-import { format } from 'date-fns'
+import { format } from 'date-fns';
 // import { useMemo } from 'react'
 
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from 'ui/table'
-import { Button } from 'ui/button'
+import { Button } from 'ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow
+} from 'ui/table';
 
+import { formatBigNumber } from '@/helpers/format';
 // import { formatBigNumber } from '@/helpers/format'
-import { cn } from '@/helpers/lib'
-import { useBridgeHistory } from '@/hooks/api'
-import { IBridgeReward } from '@/types/wallet'
-import { useMemo } from 'react'
-import { formatBigNumber } from '@/helpers/format'
+import { cn } from '@/helpers/lib';
+import { useBridgeHistory } from '@/hooks/api';
+import type { IBridgeReward } from '@/types/wallet';
+import { useMemo } from 'react';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 // const data: IBridgeReward[] = new Array(10).fill({
@@ -22,9 +30,9 @@ interface Props {
 // })
 
 export default function TableRewardsHistory({ className }: Props) {
-  const classRoot = cn('', className)
+  const classRoot = cn('', className);
 
-  const query = useBridgeHistory()
+  const query = useBridgeHistory();
 
   const data = useMemo<IBridgeReward[]>(
     () =>
@@ -33,7 +41,7 @@ export default function TableRewardsHistory({ className }: Props) {
         amount: formatBigNumber(item.amount)
       })) || [],
     [query]
-  )
+  );
 
   return (
     <Table className={classRoot}>
@@ -75,5 +83,5 @@ export default function TableRewardsHistory({ className }: Props) {
         </TableRow>
       </TableFooter>
     </Table>
-  )
+  );
 }

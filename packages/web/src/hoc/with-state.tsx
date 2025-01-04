@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-refresh/only-export-components */
-import { FC, useEffect, useState } from 'react'
+import { type FC, useEffect, useState } from 'react';
 
-type Value = boolean | number | string | null
-type ValuePropType = 'value' | 'checked'
+type Value = boolean | number | string | null;
+type ValuePropType = 'value' | 'checked';
 
-export default function <InnerComponentPropTypes = any>(
+export default function <InnerComponentPropTypes = unknown>(
   Component: FC<InnerComponentPropTypes>,
   valuePropName: ValuePropType = 'value',
   defaultValue: Value = null
@@ -15,27 +15,28 @@ export default function <InnerComponentPropTypes = any>(
     const [valuePropValue, change] = useState<Value>(
       // @ts-ignore
       props[valuePropName] || defaultValue
-    )
+    );
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
       // @ts-ignore
-      handleChange(props[valuePropName] as any)
+      handleChange(props[valuePropName] as unknown);
       // @ts-ignore
-    }, [props[valuePropName]])
+    }, [props[valuePropName]]);
 
     const handleChange = (value: Value) => {
-      change(value)
-    }
+      change(value);
+    };
 
     const componentProps = {
       ...props,
       [valuePropName]: valuePropValue,
       onChange: handleChange
-    }
+    };
 
-    return <Component {...componentProps} />
+    return <Component {...componentProps} />;
   }
-  WithStateWrapper.displayName = Component.displayName
+  WithStateWrapper.displayName = Component.displayName;
 
-  return WithStateWrapper
+  return WithStateWrapper;
 }

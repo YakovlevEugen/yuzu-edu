@@ -1,19 +1,19 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
-import 'virtual:svg-icons-register'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import 'virtual:svg-icons-register';
 
-import { setDefaultOptions } from 'date-fns'
-import { enUS } from 'date-fns/locale/en-US'
+import { setDefaultOptions } from 'date-fns';
+import { enUS } from 'date-fns/locale/en-US';
 
-import { Toaster } from 'ui/toaster'
-import App from '@/App'
-import { QueryProvider } from '@/providers/QueryProvider'
-import { Web3Provider } from '@/providers/Web3Provider'
+import App from '@/App';
+import { QueryProvider } from '@/providers/QueryProvider';
+import { Web3Provider } from '@/providers/Web3Provider';
+import { Toaster } from 'ui/toaster';
 
-setDefaultOptions({ locale: enUS })
+setDefaultOptions({ locale: enUS });
 
-const root = document.getElementById('root') as HTMLElement
+const root = document.getElementById('root') as HTMLElement;
 
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
@@ -26,4 +26,4 @@ ReactDOM.createRoot(root).render(
       </QueryProvider>
     </Web3Provider>
   </React.StrictMode>
-)
+);

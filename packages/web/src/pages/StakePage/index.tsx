@@ -1,5 +1,5 @@
-import Earn from './components/Earn'
-import Stake from './components/Stake'
+import Earn from './components/Earn';
+import Stake from './components/Stake';
 
 export default function StakePage() {
   return (
@@ -10,7 +10,11 @@ export default function StakePage() {
 
       <div className="flex flex-col gap-x-6 md:flex-row">
         <div className="flex-[1]">
-          <img className="relative z-[1] mx-auto h-[190px] md:h-[248px]" src="/images/capybara.png" alt="Capybara" />
+          <img
+            className="relative z-[1] mx-auto h-[190px] md:h-[248px]"
+            src="/images/capybara.png"
+            alt="Capybara"
+          />
           <Earn className="-translate-y-5" />
         </div>
 
@@ -19,5 +23,5 @@ export default function StakePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

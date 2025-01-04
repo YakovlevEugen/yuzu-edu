@@ -1,14 +1,14 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom';
 
-import MainLayout from '@/layouts/MainLayout'
-import DashboardPage from '@/pages/DashboardPage'
-import EDULandPage from '@/pages/EDULandPage'
-import EDUFaucetPage from '@/pages/EDUFaucetPage'
-import ErrorPage from '@/pages/ErrorPage'
-import StakePage from '@/pages/StakePage'
-import BridgePage from '@/pages/BridgePage'
+import MainLayout from '@/layouts/MainLayout';
+import BridgePage from '@/pages/BridgePage';
+import DashboardPage from '@/pages/DashboardPage';
+import EDUFaucetPage from '@/pages/EDUFaucetPage';
+import EDULandPage from '@/pages/EDULandPage';
+import ErrorPage from '@/pages/ErrorPage';
+import StakePage from '@/pages/StakePage';
 
-import { ROUTES } from '@/constants/routes'
+import { ROUTES } from '@/constants/routes';
 
 export default function AppRouter() {
   return (
@@ -22,5 +22,5 @@ export default function AppRouter() {
       </Route>
       <Route path="*" element={<ErrorPage status={404} />} />
     </Routes>
-  )
+  );
 }

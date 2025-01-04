@@ -4,7 +4,13 @@
   "rules": {
     "order/properties-alphabetical-order": true,
     "selector-class-pattern": ".*",
-    "scss/at-rule-no-unknown": [true, { "ignoreAtRules": ["apply", "layer", "screen", "tailwind"] }],
-    "selector-pseudo-class-no-unknown": [true, { "ignorePseudoClasses": ["global", "export"] }]
+    "scss/at-rule-no-unknown": [
+      true,
+      { "ignoreAtRules": ["apply", "layer", "screen", "tailwind"] }
+    ],
+    "selector-pseudo-class-no-unknown": [
+      true,
+      { "ignorePseudoClasses": ["global", "export"] }
+    ]
   }
 }

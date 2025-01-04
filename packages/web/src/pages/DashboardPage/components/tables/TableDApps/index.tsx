@@ -1,15 +1,23 @@
 // import { useMemo } from 'react'
 
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from 'ui/table'
-import { Button } from 'ui/button'
-import DAppCard from '@/containers/DAppCard'
+import DAppCard from '@/containers/DAppCard';
+import { Button } from 'ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow
+} from 'ui/table';
 
-import { cn } from '@/helpers/lib'
+import { cn } from '@/helpers/lib';
 // import { useBridgeHistory } from '@/hooks/api'
-import { IDApp } from '@/types/wallet'
+import type { IDApp } from '@/types/wallet';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 const data: IDApp[] = new Array(15).fill({
@@ -18,10 +26,10 @@ const data: IDApp[] = new Array(15).fill({
   points: '1000',
   type: 'NFTs/Gaming',
   userNick: '@gangsterarena'
-})
+});
 
 export default function TableDApps({ className }: Props) {
-  const classRoot = cn('', className)
+  const classRoot = cn('', className);
 
   // const query = useBridgeHistory()
   //
@@ -76,5 +84,5 @@ export default function TableDApps({ className }: Props) {
         </TableRow>
       </TableFooter>
     </Table>
-  )
+  );
 }

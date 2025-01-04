@@ -1,54 +1,58 @@
-import { Controller, FormProvider, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMemo } from 'react'
-import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMemo } from 'react';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import BorderBlock from '@/components/BorderBlock'
-import CurrencyInput from '@/components/CurrencyInput'
-import InfoItem from '@/components/InfoItem'
-import TransformCurrency from '@/components/TransformCurrency'
-import ActionButton from './components/ActionButton'
-import StakeTabs from './components/StakeTabs'
+import BorderBlock from '@/components/BorderBlock';
+import CurrencyInput from '@/components/CurrencyInput';
+import InfoItem from '@/components/InfoItem';
+import TransformCurrency from '@/components/TransformCurrency';
+import ActionButton from './components/ActionButton';
+import StakeTabs from './components/StakeTabs';
 
-import { formatBigWithComas } from '@/helpers/format'
-import { cn } from '@/helpers/lib'
-import { useStakeBalance, useStakeEstimate, useTokenBalance } from '@/hooks/api'
-import { DEFAULT_ACTIVE_TAB } from './components/StakeTabs/constants'
+import { formatBigWithComas } from '@/helpers/format';
+import { cn } from '@/helpers/lib';
+import {
+  useStakeBalance,
+  useStakeEstimate,
+  useTokenBalance
+} from '@/hooks/api';
+import { DEFAULT_ACTIVE_TAB } from './components/StakeTabs/constants';
 
 export const FormSchema = z.object({
   activeTabId: z.string(),
   amount: z.string()
-})
-export type FormSchema = z.infer<typeof FormSchema>
+});
+export type FormSchema = z.infer<typeof FormSchema>;
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
-const BLOCK_PADDING = 'py-6 px-6 md:px-8'
+const BLOCK_PADDING = 'py-6 px-6 md:px-8';
 
 export default function Stake({ className }: Props) {
-  const balance = useTokenBalance('eduMainnet', 'edu')
-  const stakeBalance = useStakeBalance()
+  const balance = useTokenBalance('eduMainnet', 'edu');
+  const stakeBalance = useStakeBalance();
   const formMethods = useForm<FormSchema>({
     defaultValues: {
       activeTabId: DEFAULT_ACTIVE_TAB,
       amount: ''
     },
     resolver: zodResolver(FormSchema)
-  })
-  const { control, watch } = formMethods
+  });
+  const { control, watch } = formMethods;
 
-  const classRoot = cn('', className)
-  const amount: FormSchema['amount'] = watch('amount')
+  const classRoot = cn('', className);
+  const amount: FormSchema['amount'] = watch('amount');
 
   const resultAmount = useMemo(() => {
-    const balance = parseFloat(stakeBalance.data || '0')
-    const increase = parseFloat(amount || '0') * 1e18
-    return (balance + increase).toString()
-  }, [stakeBalance.data, amount])
+    const balance = Number.parseFloat(stakeBalance.data || '0');
+    const increase = Number.parseFloat(amount || '0') * 1e18;
+    return (balance + increase).toString();
+  }, [stakeBalance.data, amount]);
 
-  const estimate = useStakeEstimate(resultAmount)
+  const estimate = useStakeEstimate(resultAmount);
 
   return (
     <FormProvider {...formMethods}>
@@ -67,13 +71,19 @@ export default function Stake({ className }: Props) {
                 value={
                   <>
                     <span>MAX </span>
-                    <span className="text-foreground">{formatBigWithComas(balance.data)} EDU</span>
+                    <span className="text-foreground">
+                      {formatBigWithComas(balance.data)} EDU
+                    </span>
                   </>
                 }
               />
             </div>
             <div>
-              <Controller name="amount" control={control} render={({ field }) => <CurrencyInput {...field} />} />
+              <Controller
+                name="amount"
+                control={control}
+                render={({ field }) => <CurrencyInput {...field} />}
+              />
             </div>
           </div>
 
@@ -81,12 +91,22 @@ export default function Stake({ className }: Props) {
             {Boolean(amount) && (
               <>
                 <div className="mb-5px text-sm">Total EDU Staked</div>
-                <TransformCurrency currency="EDU" size="l" to={amount} variant="greenLight" />
+                <TransformCurrency
+                  currency="EDU"
+                  size="l"
+                  to={amount}
+                  variant="greenLight"
+                />
                 {Boolean(balance.data) && Boolean(estimate.data) && (
                   <InfoItem
                     className="mt-10px"
                     title="Est. 24h Yuzu"
-                    value={<TransformCurrency className="font-medium" from={estimate.data} />}
+                    value={
+                      <TransformCurrency
+                        className="font-medium"
+                        from={estimate.data}
+                      />
+                    }
                   />
                 )}
               </>
@@ -96,5 +116,5 @@ export default function Stake({ className }: Props) {
         </div>
       </BorderBlock>
     </FormProvider>
-  )
+  );
 }

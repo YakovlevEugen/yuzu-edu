@@ -1,4 +1,4 @@
-import { TStakeTabs } from './index'
+import type { TStakeTabs } from './index';
 
 export const TABS: TStakeTabs[] = [
   {
@@ -11,6 +11,6 @@ export const TABS: TStakeTabs[] = [
     disabled: false,
     title: 'Unwrap'
   }
-]
+];
 
-export const DEFAULT_ACTIVE_TAB = TABS[0].id
+export const DEFAULT_ACTIVE_TAB = TABS[0].id;

@@ -1,19 +1,19 @@
-import { Tabs } from 'ui/tabs'
-import RoundedTabs from '@/components/RoundedTabs'
+import RoundedTabs from '@/components/RoundedTabs';
+import { Tabs } from 'ui/tabs';
 
-import { cn } from '@/helpers/lib'
-import { TABS } from './constants'
+import { cn } from '@/helpers/lib';
+import { TABS } from './constants';
 
-type ITabId = (typeof TABS)[number]['id']
+type ITabId = (typeof TABS)[number]['id'];
 
 export default function TransferTabs({
   className,
   value,
   onChange
 }: {
-  className?: string
-  value: ITabId
-  onChange: (v: ITabId) => void
+  className?: string;
+  value: ITabId;
+  onChange: (v: ITabId) => void;
 }) {
   return (
     <Tabs
@@ -24,5 +24,5 @@ export default function TransferTabs({
     >
       <RoundedTabs tabs={TABS} />
     </Tabs>
-  )
+  );
 }

@@ -1,17 +1,19 @@
-import { ReactNode } from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { ReactNode } from 'react';
 
 // import { useApiCall } from '@/hooks/api-call'
 
 interface Props {
-  children: ReactNode
+  children: ReactNode;
 }
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 export function QueryProvider({ children }: Props) {
   // const apiCall = useApiCall()
   // const settings = { fetcher: apiCall, revalidateOnFocus: false, revalidateOnReconnect: false }
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
 }

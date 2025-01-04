@@ -1,37 +1,37 @@
-import { useRef, useState } from 'react'
-import { useClickAway } from 'react-use'
+import { useRef, useState } from 'react';
+import { useClickAway } from 'react-use';
 
-import BorderBlock from '@/components/BorderBlock'
-import SvgIcon from '@/components/SvgIcon'
-import Menu from '@/containers/Menu'
-import WalletBlock from '@/containers/WalletBlock'
+import BorderBlock from '@/components/BorderBlock';
+import SvgIcon from '@/components/SvgIcon';
+import Menu from '@/containers/Menu';
+import WalletBlock from '@/containers/WalletBlock';
 
-import { cn } from '@/helpers/lib'
-import { Link } from 'react-router-dom'
-import { ROUTES } from '@/constants/routes'
+import { ROUTES } from '@/constants/routes';
+import { cn } from '@/helpers/lib';
+import { Link } from 'react-router-dom';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 export default function Header({ className }: Props) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const classRoot = cn(
     'flex items-center justify-between relative shadow-none px-5 py-3 md:py-6 md:px-10 md:shadow-border-box rounded-t-none md:rounded-2xl',
     className
-  )
+  );
   const classMenuWrapper = cn(
     'md:flex flex-col md:flex-row md:flex-auto md:items-center md:justify-between absolute md:static top-full left-0  w-[calc(100%+4px)] -ml-[2px] md:ml-0 p-11 md:p-0 border-2 md:border-none rounded-2xl md:rounded-none bg-beige z-[2]',
     isMenuOpen ? 'flex' : 'hidden'
-  )
+  );
 
-  const menuRef = useRef(null)
+  const menuRef = useRef(null);
   useClickAway(menuRef, () => {
-    setIsMenuOpen(false)
-  })
+    setIsMenuOpen(false);
+  });
 
   function toggleMenu() {
-    setIsMenuOpen((prevValue) => !prevValue)
+    setIsMenuOpen((prevValue) => !prevValue);
   }
 
   return (
@@ -54,5 +54,5 @@ export default function Header({ className }: Props) {
         </div>
       </div>
     </BorderBlock>
-  )
+  );
 }

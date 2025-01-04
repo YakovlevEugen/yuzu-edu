@@ -1,15 +1,15 @@
-import SvgIcon from '@/components/SvgIcon'
-import { IBlockchain, blockchains } from '@/constants/currencies'
-import { cn } from '@/helpers/lib'
+import SvgIcon from '@/components/SvgIcon';
+import { type IBlockchain, blockchains } from '@/constants/currencies';
+import { cn } from '@/helpers/lib';
 
 export default function TransformFromTo({
   className,
   from,
   to
 }: {
-  className?: string
-  from: IBlockchain
-  to: IBlockchain
+  className?: string;
+  from: IBlockchain;
+  to: IBlockchain;
 }) {
   return (
     <div
@@ -26,7 +26,10 @@ export default function TransformFromTo({
         </div>
       </div>
 
-      <SvgIcon className="w-[50px] rotate-90 md:-translate-x-2 md:rotate-0" name="arrow-curved" />
+      <SvgIcon
+        className="w-[50px] rotate-90 md:-translate-x-2 md:rotate-0"
+        name="arrow-curved"
+      />
 
       <div className="flex-[1]">
         <div className="text-center text-sm md:text-left">To</div>
@@ -36,5 +39,5 @@ export default function TransformFromTo({
         </div>
       </div>
     </div>
-  )
+  );
 }

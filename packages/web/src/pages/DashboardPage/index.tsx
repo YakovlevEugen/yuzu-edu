@@ -1,10 +1,10 @@
-import DashboardBalance from './components/DashboardBalance'
-import DashboardTabs from './components/tabs/TabsDashboard'
+import DashboardBalance from './components/DashboardBalance';
+import DashboardTabs from './components/tabs/TabsDashboard';
 
-import { cn } from '@/helpers/lib'
+import { cn } from '@/helpers/lib';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 export default function DashboardPage({ className }: Props) {
@@ -12,7 +12,7 @@ export default function DashboardPage({ className }: Props) {
     'md:px-[40px]',
     `before:content-[''] before:fixed before:left-0 before:bottom-0 before:w-full before:h-2/5 before:bg-grass before:-z-[1]`,
     className
-  )
+  );
 
   return (
     <div className={classRoot}>
@@ -20,7 +20,11 @@ export default function DashboardPage({ className }: Props) {
 
       <DashboardTabs className="mt-4" />
 
-      <img className="fixed bottom-10 left-0 -z-[1]" src="/images/tree.svg" alt="Tree" />
+      <img
+        className="fixed bottom-10 left-0 -z-[1]"
+        src="/images/tree.svg"
+        alt="Tree"
+      />
     </div>
-  )
+  );
 }

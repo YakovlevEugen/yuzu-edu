@@ -1,16 +1,16 @@
-import { Button } from 'ui/button'
-import BackgroundBlock from '@/components/BackgroundBlock'
-import SvgIcon from '@/components/SvgIcon'
-import TableHistory from '../../tables/TableHistory'
+import BackgroundBlock from '@/components/BackgroundBlock';
+import SvgIcon from '@/components/SvgIcon';
+import { Button } from 'ui/button';
+import TableHistory from '../../tables/TableHistory';
 
-import { cn } from '@/helpers/lib'
+import { cn } from '@/helpers/lib';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 export default function TabBridgeRewards({ className }: Props) {
-  const classRoot = cn('', className)
+  const classRoot = cn('', className);
 
   return (
     <div className={classRoot}>
@@ -18,7 +18,8 @@ export default function TabBridgeRewards({ className }: Props) {
         <div className="flex flex-col items-center gap-2 md:flex-row">
           <SvgIcon className="shrink-0 text-[50px]" name="orange" />
           <div className="text-center md:text-left md:text-xl">
-            Earn <span className="text-orange">Yuzu</span> by bridging tokens to EDU Chain Mainnet
+            Earn <span className="text-orange">Yuzu</span> by bridging tokens to
+            EDU Chain Mainnet
           </div>
         </div>
         <div>
@@ -36,5 +37,5 @@ export default function TabBridgeRewards({ className }: Props) {
 
       <TableHistory />
     </div>
-  )
+  );
 }

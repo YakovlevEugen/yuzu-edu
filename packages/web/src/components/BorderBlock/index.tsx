@@ -1,7 +1,7 @@
-import { cva, VariantProps } from 'class-variance-authority'
-import { ReactNode } from 'react'
+import { type VariantProps, cva } from 'class-variance-authority';
+import type { ReactNode } from 'react';
 
-import { cn } from '@/helpers/lib'
+import { cn } from '@/helpers/lib';
 
 const variants = cva('border-2 rounded-2xl shadow-border-box', {
   variants: {
@@ -20,15 +20,20 @@ const variants = cva('border-2 rounded-2xl shadow-border-box', {
     variant: 'default',
     padding: 'md'
   }
-})
+});
 
 interface Props extends VariantProps<typeof variants> {
-  children?: ReactNode
-  className?: string
+  children?: ReactNode;
+  className?: string;
 }
 
-export default function BorderBlock({ children, className, variant, padding }: Props) {
-  const classRoot = cn(variants({ className, padding, variant }))
+export default function BorderBlock({
+  children,
+  className,
+  variant,
+  padding
+}: Props) {
+  const classRoot = cn(variants({ className, padding, variant }));
 
-  return <div className={classRoot}>{children}</div>
+  return <div className={classRoot}>{children}</div>;
 }

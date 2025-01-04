@@ -1,17 +1,17 @@
-import { useConnect } from 'wagmi'
+import { useConnect } from 'wagmi';
 
-import { Button } from 'ui/button'
+import { Button } from 'ui/button';
 
-import { cn } from '@/helpers/lib'
+import { cn } from '@/helpers/lib';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 export default function WalletConnectOptions({ className }: Props) {
-  const { connectors, connect } = useConnect()
+  const { connectors, connect } = useConnect();
 
-  const classRoot = cn('flex flex-col gap-y-3', className)
+  const classRoot = cn('flex flex-col gap-y-3', className);
 
   return (
     <div className={classRoot}>
@@ -22,5 +22,5 @@ export default function WalletConnectOptions({ className }: Props) {
           </Button>
         ))}
     </div>
-  )
+  );
 }

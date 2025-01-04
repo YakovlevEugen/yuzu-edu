@@ -1,8 +1,8 @@
-import { cva, VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority';
 
-import { IToken } from '@/constants/currencies'
-import { formatNumberWithCommas } from '@/helpers/format'
-import { cn } from '@/helpers/lib'
+import type { IToken } from '@/constants/currencies';
+import { formatNumberWithCommas } from '@/helpers/format';
+import { cn } from '@/helpers/lib';
 
 const variants = cva('flex items-baseline gap-1', {
   variants: {
@@ -19,17 +19,24 @@ const variants = cva('flex items-baseline gap-1', {
     size: 'default',
     variant: 'white'
   }
-})
+});
 
 interface Props extends VariantProps<typeof variants> {
-  className?: string
-  currency?: IToken
-  from?: string
-  to?: string
+  className?: string;
+  currency?: IToken;
+  from?: string;
+  to?: string;
 }
 
-export default function TransformCurrency({ className, currency = 'Yuzu', from = '0', size, to, variant }: Props) {
-  const classRoot = cn(variants({ className, size, variant }))
+export default function TransformCurrency({
+  className,
+  currency = 'Yuzu',
+  from = '0',
+  size,
+  to,
+  variant
+}: Props) {
+  const classRoot = cn(variants({ className, size, variant }));
 
   return (
     <div className={classRoot}>
@@ -42,5 +49,5 @@ export default function TransformCurrency({ className, currency = 'Yuzu', from =
       )}
       {currency && <span className="currency">{currency}</span>}
     </div>
-  )
+  );
 }

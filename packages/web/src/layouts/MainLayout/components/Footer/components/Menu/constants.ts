@@ -1,4 +1,4 @@
-import { Menu } from './types'
+import type { Menu } from './types';
 
 export const MENU: Menu[] = [
   {
@@ -61,4 +61,4 @@ export const MENU: Menu[] = [
       }
     ]
   }
-]
+];

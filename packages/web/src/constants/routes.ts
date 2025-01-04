@@ -4,4 +4,4 @@ export const ROUTES = {
   faucet: '/edu-faucet',
   land: '/edu-land',
   bridge: '/bridge'
-}
+};

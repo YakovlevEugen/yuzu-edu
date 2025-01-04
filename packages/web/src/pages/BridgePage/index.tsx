@@ -1,7 +1,7 @@
-import BorderBlock from '@/components/BorderBlock'
-import TableRewardsHistory from '@/pages/BridgePage/components/TableRewardsHistory'
-import Earn from './components/Earn'
-import Transfer from './components/Transfer'
+import BorderBlock from '@/components/BorderBlock';
+import TableRewardsHistory from '@/pages/BridgePage/components/TableRewardsHistory';
+import Earn from './components/Earn';
+import Transfer from './components/Transfer';
 
 export default function BridgePage() {
   return (
@@ -25,10 +25,13 @@ export default function BridgePage() {
         </div>
       </div>
 
-      <BorderBlock className="mt-6 !px-4 !py-6 shadow-none md:mt-10" padding="none">
+      <BorderBlock
+        className="mt-6 !px-4 !py-6 shadow-none md:mt-10"
+        padding="none"
+      >
         <div className="ml-2 font-semibold">Reward History</div>
         <TableRewardsHistory className="mt-4" />
       </BorderBlock>
     </div>
-  )
+  );
 }

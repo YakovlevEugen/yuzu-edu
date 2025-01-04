@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react';
 
-import MenuLink from './index'
+import MenuLink from './index';
 
 const meta: Meta<typeof MenuLink> = {
   component: MenuLink,
@@ -10,13 +10,13 @@ const meta: Meta<typeof MenuLink> = {
       control: 'boolean'
     }
   }
-}
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
     children: 'Link'
   }
-}
+};

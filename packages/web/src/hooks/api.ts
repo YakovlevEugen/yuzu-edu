@@ -1,15 +1,15 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
-import { createClient } from '@yuzu/api'
-import { Hex } from 'viem'
-import { useAccount } from 'wagmi'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { createClient } from '@yuzu/api';
+import type { Hex } from 'viem';
+import { useAccount } from 'wagmi';
 
-import { apiUrl } from '@/constants/config'
-import { IChainId } from '@yuzu/sdk'
+import { apiUrl } from '@/constants/config';
+import type { IChainId } from '@yuzu/sdk';
 
-const client = createClient(apiUrl)
+const client = createClient(apiUrl);
 
 export const useTokenBalance = (chainId: IChainId, symbol: string) => {
-  const { address } = useAccount()
+  const { address } = useAccount();
 
   return useQuery({
     queryKey: ['balance', chainId, address, symbol],
@@ -26,11 +26,11 @@ export const useTokenBalance = (chainId: IChainId, symbol: string) => {
         .then((res) => res.balance),
     enabled: Boolean(address),
     initialData: '0'
-  })
-}
+  });
+};
 
 export const useStakeBalance = () => {
-  const { address } = useAccount()
+  const { address } = useAccount();
 
   return useQuery({
     queryKey: ['stake', address],
@@ -41,11 +41,11 @@ export const useStakeBalance = () => {
         .then((res) => res.balance),
     enabled: Boolean(address),
     initialData: '0'
-  })
-}
+  });
+};
 
 export const useStakeEstimate = (value: string) => {
-  const { address } = useAccount()
+  const { address } = useAccount();
 
   return useQuery({
     queryKey: ['stake', 'estimate', address, value],
@@ -59,11 +59,11 @@ export const useStakeEstimate = (value: string) => {
         .then((res) => res.points),
     enabled: Boolean(address),
     initialData: '0'
-  })
-}
+  });
+};
 
 export const useBridgeHistory = () => {
-  const { address } = useAccount()
+  const { address } = useAccount();
 
   return useInfiniteQuery({
     queryKey: ['history', address],
@@ -77,11 +77,11 @@ export const useBridgeHistory = () => {
     getNextPageParam: (pages) => pages.length,
     initialPageParam: 0,
     enabled: Boolean(address)
-  })
-}
+  });
+};
 
 export const usePointBalance = () => {
-  const { address } = useAccount()
+  const { address } = useAccount();
 
   return useQuery({
     queryKey: ['points', address],
@@ -93,5 +93,5 @@ export const usePointBalance = () => {
         .then((res) => res.json()),
     enabled: Boolean(address),
     initialData: 0
-  })
-}
+  });
+};

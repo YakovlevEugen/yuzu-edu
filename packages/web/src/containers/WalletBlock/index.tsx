@@ -1,18 +1,22 @@
-import { useAccount } from 'wagmi'
+import { useAccount } from 'wagmi';
 
-import WalletConnect from '@/containers/WalletConnect'
-import WalletMenu from '@/containers/WalletMenu'
+import WalletConnect from '@/containers/WalletConnect';
+import WalletMenu from '@/containers/WalletMenu';
 
-import { cn } from '@/helpers/lib'
+import { cn } from '@/helpers/lib';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 export default function ProfileBlock({ className }: Props) {
-  const { isConnected } = useAccount()
+  const { isConnected } = useAccount();
 
-  const classRoot = cn('', className)
+  const classRoot = cn('', className);
 
-  return <div className={classRoot}>{isConnected ? <WalletMenu /> : <WalletConnect />}</div>
+  return (
+    <div className={classRoot}>
+      {isConnected ? <WalletMenu /> : <WalletConnect />}
+    </div>
+  );
 }

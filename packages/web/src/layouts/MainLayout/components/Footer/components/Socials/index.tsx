@@ -1,14 +1,14 @@
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from '@/components/SvgIcon';
 
-import { cn } from '@/helpers/lib'
+import { cn } from '@/helpers/lib';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 interface Social {
-  link: string
-  iconName: 'linked-in' | 'telegram' | 'x' | 'youtube'
+  link: string;
+  iconName: 'linked-in' | 'telegram' | 'x' | 'youtube';
 }
 
 const SOCIALS: Social[] = [
@@ -28,10 +28,10 @@ const SOCIALS: Social[] = [
     iconName: 'linked-in',
     link: 'https://www.linkedin.com/company/opencampus-xyz/about'
   }
-]
+];
 
 export default function Socials({ className }: Props) {
-  const classRoot = cn('flex gap-x-3', className)
+  const classRoot = cn('flex gap-x-3', className);
 
   return (
     <ul className={classRoot}>
@@ -48,5 +48,5 @@ export default function Socials({ className }: Props) {
         </li>
       ))}
     </ul>
-  )
+  );
 }

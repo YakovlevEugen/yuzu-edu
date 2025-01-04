@@ -1,24 +1,32 @@
 // import { useMemo } from 'react'
 
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from 'ui/table'
-import { Button } from 'ui/button'
+import { Button } from 'ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow
+} from 'ui/table';
 
-import { cn } from '@/helpers/lib'
+import { cn } from '@/helpers/lib';
 // import { useBridgeHistory } from '@/hooks/api'
-import { ICommunityCampaign } from '@/types/wallet'
+import type { ICommunityCampaign } from '@/types/wallet';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 const data: ICommunityCampaign[] = new Array(15).fill({
   community: 'Community 1',
   points: '1000',
   type: 'Testnet farming'
-})
+});
 
 export default function TableCommunityCampaigns({ className }: Props) {
-  const classRoot = cn('', className)
+  const classRoot = cn('', className);
 
   // const query = useBridgeHistory()
   //
@@ -71,5 +79,5 @@ export default function TableCommunityCampaigns({ className }: Props) {
         </TableRow>
       </TableFooter>
     </Table>
-  )
+  );
 }

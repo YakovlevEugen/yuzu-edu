@@ -1,34 +1,38 @@
-import { ComponentProps, FC, forwardRef } from 'react'
+import { type ComponentProps, type FC, forwardRef } from 'react';
 
-import { cn } from '@/helpers/lib'
-import { IToken } from '@/constants/currencies'
+import type { IToken } from '@/constants/currencies';
+import { cn } from '@/helpers/lib';
 
 interface Props extends ComponentProps<'input'> {
-  currency?: IToken | FC
+  currency?: IToken | FC;
 }
 
-const CurrencyInput = forwardRef<HTMLInputElement, Props>(({ className, currency = 'EDU', ...otherProps }, ref) => {
-  const isCurrencyFunction = typeof currency === 'function'
-  const CurrencyComponent = isCurrencyFunction ? currency : null
+const CurrencyInput = forwardRef<HTMLInputElement, Props>(
+  ({ className, currency = 'EDU', ...otherProps }, ref) => {
+    const isCurrencyFunction = typeof currency === 'function';
+    const CurrencyComponent = isCurrencyFunction ? currency : null;
 
-  return (
-    <div className="flex items-center">
-      <input
-        className={cn(
-          'h-16 w-full rounded-md bg-transparent py-2 text-4xl font-bold text-green placeholder:text-green/30 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
-          className
+    return (
+      <div className="flex items-center">
+        <input
+          className={cn(
+            'h-16 w-full rounded-md bg-transparent py-2 text-4xl font-bold text-green placeholder:text-green/30 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+            className
+          )}
+          ref={ref}
+          placeholder="0"
+          {...otherProps}
+        />
+        {isCurrencyFunction && CurrencyComponent ? (
+          <CurrencyComponent />
+        ) : (
+          <div className="ml-1 text-3xl font-semibold text-green">
+            {currency}
+          </div>
         )}
-        ref={ref}
-        placeholder="0"
-        {...otherProps}
-      />
-      {isCurrencyFunction && CurrencyComponent ? (
-        <CurrencyComponent />
-      ) : (
-        <div className="ml-1 text-3xl font-semibold text-green">{currency}</div>
-      )}
-    </div>
-  )
-})
+      </div>
+    );
+  }
+);
 
-export default CurrencyInput
+export default CurrencyInput;

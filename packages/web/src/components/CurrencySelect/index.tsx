@@ -1,10 +1,17 @@
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from 'ui/select'
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from '@/components/SvgIcon';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from 'ui/select';
 
-import { IToken, tokens } from '@/constants/currencies'
+import { type IToken, tokens } from '@/constants/currencies';
 
 export interface Props {
-  onChange: (value: IToken) => void
+  onChange: (value: IToken) => void;
 }
 
 export default function CurrencySelect({ onChange, ...otherProps }: Props) {
@@ -16,7 +23,7 @@ export default function CurrencySelect({ onChange, ...otherProps }: Props) {
       <SelectContent className="rounded-2xl ring-1 ring-black">
         <SelectGroup>
           {Object.entries(tokens).map(([key, title]) => (
-            <SelectItem value={key}>
+            <SelectItem key={key} value={key}>
               <div className="flex w-[130px] items-center gap-x-2 text-lg">
                 <SvgIcon name={key} />
                 <span>{title}</span>
@@ -26,5 +33,5 @@ export default function CurrencySelect({ onChange, ...otherProps }: Props) {
         </SelectGroup>
       </SelectContent>
     </Select>
-  )
+  );
 }

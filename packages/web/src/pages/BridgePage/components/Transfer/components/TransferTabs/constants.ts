@@ -9,4 +9,4 @@ export const TABS = [
     disabled: false,
     title: 'Withdraw'
   }
-]
+];

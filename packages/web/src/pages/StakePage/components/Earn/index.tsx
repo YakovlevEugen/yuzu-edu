@@ -1,22 +1,22 @@
-import { useMemo } from 'react'
+import { useMemo } from 'react';
 
-import BalanceInfo from '@/containers/BalanceInfo'
-import BorderBlock from '@/components/BorderBlock'
-import InfoItem from '@/components/InfoItem'
+import BorderBlock from '@/components/BorderBlock';
+import InfoItem from '@/components/InfoItem';
+import BalanceInfo from '@/containers/BalanceInfo';
 
-import { formatTimeToDate } from '@/helpers/date'
-import { formatBigWithComas } from '@/helpers/format'
-import { cn } from '@/helpers/lib'
-import { useStakeBalance } from '@/hooks/api'
+import { formatTimeToDate } from '@/helpers/date';
+import { formatBigWithComas } from '@/helpers/format';
+import { cn } from '@/helpers/lib';
+import { useStakeBalance } from '@/hooks/api';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 export default function Earn({ className }: Props) {
-  const balance = useStakeBalance()
+  const balance = useStakeBalance();
 
-  const classRoot = cn('', className)
+  const classRoot = cn('', className);
   const earnInfo = useMemo(
     () => [
       {
@@ -29,7 +29,7 @@ export default function Earn({ className }: Props) {
       }
     ],
     [balance.data]
-  )
+  );
 
   return (
     <BorderBlock className={classRoot}>
@@ -43,5 +43,5 @@ export default function Earn({ className }: Props) {
         </div>
       )}
     </BorderBlock>
-  )
+  );
 }

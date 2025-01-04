@@ -1,13 +1,13 @@
-import Claim from './components/Claim'
+import Claim from './components/Claim';
 
-import { cn } from '@/helpers/lib'
+import { cn } from '@/helpers/lib';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 export default function EDUFaucetPage({ className }: Props) {
-  const classRoot = cn('', className)
+  const classRoot = cn('', className);
 
   return (
     <div className={classRoot}>
@@ -26,5 +26,5 @@ export default function EDUFaucetPage({ className }: Props) {
         <Claim className="flex-[1]" />
       </div>
     </div>
-  )
+  );
 }

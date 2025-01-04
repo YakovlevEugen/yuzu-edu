@@ -1,5 +1,6 @@
-import { useAccount, useDisconnect } from 'wagmi'
+import { useAccount, useDisconnect } from 'wagmi';
 
+import SvgIcon from '@/components/SvgIcon';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,21 +8,24 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from 'ui/dropdown-menu'
-import SvgIcon from '@/components/SvgIcon'
+} from 'ui/dropdown-menu';
 
-import { replaceCenterWithEllipsis } from '@/helpers/text'
+import { replaceCenterWithEllipsis } from '@/helpers/text';
 
 export default function WalletMenu() {
-  const { address } = useAccount()
-  const { disconnect } = useDisconnect()
+  const { address } = useAccount();
+  const { disconnect } = useDisconnect();
 
-  const shortenWalletNumber = address ? replaceCenterWithEllipsis(address, 5) : ''
+  const shortenWalletNumber = address
+    ? replaceCenterWithEllipsis(address, 5)
+    : '';
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center outline-none">
-        <span className="font-semibold text-orange">{shortenWalletNumber || 'Undefined'}</span>
+        <span className="font-semibold text-orange">
+          {shortenWalletNumber || 'Undefined'}
+        </span>
         <SvgIcon className="ml-3 text-gray" name="arrow-down" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
@@ -30,5 +34,5 @@ export default function WalletMenu() {
         <DropdownMenuItem onClick={() => disconnect()}>Exit</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

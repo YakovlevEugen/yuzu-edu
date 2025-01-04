@@ -1,15 +1,15 @@
-import { Button } from 'ui/button'
-import Balance from '@/components/Balance'
-import BorderBlock from '@/components/BorderBlock'
+import Balance from '@/components/Balance';
+import BorderBlock from '@/components/BorderBlock';
+import { Button } from 'ui/button';
 
-import { cn } from '@/helpers/lib'
+import { cn } from '@/helpers/lib';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 export default function BalanceBlock({ className }: Props) {
-  const classRoot = cn('shadow-none', className)
+  const classRoot = cn('shadow-none', className);
 
   return (
     <BorderBlock className={classRoot} padding="none" variant="yellow">
@@ -19,7 +19,11 @@ export default function BalanceBlock({ className }: Props) {
           <Balance classAmount="text-green-toxic" value={'109828723'} />
         </div>
         <div className="absolute bottom-0 right-0 shrink-0 self-end lg:static lg:-mt-[130px]">
-          <img className="h-[150px] lg:h-[260px]" src="/images/capybara-selfie.png" alt="Capybara Take a Selfie" />
+          <img
+            className="h-[150px] lg:h-[260px]"
+            src="/images/capybara-selfie.png"
+            alt="Capybara Take a Selfie"
+          />
         </div>
       </div>
 
@@ -37,5 +41,5 @@ export default function BalanceBlock({ className }: Props) {
         </div>
       </BorderBlock>
     </BorderBlock>
-  )
+  );
 }

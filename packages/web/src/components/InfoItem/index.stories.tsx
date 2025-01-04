@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react';
 
-import InfoItem from './index'
+import InfoItem from './index';
 
 const meta: Meta<typeof InfoItem> = {
   component: InfoItem,
@@ -13,14 +13,14 @@ const meta: Meta<typeof InfoItem> = {
       control: 'text'
     }
   }
-}
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
     title: 'Some Title',
     value: 'Some Value'
   }
-}
+};

@@ -1,17 +1,17 @@
-import { useRef, useEffect } from 'react'
+import { useEffect, useRef } from 'react';
 
-import { TabsContent, Tabs } from 'ui/tabs'
-import BorderBlock from '@/components/BorderBlock'
-import RoundedTabs from '@/components/RoundedTabs'
-import TabBridgeRewards from '../TabBridgeRewards'
-import TabCommunityCampaigns from '../TabCommunityCampaigns'
-import TabDApps from '../TabDApps'
+import BorderBlock from '@/components/BorderBlock';
+import RoundedTabs from '@/components/RoundedTabs';
+import { Tabs, TabsContent } from 'ui/tabs';
+import TabBridgeRewards from '../TabBridgeRewards';
+import TabCommunityCampaigns from '../TabCommunityCampaigns';
+import TabDApps from '../TabDApps';
 
-import { cn } from '@/helpers/lib'
-import { ITab } from '@/types/components'
+import { cn } from '@/helpers/lib';
+import type { ITab } from '@/types/components';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 const TABS: ITab[] = [
@@ -39,24 +39,27 @@ const TABS: ITab[] = [
     disabled: false,
     title: 'Bridge Rewards'
   }
-]
+];
 
 export default function TabsDashboard({ className }: Props) {
-  const refTabs = useRef<HTMLDivElement>()
+  const refTabs = useRef<HTMLDivElement>();
 
-  const classRoot = cn('', className)
+  const classRoot = cn('', className);
 
   useEffect(() => {
     if (refTabs.current) {
-      const activeTabElement = refTabs.current?.querySelector('[data-state="active"]') as HTMLElement
-      const scrollPosition = activeTabElement?.offsetLeft - refTabs.current?.offsetLeft
+      const activeTabElement = refTabs.current?.querySelector(
+        '[data-state="active"]'
+      ) as HTMLElement;
+      const scrollPosition =
+        activeTabElement?.offsetLeft - refTabs.current?.offsetLeft;
 
       refTabs.current.scrollTo({
         left: scrollPosition,
         behavior: 'smooth'
-      })
+      });
     }
-  }, [])
+  }, []);
 
   return (
     <Tabs className={classRoot} defaultValue={TABS[0].id}>
@@ -70,5 +73,5 @@ export default function TabsDashboard({ className }: Props) {
         </TabsContent>
       ))}
     </Tabs>
-  )
+  );
 }

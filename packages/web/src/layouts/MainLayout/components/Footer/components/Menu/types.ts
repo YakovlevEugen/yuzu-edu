@@ -1,9 +1,9 @@
 export interface MenuChild {
-  label: string
-  link: string
+  label: string;
+  link: string;
 }
 
 export interface Menu {
-  title: string
-  children: MenuChild[]
+  title: string;
+  children: MenuChild[];
 }

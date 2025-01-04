@@ -1,38 +1,40 @@
-import { useMemo } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { useMemo } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 
-import Footer from './components/Footer'
-import Header from './components/Header'
+import Footer from './components/Footer';
+import Header from './components/Header';
 
-import { ROUTES } from '@/constants/routes'
-import { cn } from '@/helpers/lib'
+import { ROUTES } from '@/constants/routes';
+import { cn } from '@/helpers/lib';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 export default function MainLayout({ className }: Props) {
-  const { pathname } = useLocation()
+  const { pathname } = useLocation();
 
   const pageBackground = useMemo(() => {
-    let backgroundClass = 'bg-center bg-cover bg-no-repeat '
+    let backgroundClass = 'bg-center bg-cover bg-no-repeat ';
 
     if (pathname === ROUTES.land) {
-      backgroundClass += 'md:bg-top bg-edu-land-background'
+      backgroundClass += 'md:bg-top bg-edu-land-background';
     } else if (pathname === ROUTES.faucet) {
-      backgroundClass += 'bg-edu-faucet-background'
+      backgroundClass += 'bg-edu-faucet-background';
     } else if (pathname === ROUTES.bridge) {
-      backgroundClass += 'bg-bridge-background'
+      backgroundClass += 'bg-bridge-background';
     }
 
-    return backgroundClass
-  }, [pathname])
+    return backgroundClass;
+  }, [pathname]);
 
-  const classRoot = cn('flex flex-col min-h-screen', className)
+  const classRoot = cn('flex flex-col min-h-screen', className);
 
   return (
     <div className={classRoot}>
-      <div className={cn({ [`${pageBackground}`]: pageBackground }, 'flex-[1]')}>
+      <div
+        className={cn({ [`${pageBackground}`]: pageBackground }, 'flex-[1]')}
+      >
         <div className="mx-auto flex w-full max-w-[1116px] flex-col overflow-hidden md:px-5 md:py-8">
           <Header />
 
@@ -44,5 +46,5 @@ export default function MainLayout({ className }: Props) {
 
       <Footer />
     </div>
-  )
+  );
 }

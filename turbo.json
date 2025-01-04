@@ -1,21 +1,22 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "stream",
+  "envMode": "loose",
   "tasks": {
     "dev": {
-      "passThroughEnv": ["*"],
       "cache": false,
       "persistent": true
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["build/**", "dist/**", "tsconfig.tsbuildinfo", "out/**"],
-      "cache": true
+      "outputs": ["build/**", "dist/**", "tsconfig.tsbuildinfo", "out/**"]
+    },
+    "lint": {
+      "dependsOn": ["build"]
     },
     "deploy:staging": {
       "dependsOn": ["build"],
-      "passThroughEnv": ["*"],
-      "cache": true
+      "cache": false
     }
   }
 }

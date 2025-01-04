@@ -1,7 +1,7 @@
-import { ReactNode } from 'react'
-import { cva, VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority';
+import type { ReactNode } from 'react';
 
-import { cn } from '@/helpers/lib'
+import { cn } from '@/helpers/lib';
 
 const variants = cva('rounded-2xl', {
   variants: {
@@ -18,15 +18,20 @@ const variants = cva('rounded-2xl', {
     variant: 'default',
     padding: 'sm'
   }
-})
+});
 
 interface Props extends VariantProps<typeof variants> {
-  children?: ReactNode
-  className?: string
+  children?: ReactNode;
+  className?: string;
 }
 
-export default function BackgroundBlock({ children, className, padding, variant }: Props) {
-  const classRoot = cn(variants({ className, padding, variant }))
+export default function BackgroundBlock({
+  children,
+  className,
+  padding,
+  variant
+}: Props) {
+  const classRoot = cn(variants({ className, padding, variant }));
 
-  return <div className={classRoot}>{children}</div>
+  return <div className={classRoot}>{children}</div>;
 }

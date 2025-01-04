@@ -1,11 +1,11 @@
-import { cn } from '@/helpers/lib'
+import { cn } from '@/helpers/lib';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 export default function TemplateComponent({ className }: Props) {
-  const classRoot = cn('', className)
+  const classRoot = cn('', className);
 
-  return <div className={classRoot}>TemplateComponent</div>
+  return <div className={classRoot}>TemplateComponent</div>;
 }

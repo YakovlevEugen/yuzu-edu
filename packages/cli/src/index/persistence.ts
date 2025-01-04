@@ -9,14 +9,14 @@
  * State
  */
 
-import { IChainId } from "@yuzu/sdk";
-import Big from "big.js";
-import fs from "fs";
-import readline from "readline";
-import type { Transaction } from "viem";
+import fs from 'fs';
+import readline from 'readline';
+import type { IChainId } from '@yuzu/sdk';
+import Big from 'big.js';
+import type { Transaction } from 'viem';
 
 (BigInt.prototype as unknown as Record<string, unknown>).toJSON = function () {
-	return this.toString();
+  return this.toString();
 };
 
 /**
@@ -24,31 +24,31 @@ import type { Transaction } from "viem";
  */
 
 export const getStoragePath = (chainId: IChainId) =>
-	`${__dirname}/../../data/${chainId}`;
+  `${__dirname}/../../data/${chainId}`;
 
 type IState = { lastIndexedBlock: string };
 
 const getState = (chainId: IChainId): IState =>
-	JSON.parse(fs.readFileSync(`${getStoragePath(chainId)}/state.json`, "utf8"));
+  JSON.parse(fs.readFileSync(`${getStoragePath(chainId)}/state.json`, 'utf8'));
 
 const setState = (chainId: IChainId, state: IState) => {
-	const path = `${getStoragePath(chainId)}/state.json`;
-	fs.writeFileSync(path, JSON.stringify(state, null, 2));
+  const path = `${getStoragePath(chainId)}/state.json`;
+  fs.writeFileSync(path, JSON.stringify(state, null, 2));
 };
 
 const updateState = (chainId: IChainId, params: Partial<IState>) =>
-	setState(chainId, { ...getState(chainId), ...params });
+  setState(chainId, { ...getState(chainId), ...params });
 
 /**
  * Last Indexed Block
  */
 
 export const getLastIndexedBlock = (chainId: IChainId) =>
-	getState(chainId).lastIndexedBlock;
+  getState(chainId).lastIndexedBlock;
 
 export const setLastIndexedBlock = (
-	chainId: IChainId,
-	lastIndexedBlock: string,
+  chainId: IChainId,
+  lastIndexedBlock: string
 ) => updateState(chainId, { lastIndexedBlock });
 
 /**
@@ -56,26 +56,26 @@ export const setLastIndexedBlock = (
  */
 
 export const insertTransactions = async (
-	chainId: IChainId,
-	txs: Transaction[],
+  chainId: IChainId,
+  txs: Transaction[]
 ) => {
-	const blockNumber = txs.at(0)?.blockNumber;
-	if (!blockNumber) return;
+  const blockNumber = txs.at(0)?.blockNumber;
+  if (!blockNumber) return;
 
-	const storageCell = new Big(blockNumber.toString()).div(100_000).toFixed(0);
-	console.log({ blockNumber, storageCell });
+  const storageCell = new Big(blockNumber.toString()).div(100_000).toFixed(0);
+  console.log({ blockNumber, storageCell });
 
-	const storageLocation = `${getStoragePath(chainId)}/${storageCell}.jsonl`;
-	const stream = fs.createWriteStream(storageLocation, { flags: "a" });
+  const storageLocation = `${getStoragePath(chainId)}/${storageCell}.jsonl`;
+  const stream = fs.createWriteStream(storageLocation, { flags: 'a' });
 
-	for (const tx of txs) stream.write(`${JSON.stringify(tx)}\n`);
+  for (const tx of txs) stream.write(`${JSON.stringify(tx)}\n`);
 
-	await new Promise<void>((resolve, reject) =>
-		stream.close((err) => {
-			if (err) reject(err);
-			resolve();
-		}),
-	);
+  await new Promise<void>((resolve, reject) =>
+    stream.close((err) => {
+      if (err) reject(err);
+      resolve();
+    })
+  );
 };
 
 /**
@@ -83,54 +83,54 @@ export const insertTransactions = async (
  */
 
 export const rangeToChunks = (since: number, until: number, size: number) => {
-	const out: number[][] = [];
+  const out: number[][] = [];
 
-	const numChunks = Math.ceil((until - since) / size);
+  const numChunks = Math.ceil((until - since) / size);
 
-	for (let i = 0; i < numChunks; i++) {
-		out.push(
-			Array(size)
-				.fill(0)
-				.map((_, index) => i * size + since + index)
-				.filter((val) => val <= until),
-		);
-	}
+  for (let i = 0; i < numChunks; i++) {
+    out.push(
+      Array(size)
+        .fill(0)
+        .map((_, index) => i * size + since + index)
+        .filter((val) => val <= until)
+    );
+  }
 
-	return out;
+  return out;
 };
 
 /**
  * Files
  */
 
-import { SingleBar, Presets } from "cli-progress";
+import { Presets, SingleBar } from 'cli-progress';
 
 export async function* readTransactions(chainId: IChainId) {
-	const storagePath = getStoragePath(chainId);
+  const storagePath = getStoragePath(chainId);
 
-	const filenames = fs
-		.readdirSync(storagePath)
-		.filter((path) => path.endsWith(".jsonl"));
+  const filenames = fs
+    .readdirSync(storagePath)
+    .filter((path) => path.endsWith('.jsonl'));
 
-	const progress = new SingleBar({}, Presets.shades_classic);
-	progress.start(filenames.length, 0, { speed: "n/a" });
+  const progress = new SingleBar({}, Presets.shades_classic);
+  progress.start(filenames.length, 0, { speed: 'n/a' });
 
-	for (const filename of filenames) {
-		progress.increment();
+  for (const filename of filenames) {
+    progress.increment();
 
-		const lines = readline.createInterface({
-			input: fs.createReadStream(`${storagePath}/${filename}`),
-			crlfDelay: Infinity,
-		});
+    const lines = readline.createInterface({
+      input: fs.createReadStream(`${storagePath}/${filename}`),
+      crlfDelay: Number.POSITIVE_INFINITY
+    });
 
-		for await (const line of lines) {
-			if (line) {
-				yield JSON.parse(line) as Transaction;
-			}
-		}
-	}
+    for await (const line of lines) {
+      if (line) {
+        yield JSON.parse(line) as Transaction;
+      }
+    }
+  }
 
-	progress.stop();
+  progress.stop();
 }
 
 /**
@@ -138,12 +138,12 @@ export async function* readTransactions(chainId: IChainId) {
  */
 
 export async function* filter<T>(
-	gen: AsyncGenerator<T, void, unknown>,
-	predicate: (v: T) => unknown,
+  gen: AsyncGenerator<T, void, unknown>,
+  predicate: (v: T) => unknown
 ) {
-	for await (const item of gen) {
-		if (predicate(item)) {
-			yield item;
-		}
-	}
+  for await (const item of gen) {
+    if (predicate(item)) {
+      yield item;
+    }
+  }
 }
