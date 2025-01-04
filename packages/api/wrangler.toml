@@ -7,6 +7,5 @@ observability = { enabled = true }
 [env.staging]
 name = "yuzu-api-staging"
 routes = [
-  { pattern = "yuzu-api-staging.r8edev.xyz", custom_domain = true },
-  { pattern = "yuzu-staging.educhain.xyz" }
+  { pattern = "yuzu-api-staging.r8edev.xyz", custom_domain = true }
 ]
