@@ -58,7 +58,7 @@
     "tailwindcss-animate": "^1.0.7",
     "viem": "^2.21.47",
     "wagmi": "^2.12.33",
-    "wrangler": "^3.88.0",
+    "wrangler": "^3.99.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

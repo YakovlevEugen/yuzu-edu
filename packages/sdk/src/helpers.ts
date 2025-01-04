@@ -1,5 +1,11 @@
 import type { Address } from 'viem';
-import { type IChainId, arbMainnet, arbTestnet, eduTestnet } from './chains';
+import {
+  type IChainId,
+  arbMainnet,
+  arbTestnet,
+  eduMainnet,
+  eduTestnet
+} from './chains';
 
 export function assert(
   statement: unknown,
@@ -25,6 +31,8 @@ export const getWEDUAddress = (chainId: IChainId) => {
   switch (chainId) {
     case 'eduTestnet':
       return eduTestnet.contracts.wedu.address;
+    case 'eduMainnet':
+      return eduMainnet.contracts.wedu.address;
     default:
       throw new Error('unsupported chain');
   }

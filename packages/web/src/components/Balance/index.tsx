@@ -22,7 +22,9 @@ export default function Balance({
     className
   );
   const classCurrency = cn({ 'text-orange': withCoin });
-  const formattedValue = formatNumberWithCommas(String(value));
+  const formattedValue = formatNumberWithCommas(String(value), {
+    minimumFractionDigits: 5
+  });
 
   return (
     <div className={classRoot}>

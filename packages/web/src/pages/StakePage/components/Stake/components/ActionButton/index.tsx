@@ -1,7 +1,13 @@
+import { chainId } from '@/constants/config';
 import WalletConnect from '@/containers/WalletConnect';
 import { isNumberish } from '@/helpers/common';
 import { cn } from '@/helpers/lib';
-import { useCreateStakeTx, useCreateUnstakeTx } from '@/hooks/api';
+import {
+  useCreateStakeTx,
+  useCreateUnstakeTx,
+  useStakingPoints,
+  useTokenBalance
+} from '@/hooks/api';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -20,6 +26,10 @@ export default function ActionButton({ className }: Props) {
   const stakeTx = useCreateStakeTx();
   const unstakeTx = useCreateUnstakeTx();
 
+  const eduBalance = useTokenBalance(chainId, 'edu');
+  const weduBalance = useTokenBalance(chainId, 'wedu');
+  const stakingPoints = useStakingPoints();
+
   const classRoot = cn('', className);
   const activeTabId = watch('activeTabId');
   const amount = watch('amount');
@@ -32,6 +42,11 @@ export default function ActionButton({ className }: Props) {
       const txId = await stakeTx
         .mutateAsync({ amount })
         .then(sendTransactionAsync);
+
+      eduBalance.refetch();
+      weduBalance.refetch();
+      stakingPoints.refetch();
+
       console.log('View Tx in explorer', txId);
 
       toast({ title: 'EDU Successfully Staked', variant: 'success' });

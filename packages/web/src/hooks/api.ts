@@ -29,7 +29,8 @@ export const useTokenBalance = (chainId: IChainId, symbol: string) => {
         })
         .then((res) => res.json()),
     enabled: Boolean(address),
-    initialData: '0'
+    initialData: '0',
+    refetchInterval: 30_000
   });
 };
 

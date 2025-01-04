@@ -45,11 +45,17 @@ export default function Stake({ className }: Props) {
   const activeTabId = watch('activeTabId');
 
   const total = useMemo(() => {
-    return isNumberish(amount)
-      ? new Big(weduBalance.data)
+    if (isNumberish(amount)) {
+      try {
+        return new Big(weduBalance.data)
           .add(activeTabId === 'stake' ? amount : `-${amount}`)
-          .toFixed(18)
-      : '0';
+          .toFixed(18);
+      } catch (error) {
+        console.warn(error);
+        return '0';
+      }
+    }
+    return '0';
   }, [activeTabId, amount, weduBalance]);
 
   const estimate = useStakingEstimate(
