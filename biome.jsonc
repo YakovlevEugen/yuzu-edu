@@ -5,7 +5,14 @@
     "clientKind": "git",
     "useIgnoreFile": true
   },
-  "files": { "ignoreUnknown": true },
+  "files": {
+    "ignoreUnknown": true,
+    "ignore": [
+      "packages/contracts/lib",
+      "packages/contracts/out",
+      "packages/contracts/soljson-v0.8.13+commit.abaa5c0e.js"
+    ]
+  },
   "formatter": { "enabled": true, "indentStyle": "space", "indentWidth": 2 },
   "organizeImports": { "enabled": true },
   "linter": {
@@ -15,7 +22,7 @@
       "style": {
         "useNodejsImportProtocol": "off",
         "useTemplate": "off",
-        "noParameterAssign": "warn"
+        "noParameterAssign": "off"
       },
       "complexity": {
         "noForEach": "off"
