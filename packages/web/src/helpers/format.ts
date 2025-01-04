@@ -1,12 +1,8 @@
 import { Big } from 'big.js';
+import { isNumberish } from './common';
 
-import { isNumber } from '@/helpers/common';
-
-export function formatNumberWithCommas(value?: string): string {
-  if (!value) return '';
-  if (!isNumber(value) && !isNumber(Number(value))) return value;
-
-  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+export function formatNumberWithCommas(value?: string) {
+  return isNumberish(value) ? Number(value).toLocaleString('en-US') : '';
 }
 
 export function formatBigNumber(value: string | number, dp = 2): string {

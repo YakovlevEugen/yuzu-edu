@@ -37,7 +37,7 @@ export const getTokenBalance = async (
     contract.read.decimals()
   ]);
 
-  return new Big(balance.toString()).div(10 ** decimals).toFixed(decimals);
+  return new Big(balance.toString()).div(10 ** decimals).toFixed();
 };
 
 export const getBlock = async (c: IContext) =>

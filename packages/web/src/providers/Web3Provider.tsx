@@ -1,12 +1,7 @@
-import type { ReactNode } from 'react';
+import { config } from '@/services/web3';
+import type { PropsWithChildren } from 'react';
 import { WagmiProvider } from 'wagmi';
 
-import { config } from '@/services/web3';
-
-interface Props {
-  children?: ReactNode;
-}
-
-export function Web3Provider({ children }: Props) {
+export function Web3Provider({ children }: PropsWithChildren) {
   return <WagmiProvider config={config}>{children}</WagmiProvider>;
 }

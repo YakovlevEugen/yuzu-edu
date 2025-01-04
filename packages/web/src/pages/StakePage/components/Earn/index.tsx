@@ -3,7 +3,7 @@ import InfoItem from '@/components/InfoItem';
 import { chainId } from '@/constants/config';
 import BalanceInfo from '@/containers/BalanceInfo';
 import { formatTimeToDate } from '@/helpers/date';
-import { formatBigWithComas } from '@/helpers/format';
+import { formatNumberWithCommas } from '@/helpers/format';
 import { cn } from '@/helpers/lib';
 import { useTokenBalance } from '@/hooks/api';
 import { useMemo } from 'react';
@@ -15,11 +15,11 @@ export default function Earn({ className }: { className?: string }) {
     () => [
       {
         title: 'Total EDU Staked',
-        value: `${formatBigWithComas(weduBalance.data)} EDU`
+        value: `${formatNumberWithCommas(weduBalance.data)} EDU`
       },
       {
         title: 'End-of-Semester Claim in',
-        value: formatTimeToDate(new Date(), new Date(Date.now() + 10000000))
+        value: formatTimeToDate(new Date(), new Date('2025-05-01T00:00:00Z'))
       }
     ],
     [weduBalance]

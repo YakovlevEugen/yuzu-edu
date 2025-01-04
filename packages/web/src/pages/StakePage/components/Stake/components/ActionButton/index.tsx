@@ -1,13 +1,12 @@
-import { useFormContext } from 'react-hook-form';
-import { parseEther } from 'viem';
-import { useAccount, useSendTransaction } from 'wagmi';
-
 import WalletConnect from '@/containers/WalletConnect';
-import { Button } from 'ui/button';
-
+import { isNumberish } from '@/helpers/common';
 import { cn } from '@/helpers/lib';
+import { useCreateStakeTx, useCreateUnstakeTx } from '@/hooks/api';
 import { useToast } from '@/hooks/use-toast';
-import type { FormSchema } from '@/pages/StakePage/components/Stake';
+import { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { Button } from 'ui/button';
+import { useAccount, useSendTransaction } from 'wagmi';
 
 interface Props {
   className?: string;
@@ -18,50 +17,71 @@ export default function ActionButton({ className }: Props) {
   const { watch } = useFormContext();
   const { sendTransactionAsync } = useSendTransaction();
   const { toast } = useToast();
+  const stakeTx = useCreateStakeTx();
+  const unstakeTx = useCreateUnstakeTx();
 
   const classRoot = cn('', className);
-  const activeTabId: FormSchema['activeTabId'] = watch('activeTabId');
-  const amount: FormSchema['amount'] = watch('amount');
+  const activeTabId = watch('activeTabId');
+  const amount = watch('amount');
+  const [loading, setLoading] = useState(false);
 
   async function stake() {
     try {
-      await sendTransactionAsync({
-        to: '0xDbD8e8bc1A1b6a563d4b9F75F72E577C42890fF7',
-        value: parseEther(amount)
-      });
+      setLoading(true);
+
+      const txId = await stakeTx
+        .mutateAsync({ amount })
+        .then(sendTransactionAsync);
+      console.log('View Tx in explorer', txId);
+
       toast({ title: 'EDU Successfully Staked', variant: 'success' });
     } catch (error) {
       toast({ title: 'EDU Stake Failed', variant: 'destructive' });
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
-  async function unwrap() {
+  async function unstake() {
     try {
-      // TODO: add unwrap method
-      // await sendTransactionAsync({
-      //   to: '0xDbD8e8bc1A1b6a563d4b9F75F72E577C42890fF7',
-      //   value: parseEther(amount)
-      // })
-      toast({ title: 'EDU Successfully Unwrapped', variant: 'success' });
+      setLoading(true);
+
+      const txId = await unstakeTx
+        .mutateAsync({ amount })
+        .then(sendTransactionAsync);
+      console.log('View Tx in explorer', txId);
+
+      toast({
+        title: 'EDU Successfully Unstaked',
+        variant: 'success'
+      });
     } catch (error) {
-      toast({ title: 'EDU Unwrapped Failed', variant: 'destructive' });
+      toast({ title: 'EDU Unstaking Failed', variant: 'destructive' });
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
-  const actionFunction = activeTabId === 'stake' ? stake : unwrap;
+  const actionFunction = activeTabId === 'stake' ? stake : unstake;
 
   return (
     <div className={classRoot}>
       {isConnected ? (
         <Button
           className="w-full"
-          disabled={!amount}
+          disabled={loading || !isNumberish(amount)}
           size="lg"
           onClick={actionFunction}
         >
-          Stake
+          {loading
+            ? activeTabId === 'stake'
+              ? 'Staking'
+              : 'Unstaking'
+            : activeTabId === 'stake'
+              ? 'Stake'
+              : 'Unstake'}
         </Button>
       ) : (
         <WalletConnect triggerClass="w-full" triggerProps={{ size: 'lg' }} />

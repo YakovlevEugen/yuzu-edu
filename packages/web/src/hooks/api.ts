@@ -1,10 +1,11 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { createClient } from '@yuzu/api';
 import type { Hex } from 'viem';
 import { useAccount } from 'wagmi';
 
 import { apiUrl } from '@/constants/config';
 import type { IChainId } from '@yuzu/sdk';
+import { type ITxRequest, decodeTxRequest } from '@yuzu/sdk/src/requests';
 
 const client = createClient(apiUrl);
 
@@ -82,6 +83,38 @@ export const useStakingHistory = () => {
     getNextPageParam: (pages) => pages.length,
     initialPageParam: 0,
     enabled: Boolean(address)
+  });
+};
+
+export const useCreateStakeTx = () => {
+  const { address } = useAccount();
+
+  return useMutation<ITxRequest, unknown, { amount: string }>({
+    mutationKey: ['staking', address, 'wrap'],
+    mutationFn: async ({ amount }) =>
+      client.staking[':address'].wrap
+        .$get({
+          query: { amount },
+          param: { address: address as Hex }
+        })
+        .then((res) => res.json())
+        .then(decodeTxRequest)
+  });
+};
+
+export const useCreateUnstakeTx = () => {
+  const { address } = useAccount();
+
+  return useMutation<ITxRequest, unknown, { amount: string }>({
+    mutationKey: ['staking', address, 'unwrap'],
+    mutationFn: async ({ amount }) =>
+      client.staking[':address'].unwrap
+        .$get({
+          query: { amount },
+          param: { address: address as Hex }
+        })
+        .then((res) => res.json())
+        .then(decodeTxRequest)
   });
 };
 

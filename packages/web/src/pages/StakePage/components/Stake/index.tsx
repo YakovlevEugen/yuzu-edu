@@ -2,10 +2,13 @@ import BorderBlock from '@/components/BorderBlock';
 import CurrencyInput from '@/components/CurrencyInput';
 import InfoItem from '@/components/InfoItem';
 import TransformCurrency from '@/components/TransformCurrency';
-import { formatBigWithComas } from '@/helpers/format';
+import { chainId } from '@/constants/config';
+import { isNumberish } from '@/helpers/common';
 import { cn } from '@/helpers/lib';
 import { useStakingEstimate, useTokenBalance } from '@/hooks/api';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Big from 'big.js';
+import { useMemo } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import ActionButton from './components/ActionButton';
@@ -25,7 +28,8 @@ interface Props {
 const BLOCK_PADDING = 'py-6 px-6 md:px-8';
 
 export default function Stake({ className }: Props) {
-  const balance = useTokenBalance('eduMainnet', 'edu');
+  const eduBalance = useTokenBalance(chainId, 'edu');
+  const weduBalance = useTokenBalance(chainId, 'wedu');
 
   const formMethods = useForm<FormSchema>({
     defaultValues: {
@@ -38,7 +42,19 @@ export default function Stake({ className }: Props) {
   const { control, watch } = formMethods;
   const classRoot = cn('', className);
   const amount = watch('amount');
-  const estimate = useStakingEstimate(amount);
+  const activeTabId = watch('activeTabId');
+
+  const total = useMemo(() => {
+    return isNumberish(amount)
+      ? new Big(weduBalance.data)
+          .add(activeTabId === 'stake' ? amount : `-${amount}`)
+          .toFixed(18)
+      : '0';
+  }, [activeTabId, amount, weduBalance]);
+
+  const estimate = useStakingEstimate(
+    activeTabId === 'stake' ? amount : `-${amount}`
+  );
 
   return (
     <FormProvider {...formMethods}>
@@ -53,14 +69,31 @@ export default function Stake({ className }: Props) {
 
             <div>
               <InfoItem
-                title={<span className="fs-14">Available to Stake</span>}
+                title={
+                  <span className="fs-14">
+                    Available to {activeTabId === 'stake' ? 'Stake' : 'Unstake'}
+                  </span>
+                }
                 value={
-                  <>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      formMethods.setValue(
+                        'amount',
+                        activeTabId === 'stake'
+                          ? eduBalance.data
+                          : weduBalance.data
+                      )
+                    }
+                    className="hover:brightness-75 active:brightness-125"
+                  >
                     <span>MAX </span>
                     <span className="text-foreground">
-                      {formatBigWithComas(balance.data)} EDU
+                      {activeTabId === 'stake'
+                        ? `${eduBalance.data} EDU`
+                        : `${weduBalance.data} WEDU`}
                     </span>
-                  </>
+                  </button>
                 }
               />
             </div>
@@ -74,16 +107,18 @@ export default function Stake({ className }: Props) {
           </div>
 
           <div className={cn(BLOCK_PADDING, 'bg-foreground text-white')}>
-            {Boolean(amount) && (
+            {isNumberish(amount) && (
               <>
                 <div className="mb-5px text-sm">Total EDU Staked</div>
                 <TransformCurrency
                   currency="EDU"
                   size="l"
-                  to={amount}
+                  from={weduBalance.data}
+                  to={total}
                   variant="greenLight"
                 />
-                {Boolean(balance.data) && Boolean(estimate.data) && (
+
+                {Boolean(weduBalance.data) && Boolean(estimate.data) && (
                   <InfoItem
                     className="mt-10px"
                     title="Est. 24h Yuzu"

@@ -1,4 +1,6 @@
 import { zValidator } from '@hono/zod-validator';
+import { unwrapWEDU, wrapEDU } from '@yuzu/sdk';
+import { encodeTxRequest } from '@yuzu/sdk/src/requests';
 import Big from 'big.js';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
@@ -76,8 +78,34 @@ const app = new Hono<IEnv>()
       const { address } = c.req.valid('param');
       const { value } = c.req.valid('query');
       const points = await getWEDUPoints(c, address);
-      const combined = new Big(value).div(1e18).mul(24).add(points).toNumber();
+      const combined = new Big(value || 0).mul(24).toNumber();
       return c.json(combined);
+    }
+  )
+
+  .get(
+    '/staking/:address/wrap',
+    zValidator('query', v.object({ amount: v.string() })),
+    zValidator('param', v.object({ address: vAddress })),
+    async (c) => {
+      const { address } = c.req.valid('param');
+      const { amount } = c.req.valid('query');
+      const chainId = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
+      const request = await wrapEDU({ chainId, amount, account: address });
+      return c.json(encodeTxRequest(request));
+    }
+  )
+
+  .get(
+    '/staking/:address/unwrap',
+    zValidator('query', v.object({ amount: v.string() })),
+    zValidator('param', v.object({ address: vAddress })),
+    async (c) => {
+      const { address } = c.req.valid('param');
+      const { amount } = c.req.valid('query');
+      const chainId = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
+      const request = await unwrapWEDU({ chainId, amount, account: address });
+      return c.json(encodeTxRequest(request));
     }
   )
 
