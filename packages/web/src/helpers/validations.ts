@@ -1,6 +1,6 @@
+/* eslint-disable no-useless-escape */
 import { z } from 'zod';
 
-// eslint-disable-next-line no-useless-escape
 const DATE_REGEXP =
   /^$|^(0?[1-9]|[12][0-9]|3[01])[\.](0?[1-9]|1[012])[\.]\d{4}$/;
 const DATE_FORMAT_ERROR = 'Wrong date format';
