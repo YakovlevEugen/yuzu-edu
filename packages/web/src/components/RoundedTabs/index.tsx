@@ -11,7 +11,7 @@ interface Props {
   tabs: ITab[];
 }
 
-const RoundedTabs = forwardRef<HTMLInputElement, Props>(
+const RoundedTabs = forwardRef<HTMLDivElement, Props>(
   ({ className, tabs }, ref) => {
     const classRoot = cn(
       'overflow-hidden rounded-[100px] shadow-none',

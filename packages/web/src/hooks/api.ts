@@ -8,6 +8,10 @@ import type { IChainId } from '@yuzu/sdk';
 
 const client = createClient(apiUrl);
 
+/**
+ * Common
+ */
+
 export const useTokenBalance = (chainId: IChainId, symbol: string) => {
   const { address } = useAccount();
 
@@ -22,53 +26,54 @@ export const useTokenBalance = (chainId: IChainId, symbol: string) => {
             symbol
           }
         })
-        .then((res) => res.json())
-        .then((res) => res.balance),
+        .then((res) => res.json()),
     enabled: Boolean(address),
     initialData: '0'
   });
 };
 
-export const useStakeBalance = () => {
+/**
+ * Staking
+ */
+
+export const useStakingPoints = () => {
   const { address } = useAccount();
 
   return useQuery({
-    queryKey: ['stake', address],
+    queryKey: ['staking', address, 'points'],
     queryFn: () =>
-      client.wallet[':address'].stake
+      client.staking[':address'].points
         .$get({ param: { address: address as Hex } })
-        .then((res) => res.json())
-        .then((res) => res.balance),
+        .then((res) => res.json()),
     enabled: Boolean(address),
-    initialData: '0'
+    initialData: 0
   });
 };
 
-export const useStakeEstimate = (value: string) => {
+export const useStakingEstimate = (value: string) => {
   const { address } = useAccount();
 
   return useQuery({
-    queryKey: ['stake', 'estimate', address, value],
+    queryKey: ['staking', address, 'estimate', value],
     queryFn: () =>
-      client.wallet[':address'].estimate
+      client.staking[':address'].estimate
         .$get({
           param: { address: address as string },
           query: { value }
         })
-        .then((res) => res.json())
-        .then((res) => res.points),
+        .then((res) => res.json()),
     enabled: Boolean(address),
-    initialData: '0'
+    initialData: 0
   });
 };
 
-export const useBridgeHistory = () => {
+export const useStakingHistory = () => {
   const { address } = useAccount();
 
   return useInfiniteQuery({
-    queryKey: ['history', address],
+    queryKey: ['staking', address, 'history'],
     queryFn: ({ pageParam }) =>
-      client.wallet[':address'].transfers
+      client.staking[':address'].history
         .$get({
           param: { address: address as string },
           query: { page: pageParam.toString() }
@@ -80,18 +85,40 @@ export const useBridgeHistory = () => {
   });
 };
 
-export const usePointBalance = () => {
+/**
+ * Bridging
+ */
+
+export const useBridgeHistory = () => {
   const { address } = useAccount();
 
-  return useQuery({
-    queryKey: ['points', address],
-    queryFn: () =>
-      client.wallet[':address'].points
+  return useInfiniteQuery({
+    queryKey: ['bridge', address, 'history'],
+    queryFn: ({ pageParam }) =>
+      client.bridge[':address'].history
         .$get({
-          param: { address: address as string }
+          param: { address: address as string },
+          query: { page: pageParam.toString() }
         })
         .then((res) => res.json()),
-    enabled: Boolean(address),
-    initialData: 0
+    getNextPageParam: (pages) => pages.length,
+    initialPageParam: 0,
+    enabled: Boolean(address)
   });
 };
+
+// export const usePointBalance = () => {
+//   const { address } = useAccount();
+
+//   return useQuery({
+//     queryKey: ['points', address],
+//     queryFn: () =>
+//       client.wallet[':address'].points
+//         .$get({
+//           param: { address: address as string }
+//         })
+//         .then((res) => res.json()),
+//     enabled: Boolean(address),
+//     initialData: 0
+//   });
+// };

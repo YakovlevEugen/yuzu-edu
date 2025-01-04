@@ -2,11 +2,12 @@ import { wethAbi } from 'abitype/abis';
 import { type Hex, getContract } from 'viem';
 import type { IChainId } from '../chains';
 import { getPublicClient } from '../clients';
+import { getWETHAddress } from '../helpers';
 
-export const getWETHContract = (chainId: IChainId, address: Hex) =>
+export const getWETHContract = (chainId: IChainId) =>
   getContract({
     client: getPublicClient(chainId),
-    address,
+    address: getWETHAddress(chainId),
     abi: wethAbi
   });
 
@@ -25,5 +26,3 @@ export const getWETHLogs = (params: {
     strict: true
   });
 };
-
-// wrap / unwrap / get balance / get txs

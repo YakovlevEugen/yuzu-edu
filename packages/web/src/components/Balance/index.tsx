@@ -1,13 +1,11 @@
 import SvgIcon from '@/components/SvgIcon';
-
-import type { IToken } from '@/constants/currencies';
 import { formatNumberWithCommas } from '@/helpers/format';
 import { cn } from '@/helpers/lib';
 
 interface Props {
   classAmount?: string;
   className?: string;
-  currency?: IToken;
+  currency?: string;
   value: number | string;
   withCoin?: boolean;
 }

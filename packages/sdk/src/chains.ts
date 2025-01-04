@@ -1,4 +1,5 @@
-import { type Hex, defineChain } from 'viem';
+import { addresses } from '@yuzu/contracts';
+import { type Address, type Chain, type Hex, defineChain } from 'viem';
 import { arbitrum, arbitrumSepolia } from 'viem/chains';
 
 export const eduTestnet = defineChain({
@@ -22,7 +23,8 @@ export const eduTestnet = defineChain({
     }
   },
   contracts: {
-    wedu: { address: '0x345E902846aC3805719483d80D664ABa0B6aF40C' }
+    wedu: { address: addresses.testnet.wedu as Address },
+    faucet: { address: addresses.testnet.faucet as Address }
   }
 });
 
@@ -48,6 +50,7 @@ export const eduMainnet = defineChain({
   },
   contracts: {
     wedu: { address: '0xd02E8c38a8E3db71f8b2ae30B8186d7874934e12' },
+    faucet: { address: null }, // addresses.mainnet.faucet
     // bridged assets
     weth: { address: '0xa572BF655F61930B6f0d4546A67cD1376220081a' },
     usdc: { address: '0x836d275563bAb5E93Fd6Ca62a95dB7065Da94342' },
@@ -107,7 +110,7 @@ export const toChainId = (chain: IChain) => {
   }
 };
 
-export const getChain = (chainId: IChainId) => chains[chainId];
+export const getChain = (chainId: IChainId): Chain => chains[chainId];
 
 export const getTokenAddress = (
   chainId: IChainId,

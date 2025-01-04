@@ -1,22 +1,15 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo } from 'react';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { z } from 'zod';
-
 import BorderBlock from '@/components/BorderBlock';
 import CurrencyInput from '@/components/CurrencyInput';
 import InfoItem from '@/components/InfoItem';
 import TransformCurrency from '@/components/TransformCurrency';
-import ActionButton from './components/ActionButton';
-import StakeTabs from './components/StakeTabs';
-
 import { formatBigWithComas } from '@/helpers/format';
 import { cn } from '@/helpers/lib';
-import {
-  useStakeBalance,
-  useStakeEstimate,
-  useTokenBalance
-} from '@/hooks/api';
+import { useStakingEstimate, useTokenBalance } from '@/hooks/api';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import ActionButton from './components/ActionButton';
+import StakeTabs from './components/StakeTabs';
 import { DEFAULT_ACTIVE_TAB } from './components/StakeTabs/constants';
 
 export const FormSchema = z.object({
@@ -33,7 +26,7 @@ const BLOCK_PADDING = 'py-6 px-6 md:px-8';
 
 export default function Stake({ className }: Props) {
   const balance = useTokenBalance('eduMainnet', 'edu');
-  const stakeBalance = useStakeBalance();
+
   const formMethods = useForm<FormSchema>({
     defaultValues: {
       activeTabId: DEFAULT_ACTIVE_TAB,
@@ -41,18 +34,11 @@ export default function Stake({ className }: Props) {
     },
     resolver: zodResolver(FormSchema)
   });
+
   const { control, watch } = formMethods;
-
   const classRoot = cn('', className);
-  const amount: FormSchema['amount'] = watch('amount');
-
-  const resultAmount = useMemo(() => {
-    const balance = Number.parseFloat(stakeBalance.data || '0');
-    const increase = Number.parseFloat(amount || '0') * 1e18;
-    return (balance + increase).toString();
-  }, [stakeBalance.data, amount]);
-
-  const estimate = useStakeEstimate(resultAmount);
+  const amount = watch('amount');
+  const estimate = useStakingEstimate(amount);
 
   return (
     <FormProvider {...formMethods}>
@@ -104,7 +90,7 @@ export default function Stake({ className }: Props) {
                     value={
                       <TransformCurrency
                         className="font-medium"
-                        from={estimate.data}
+                        from={estimate.data.toString()}
                       />
                     }
                   />

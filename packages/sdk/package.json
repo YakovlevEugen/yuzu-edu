@@ -8,11 +8,12 @@
     "build": "tsc -b"
   },
   "dependencies": {
+    "@yuzu/contracts": "workspace:*",
     "@arbitrum/sdk": "^4.0.2",
     "abitype": "^1.0.7",
     "big.js": "^6.2.2",
     "ethers": "^5.1.0",
-    "viem": "^2.21.55"
+    "viem": "^2.22.2"
   },
   "devDependencies": {
     "@types/big.js": "^6.2.2",

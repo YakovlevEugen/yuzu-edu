@@ -39,11 +39,12 @@ const indexBlocks = async (c: IContext) => {
       getPublicClient(toChainId(chain)).getBlockNumber()
     ]);
 
-    const blockRanges = toChunks({ from, to, chunkSize: 10000 });
+    const blockRanges = toChunks({ from, to, chunkSize: 100 });
 
     for (const { fromBlock, toBlock } of blockRanges) {
       await indexWEDULogs(c, { chain, fromBlock, toBlock });
       await setLastIndexedBlock(c, chain.name, toBlock);
+      return;
     }
   }
 };

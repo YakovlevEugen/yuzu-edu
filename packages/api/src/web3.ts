@@ -3,9 +3,7 @@ import {
   getChain,
   getERC20Contract,
   getPublicClient,
-  getTokenAddress,
-  getWEDUAddress,
-  getWETHContract
+  getTokenAddress
 } from '@yuzu/sdk';
 import Big from 'big.js';
 import type { Hex } from 'viem';
@@ -39,18 +37,10 @@ export const getTokenBalance = async (
     contract.read.decimals()
   ]);
 
-  return new Big(balance.toString()).div(10 ** decimals).toFixed();
+  return new Big(balance.toString()).div(10 ** decimals).toFixed(decimals);
 };
 
-export const getStakeBalance = async (c: IContext, address: Hex) => {
-  const chainId = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
-  const wedu = getWEDUAddress(chainId);
-  const contract = getWETHContract(chainId, wedu);
-  const balance = await contract.read.balanceOf([address]);
-  return new Big(balance.toString()).div(1e18).toFixed(18);
-};
-
-export const getBlock = async (c: IContext) => {
-  const chainId = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
-  return getPublicClient(chainId).getBlockNumber().then(Number);
-};
+export const getBlock = async (c: IContext) =>
+  getPublicClient(c.var.mainnet ? 'eduMainnet' : 'eduTestnet')
+    .getBlockNumber()
+    .then(Number);

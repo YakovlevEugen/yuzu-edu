@@ -9,8 +9,14 @@ interface Props extends ComponentProps<'input'> {
 
 const CurrencyInput = forwardRef<HTMLInputElement, Props>(
   ({ className, currency = 'EDU', ...otherProps }, ref) => {
-    const isCurrencyFunction = typeof currency === 'function';
-    const CurrencyComponent = isCurrencyFunction ? currency : null;
+    const CurrencyComponent =
+      typeof currency === 'function'
+        ? currency
+        : () => (
+            <div className="ml-1 text-3xl font-semibold text-green">
+              {currency as string}
+            </div>
+          );
 
     return (
       <div className="flex items-center">
@@ -23,13 +29,8 @@ const CurrencyInput = forwardRef<HTMLInputElement, Props>(
           placeholder="0"
           {...otherProps}
         />
-        {isCurrencyFunction && CurrencyComponent ? (
-          <CurrencyComponent />
-        ) : (
-          <div className="ml-1 text-3xl font-semibold text-green">
-            {currency}
-          </div>
-        )}
+
+        <CurrencyComponent />
       </div>
     );
   }

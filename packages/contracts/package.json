@@ -1,7 +1,17 @@
 {
   "name": "@yuzu/contracts",
+  "type": "module",
+  "main": "index.ts",
   "scripts": {
-    "build": "forge build",
+    "build": "forge build && pnpm typegen",
+    "typegen": "forge inspect Faucet abi > abi/faucet.json && forge inspect WrappedEDU abi > abi/wedu.json && tsx typegen.ts",
+    "deploy:testnet:faucet": "source .env.testnet; forge script script/FaucetTestnet.s.sol --force --ffi --broadcast --chain-id 656476 --rpc-url $RPC_URL --skip-simulation && pnpm typegen",
+    "deploy:testnet:wedu": "source .env.testnet; forge script script/WrappedEDU.s.sol --force --ffi --broadcast --chain-id 656476 --rpc-url $RPC_URL --skip-simulation && pnpm typegen",
     "clean": "rm -rf .turbo cache out build node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "dotenv-cli": "^8.0.0",
+    "tsx": "^4.17.0"
   }
 }

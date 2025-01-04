@@ -5,12 +5,21 @@ import {
   registerCustomArbitrumNetwork
 } from '@arbitrum/sdk';
 import Big from 'big.js';
-import { BigNumber } from 'ethers';
-import type { Account, Chain, Hex, Transport, WalletClient } from 'viem';
-import { type IChainId, arbMainnet, eduMainnet } from '../chains';
+import { BigNumber, type BytesLike } from 'ethers';
+import {
+  type Account,
+  type Address,
+  type Chain,
+  type Hex,
+  type Transport,
+  type WalletClient,
+  toHex
+} from 'viem';
+import type { IChainId } from '../chains';
 import { getPublicClient } from '../clients';
 import { clientToProvider, clientToSigner } from '../compat';
 import { eduMainnetConfig } from '../networks';
+import type { ITxRequest } from '../requests';
 import { getERC20Contract } from './erc20';
 
 registerCustomArbitrumNetwork(eduMainnetConfig);
@@ -133,12 +142,22 @@ export const deposit = async (params: {
   child: IChainId;
   parentToken: Hex;
   amount: string;
-  parentSigner: WalletClient<Transport, Chain, Account>;
-}) => {
-  const parentSigner = clientToSigner(params.parentSigner);
-  const address = await parentSigner.getAddress();
-  const request = await getDepositRequest({ ...params, from: address as Hex });
-  return clientToSigner(params.parentSigner).sendTransaction(request.txRequest);
+  account: Address;
+  // parentSigner: WalletClient<Transport, Chain, Account>;
+}): Promise<{ request: ITxRequest }> => {
+  // const parentProvider = clientToProvider(getPublicClient(params.parent));
+  // const parentSigner = clientToSigner(params.parentSigner);
+  const request = await getDepositRequest({ ...params, from: params.account });
+  // return parentSigner.sendTransaction(request.txRequest);
+  const { txRequest } = request;
+  return {
+    request: {
+      from: txRequest.from as Hex,
+      to: txRequest.to as Hex,
+      data: toHexString(txRequest.data),
+      value: BigInt(txRequest.value.toString())
+    }
+  };
 };
 
 /**
@@ -150,7 +169,7 @@ export const getWithdrawRequest = async (params: {
   child: IChainId;
   parentToken: Hex;
   amount: string;
-  from: Hex;
+  account: Hex;
 }) => {
   const childProvider = clientToProvider(getPublicClient(params.child));
   const parentProvider = clientToProvider(getPublicClient(params.parent));
@@ -165,8 +184,8 @@ export const getWithdrawRequest = async (params: {
   if (isNativeToken) {
     return new EthBridger(childNetwork).getWithdrawalRequest({
       amount: BigNumber.from(amount),
-      from: params.from,
-      destinationAddress: params.from
+      from: params.account,
+      destinationAddress: params.account
     });
     // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
@@ -182,9 +201,9 @@ export const getWithdrawRequest = async (params: {
     }
     return bridger.getWithdrawalRequest({
       amount: BigNumber.from(amount),
-      destinationAddress: params.from,
+      destinationAddress: params.account,
       erc20ParentAddress: params.parentToken,
-      from: params.from
+      from: params.account
     });
   }
 };
@@ -194,12 +213,25 @@ export const withdraw = async (params: {
   child: IChainId;
   parentToken: Hex;
   amount: string;
-  childSigner: WalletClient<Transport, Chain, Account>;
-}) => {
-  const childProvider = clientToSigner(params.childSigner);
-  const address = await childProvider.getAddress();
-  const request = await getWithdrawRequest({ ...params, from: address as Hex });
-  return clientToSigner(params.childSigner).sendTransaction(request.txRequest);
+  account: Address;
+}): Promise<{ request: ITxRequest; parentGasLimit: string }> => {
+  const parentProvider = clientToProvider(getPublicClient(params.parent));
+  // const childSigner = clientToSigner(getWalletClient(params.child));
+  // const childProvider = clientToProvider(getPublicClient(params.child));
+  const request = await getWithdrawRequest(params);
+  const { txRequest, estimateParentGasLimit } = request;
+  // return childSigner.sendTransaction(txRequest);
+  const gasLimit = await estimateParentGasLimit(parentProvider);
+  const parentGasLimit = gasLimit.toString();
+  return {
+    request: {
+      from: txRequest.from as Hex,
+      to: txRequest.to as Hex,
+      data: toHexString(txRequest.data),
+      value: BigInt(txRequest.value.toString())
+    },
+    parentGasLimit
+  };
 };
 
 /**
@@ -250,6 +282,11 @@ export const getChildTokenAddress = async (params: {
   const childNetwork = await getArbitrumNetwork(childProvider);
   const erc20Bridger = new Erc20Bridger(childNetwork);
   return erc20Bridger.getChildErc20Address(params.parentToken, parentProvider);
+};
+
+export const toHexString = (bytes: BytesLike): Hex => {
+  if (typeof bytes === 'string') return bytes as Hex;
+  return toHex(new Uint8Array(bytes));
 };
 
 // (async () => {

@@ -1,11 +1,39 @@
-import { type IChainId, eduMainnet, eduTestnet } from './chains';
+import type { Address } from 'viem';
+import { type IChainId, arbMainnet, arbTestnet, eduTestnet } from './chains';
+
+export function assert(
+  statement: unknown,
+  message?: string
+): asserts statement {
+  if (!statement) {
+    throw new Error(message || 'Assertion failed');
+  }
+}
+
+export const getWETHAddress = (chainId: IChainId) => {
+  switch (chainId) {
+    case 'arbMainnet':
+      return arbMainnet.contracts.weth.address;
+    case 'arbTestnet':
+      return arbTestnet.contracts.weth.address;
+    default:
+      throw new Error('unsupported chain');
+  }
+};
 
 export const getWEDUAddress = (chainId: IChainId) => {
   switch (chainId) {
-    case 'eduMainnet':
-      return eduMainnet.contracts.wedu.address;
     case 'eduTestnet':
       return eduTestnet.contracts.wedu.address;
+    default:
+      throw new Error('unsupported chain');
+  }
+};
+
+export const getFaucetAddress = (chainId: IChainId) => {
+  switch (chainId) {
+    case 'eduTestnet':
+      return eduTestnet.contracts.faucet.address as Address;
     default:
       throw new Error('unsupported chain');
   }

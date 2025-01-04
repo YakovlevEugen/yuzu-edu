@@ -7,6 +7,7 @@ export type IEnv = {
     SUPABASE_URL: string;
     SUPABASE_KEY: string;
     CONTRACTS_ENV: 'mainnet' | 'testnet';
+    DOMAIN: string;
   };
   Variables: {
     db: SupabaseClient<Database>;
@@ -16,3 +17,4 @@ export type IEnv = {
 
 export type IContext = Context<IEnv>;
 export type IPointsType = 'stake' | 'bridge';
+export type IEligibility = 'eligible' | 'not-eligible' | 'claimed';

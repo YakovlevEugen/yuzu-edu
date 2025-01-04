@@ -22,7 +22,8 @@
       "style": {
         "useNodejsImportProtocol": "off",
         "useTemplate": "off",
-        "noParameterAssign": "off"
+        "noParameterAssign": "off",
+        "useNumberNamespace": "off"
       },
       "complexity": {
         "noForEach": "off"
@@ -30,6 +31,9 @@
     }
   },
   "javascript": {
-    "formatter": { "quoteStyle": "single", "trailingCommas": "none" }
+    "formatter": {
+      "quoteStyle": "single",
+      "trailingCommas": "none"
+    }
   }
 }

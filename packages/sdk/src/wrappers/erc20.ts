@@ -8,5 +8,3 @@ export const getERC20Contract = (chainId: IChainId, address: Hex) =>
     address,
     abi: erc20Abi
   });
-
-// get balance, transfer, approve allowance

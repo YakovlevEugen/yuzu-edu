@@ -1,4 +1,4 @@
 import { hc } from 'hono/client';
-import type app from './server';
+import type IApp from './server';
 
-export const createClient = (baseUrl: string) => hc<typeof app>(baseUrl);
+export const createClient = (baseUrl: string) => hc<typeof IApp>(baseUrl);

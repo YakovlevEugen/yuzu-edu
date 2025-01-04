@@ -30,9 +30,6 @@ export default ({ mode }) => {
       }),
       svgr()
     ],
-    test: {
-      globals: true
-    },
     resolve: {
       alias: {
         ui: resolve(pathSrc, 'components/ui'),

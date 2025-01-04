@@ -1,13 +1,9 @@
-import { useFormContext } from 'react-hook-form';
-// import { parseEther } from 'viem'
-import { useAccount } from 'wagmi';
-
 import WalletConnect from '@/containers/WalletConnect';
-import { Button } from 'ui/button';
-
 import { cn } from '@/helpers/lib';
 import { useToast } from '@/hooks/use-toast';
-import type { FormSchema } from '@/pages/BridgePage/components/Transfer';
+import { useFormContext } from 'react-hook-form';
+import { Button } from 'ui/button';
+import { useAccount } from 'wagmi';
 
 interface Props {
   className?: string;
@@ -19,8 +15,8 @@ export default function ActionButton({ className }: Props) {
   const { toast } = useToast();
 
   const classRoot = cn('', className);
-  const activeTabId: FormSchema['activeTabId'] = watch('activeTabId');
-  const amount: FormSchema['amount'] = watch('amount');
+  const activeTabId = watch('activeTabId');
+  const amount = watch('amount');
 
   async function deposit() {
     try {

@@ -1,85 +1,183 @@
 import { zValidator } from '@hono/zod-validator';
-import { SupabaseClient } from '@supabase/supabase-js';
-import type { IChainId } from '@yuzu/sdk';
 import Big from 'big.js';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import type { Hex } from 'viem';
 import * as v from 'zod';
+import {
+  createBridgeTx,
+  createClaimTx,
+  getBridgePoints,
+  getBridgeTransfers,
+  getClaimEligibility,
+  getCommunities,
+  getRewardsPoints,
+  getWEDUPoints,
+  getWEDUTransfers,
+  vAddress,
+  vChainId
+} from './helpers';
+import { database, network } from './middleware';
 import type { IEnv } from './types';
-import { getStakeBalance, getTokenBalance } from './web3';
+import { getTokenBalance } from './web3';
 
 const app = new Hono<IEnv>()
-  //
   .use(cors())
+  .use(database())
+  .use(network())
 
-  .use((c, next) => {
-    c.set('db', new SupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_KEY));
-    c.set('mainnet', c.env.CONTRACTS_ENV === 'mainnet');
-    return next();
-  })
-
-  .get('/balance/:chainId/:address/:symbol', async (c) => {
-    const balance = await getTokenBalance(c, {
-      chainId: c.req.param('chainId') as IChainId,
-      address: c.req.param('address') as Hex,
-      symbol: c.req.param('symbol')
-    });
-
-    return c.json({ balance });
-  })
-
-  .get('/wallet/:address/stake', async (c) => {
-    const address = c.req.param('address') as Hex;
-    const balance = await getStakeBalance(c, address);
-    return c.json({ balance });
-  })
+  /**
+   * Common
+   */
 
   .get(
-    '/wallet/:address/transfers',
-    zValidator('query', v.object({ page: v.string() })),
+    '/balance/:chainId/:address/:symbol',
+    zValidator(
+      'param',
+      v.object({ chainId: vChainId, address: vAddress, symbol: v.string() })
+    ),
     async (c) => {
-      return c.json([
-        {
-          timestamp: new Date().toISOString(),
-          amount: '1000000000000000000000',
-          points: '1000'
-        }
-      ]);
+      const params = c.req.valid('param');
+      const balance = await getTokenBalance(c, params);
+      return c.json(balance);
     }
   )
 
-  .get('/wallet/:address/points', async (c) => {
-    const { address } = c.req.param();
+  /**
+   * Staking (WEDU)
+   */
 
-    const points = await c.var.db
-      .from('wedu_agg_point_balances_view')
-      .select('*')
-      .eq('address', address)
-      .maybeSingle()
-      .then((res) => Number.parseFloat(res.data?.points?.toFixed(6) || '0'));
+  .get(
+    '/staking/:address/points',
+    zValidator('param', v.object({ address: vAddress })),
+    async (c) => {
+      const { address } = c.req.valid('param');
+      const points = await getWEDUPoints(c, address);
+      return c.json(points);
+    }
+  )
 
-    return c.json(points);
+  .get(
+    '/staking/:address/history',
+    zValidator('query', v.object({ page: v.string() })),
+    zValidator('param', v.object({ address: vAddress })),
+    async (c) => {
+      const { address } = c.req.valid('param');
+      const { page } = c.req.valid('query');
+      const transfers = await getWEDUTransfers(c, address, parseInt(page));
+      return c.json(transfers);
+    }
+  )
+
+  .get(
+    '/staking/:address/estimate',
+    zValidator('query', v.object({ value: v.string() })),
+    zValidator('param', v.object({ address: vAddress })),
+    async (c) => {
+      const { address } = c.req.valid('param');
+      const { value } = c.req.valid('query');
+      const points = await getWEDUPoints(c, address);
+      const combined = new Big(value).div(1e18).mul(24).add(points).toNumber();
+      return c.json(combined);
+    }
+  )
+
+  /**
+   * Bridge (Arb <> EduChain)
+   */
+
+  .get(
+    '/bridge/:address/:source/:target/:symbol/:amount',
+    zValidator(
+      'param',
+      v.object({
+        address: vAddress,
+        source: vChainId,
+        target: vChainId,
+        symbol: v.string(),
+        amount: v.string()
+      })
+    ),
+    zValidator('query', v.object({ ref: v.optional(v.string()) })),
+    async (c) => {
+      const params = c.req.valid('param');
+      const { ref } = c.req.valid('query');
+      const tx = await createBridgeTx(c, { ...params, ref });
+      return c.json(tx);
+    }
+  )
+
+  .get(
+    '/bridge/:address/history',
+    zValidator('param', v.object({ address: vAddress })),
+    zValidator('query', v.object({ page: v.string() })),
+    async (c) => {
+      const { address } = c.req.valid('param');
+      const page = parseInt(c.req.valid('query').page);
+      const transfers = await getBridgeTransfers(c, { address, page });
+      return c.json(transfers);
+    }
+  )
+
+  /**
+   * Claim 0.1 EDU (for gas)
+   */
+
+  .get(
+    '/claim/:address/eligibility',
+    zValidator('param', v.object({ address: vAddress })),
+    async (c) => {
+      const { address } = c.req.valid('param');
+      const eligibility = await getClaimEligibility(c, address);
+      return c.json(eligibility);
+    }
+  )
+
+  .get(
+    '/claim/:address/tx',
+    zValidator('param', v.object({ address: vAddress })),
+    async (c) => {
+      const { address } = c.req.valid('param');
+      const tx = await createClaimTx(c, address);
+      return c.json(tx);
+    }
+  )
+
+  /**
+   * Community Rewards
+   */
+
+  .get('/rewards/communities', async (c) => {
+    const communities = await getCommunities(c);
+    return c.json(communities);
   })
 
   .get(
-    '/wallet/:address/estimate',
-    zValidator('query', v.object({ value: v.string() })),
+    '/rewards/:address',
+    zValidator('param', v.object({ address: vAddress })),
     async (c) => {
-      const { address } = c.req.param();
-      const { value } = c.req.valid('query');
+      const { address } = c.req.valid('param');
+      const points = await getRewardsPoints(c, address);
+      return c.json(points);
+    }
+  )
 
-      const points = await c.var.db
-        .from('wedu_agg_point_balances_view')
-        .select('*')
-        .eq('address', address)
-        .maybeSingle()
-        .then((res) => Number.parseFloat(res.data?.points?.toFixed(6) || '0'));
+  /**
+   * Points Breakdown (AB Internal API)
+   */
 
-      const output = new Big(value).div(1e18).mul(24).add(points).toString();
-      console.log({ points, value, output });
-      return c.json({ points: output });
+  .get(
+    '/points/:address',
+    zValidator('param', v.object({ address: vAddress })),
+    async (c) => {
+      const { address } = c.req.valid('param');
+      const [staking, bridge, rewards] = await Promise.all([
+        getWEDUPoints(c, address),
+        getBridgePoints(c, address),
+        getRewardsPoints(c, address)
+      ]);
+      return c.json({ staking, bridge, rewards });
     }
   );
 
 export default app;
+export type IApp = typeof app;

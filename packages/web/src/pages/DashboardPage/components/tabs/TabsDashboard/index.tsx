@@ -42,7 +42,7 @@ const TABS: ITab[] = [
 ];
 
 export default function TabsDashboard({ className }: Props) {
-  const refTabs = useRef<HTMLDivElement>();
+  const refTabs = useRef<HTMLDivElement>(null);
 
   const classRoot = cn('', className);
 
@@ -68,7 +68,7 @@ export default function TabsDashboard({ className }: Props) {
       {TABS.map(({ id, contentComponent: Content }) => (
         <TabsContent key={id} className="mt-2" value={id}>
           <BorderBlock className="!p-6 shadow-none">
-            <Content />
+            {Content && <Content />}
           </BorderBlock>
         </TabsContent>
       ))}
