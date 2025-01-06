@@ -1,36 +1,34 @@
 import { providers } from 'ethers';
 import type { Account, Chain, Client, Transport } from 'viem';
+import { assert } from './helpers';
 
-export function clientToProvider(client: Client<Transport, Chain>) {
-  const { chain, transport } = client;
+class ViemProvider extends providers.JsonRpcProvider {
+  publicClient: Client<Transport, Chain>;
 
-  const network = {
-    chainId: chain.id,
-    name: chain.name,
-    ensAddress: chain.contracts?.ensRegistry?.address
-  };
+  constructor(client: Client<Transport, Chain>) {
+    const { chain } = client;
+    const connection = chain.rpcUrls.default.http.at(0);
+    assert(connection, 'missing rpcUrl');
+    super(connection, { chainId: chain.id, name: chain.name });
+    this.publicClient = client;
+  }
 
-  if (transport.type === 'fallback')
-    return new providers.FallbackProvider(
-      (transport.transports as ReturnType<Transport>[]).map(
-        ({ value }) => new providers.JsonRpcProvider(value?.url, network)
-      )
-    );
-
-  return new providers.JsonRpcProvider(transport.url, network);
+  async send(method: string, params: Array<unknown>): Promise<unknown> {
+    const res = await this.publicClient.transport.request({ method, params });
+    console.log('request:', { method, params }, 'response:', res);
+    return res;
+  }
 }
+
+export const clientToProvider = (client: Client<Transport, Chain>) =>
+  new ViemProvider(client);
 
 export function clientToSigner(client: Client<Transport, Chain, Account>) {
   const { account, chain, transport } = client;
-
-  const network = {
+  const rpcUrl = chain.rpcUrls.default.http.at(0);
+  assert(rpcUrl, `${chain.name} missing rpc url`);
+  return new providers.Web3Provider(transport, {
     chainId: chain.id,
-    name: chain.name,
-    ensAddress: chain.contracts?.ensRegistry?.address
-  };
-
-  const provider = new providers.Web3Provider(transport, network);
-  const signer = provider.getSigner(account.address);
-
-  return signer;
+    name: chain.name
+  }).getSigner(account.address);
 }

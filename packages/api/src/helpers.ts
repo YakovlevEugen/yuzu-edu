@@ -1,4 +1,11 @@
-import { type IChainId, chains } from '@yuzu/sdk';
+import {
+  type IChainId,
+  chains,
+  getApproveRequest,
+  getDepositRequest,
+  getTokenAddress,
+  getWithdrawRequest
+} from '@yuzu/sdk';
 import { type Address, type Hex, isAddress, isHex } from 'viem';
 import * as v from 'zod';
 import type { IContext, IEligibility } from './types';
@@ -53,20 +60,60 @@ export const getWEDUTransfers = async (
  * Bridge
  */
 
-export const createBridgeTx = async (
+export const createBridgeApproveDepositReq = async (
+  c: IContext,
+  params: {
+    symbol: string;
+    amount: string;
+    address: Hex;
+  }
+) => {
+  const { symbol, amount, address: account } = params;
+  const parent = c.var.mainnet ? 'arbMainnet' : 'arbTestnet';
+  const child = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
+  const parentToken = getTokenAddress(parent, symbol);
+  assert(parentToken, 'invalid token on parent chain');
+  return getApproveRequest({
+    parent,
+    parentToken,
+    child,
+    amount,
+    account
+  });
+};
+
+export const createBridgeDepositReq = async (
   c: IContext,
   params: {
     address: Address;
-    source: IChainId;
-    target: IChainId;
     symbol: string;
     amount: string;
     ref?: string;
   }
 ) => {
-  // write referral request for a given wallet for given params
+  const { address: account, symbol, amount } = params;
+  const parent = c.var.mainnet ? 'arbMainnet' : 'arbTestnet';
+  const child = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
+  const parentToken = getTokenAddress(parent, symbol);
+  assert(parentToken, 'invalid token on parent chain');
+  return getDepositRequest({ parent, parentToken, child, account, amount });
+};
 
-  return '';
+export const createBridgeWithdrawReq = async (
+  c: IContext,
+  params: {
+    address: Address;
+    symbol: string;
+    amount: string;
+    ref?: string;
+  }
+) => {
+  const { address: account, symbol, amount, ref } = params;
+  const parent = c.var.mainnet ? 'arbMainnet' : 'arbTestnet';
+  const child = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
+  const parentToken = getTokenAddress(parent, symbol);
+  assert(parentToken, 'invalid token on parent chain');
+  return getWithdrawRequest({ parent, parentToken, child, account, amount });
 };
 
 export const getBridgeTransfers = async (

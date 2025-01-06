@@ -1,8 +1,4 @@
-import type { IChainId } from '@yuzu/sdk';
+import type { IContractsEnv } from '@yuzu/api';
 
-export const apiUrl = import.meta.env.VITE_API_URL as string;
-
-export const chainId: IChainId =
-  import.meta.env.VITE_CONTRACTS_ENV === 'mainnet'
-    ? 'eduMainnet'
-    : 'eduTestnet';
+export const apiUrl: string = import.meta.env.VITE_API_URL;
+export const contractsEnv: IContractsEnv = import.meta.env.VITE_CONTRACTS_ENV;

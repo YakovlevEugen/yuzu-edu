@@ -6,7 +6,9 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import * as v from 'zod';
 import {
-  createBridgeTx,
+  createBridgeApproveDepositReq,
+  createBridgeDepositReq,
+  createBridgeWithdrawReq,
   createClaimTx,
   getBridgePoints,
   getBridgeTransfers,
@@ -92,7 +94,7 @@ const app = new Hono<IEnv>()
       const { amount } = c.req.valid('query');
       const chainId = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
       const request = await wrapEDU({ chainId, amount, account: address });
-      return c.json(encodeTxRequest(request));
+      return c.json(request);
     }
   )
 
@@ -105,7 +107,7 @@ const app = new Hono<IEnv>()
       const { amount } = c.req.valid('query');
       const chainId = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
       const request = await unwrapWEDU({ chainId, amount, account: address });
-      return c.json(encodeTxRequest(request));
+      return c.json(request);
     }
   )
 
@@ -114,13 +116,28 @@ const app = new Hono<IEnv>()
    */
 
   .get(
-    '/bridge/:address/:source/:target/:symbol/:amount',
+    '/bridge/:address/approve/:symbol/:amount',
     zValidator(
       'param',
       v.object({
         address: vAddress,
-        source: vChainId,
-        target: vChainId,
+        symbol: v.string(),
+        amount: v.string()
+      })
+    ),
+    async (c) => {
+      const params = c.req.valid('param');
+      const tx = await createBridgeApproveDepositReq(c, params);
+      return c.json(tx);
+    }
+  )
+
+  .get(
+    '/bridge/:address/deposit/:symbol/:amount',
+    zValidator(
+      'param',
+      v.object({
+        address: vAddress,
         symbol: v.string(),
         amount: v.string()
       })
@@ -129,7 +146,24 @@ const app = new Hono<IEnv>()
     async (c) => {
       const params = c.req.valid('param');
       const { ref } = c.req.valid('query');
-      const tx = await createBridgeTx(c, { ...params, ref });
+      const tx = await createBridgeDepositReq(c, { ...params, ref });
+      return c.json(tx);
+    }
+  )
+
+  .get(
+    '/bridge/:address/withdraw/:symbol/:amount',
+    zValidator(
+      'param',
+      v.object({
+        address: vAddress,
+        symbol: v.string(),
+        amount: v.string()
+      })
+    ),
+    async (c) => {
+      const params = c.req.valid('param');
+      const tx = await createBridgeWithdrawReq(c, params);
       return c.json(tx);
     }
   )

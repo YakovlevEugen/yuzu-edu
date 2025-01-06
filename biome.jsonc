@@ -23,7 +23,8 @@
         "useNodejsImportProtocol": "off",
         "useTemplate": "off",
         "noParameterAssign": "off",
-        "useNumberNamespace": "off"
+        "useNumberNamespace": "off",
+        "noUselessElse": "off"
       },
       "complexity": {
         "noForEach": "off"

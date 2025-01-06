@@ -10,6 +10,8 @@ import App from '@/App';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { Web3Provider } from '@/providers/Web3Provider';
 import { Toaster } from 'ui/toaster';
+import { EnvProvider } from './hooks/use-environment';
+import { ReferralProvider } from './hooks/use-referral';
 
 setDefaultOptions({ locale: enUS });
 
@@ -20,8 +22,12 @@ ReactDOM.createRoot(root).render(
     <Web3Provider>
       <QueryProvider>
         <BrowserRouter>
-          <App />
-          <Toaster />
+          <EnvProvider>
+            <ReferralProvider>
+              <App />
+              <Toaster />
+            </ReferralProvider>
+          </EnvProvider>
         </BrowserRouter>
       </QueryProvider>
     </Web3Provider>

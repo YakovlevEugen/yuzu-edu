@@ -1,4 +1,3 @@
-import { chainId } from '@/constants/config';
 import WalletConnect from '@/containers/WalletConnect';
 import { isNumberish } from '@/helpers/common';
 import { cn } from '@/helpers/lib';
@@ -8,11 +7,13 @@ import {
   useStakingPoints,
   useTokenBalance
 } from '@/hooks/api';
+import { useChainId } from '@/hooks/use-chain-id';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Button } from 'ui/button';
 import { useAccount, useSendTransaction } from 'wagmi';
+import type { FormSchema } from '../..';
 
 interface Props {
   className?: string;
@@ -20,12 +21,13 @@ interface Props {
 
 export default function ActionButton({ className }: Props) {
   const { isConnected } = useAccount();
-  const { watch } = useFormContext();
+  const { watch } = useFormContext<FormSchema>();
   const { sendTransactionAsync } = useSendTransaction();
   const { toast } = useToast();
   const stakeTx = useCreateStakeTx();
   const unstakeTx = useCreateUnstakeTx();
 
+  const chainId = useChainId();
   const eduBalance = useTokenBalance(chainId, 'edu');
   const weduBalance = useTokenBalance(chainId, 'wedu');
   const stakingPoints = useStakingPoints();
@@ -33,6 +35,7 @@ export default function ActionButton({ className }: Props) {
   const classRoot = cn('', className);
   const activeTabId = watch('activeTabId');
   const amount = watch('amount');
+
   const [loading, setLoading] = useState(false);
 
   async function stake() {

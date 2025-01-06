@@ -15,6 +15,7 @@ import TransformFromTo from '@/components/TransformFromTo';
 import { type IBlockchain, blockchains, tokens } from '@/constants/currencies';
 import { cn } from '@/helpers/lib';
 import { useTokenBalance } from '@/hooks/api';
+import { useChainId, useParentChainId } from '@/hooks/use-chain-id';
 import { TABS } from './components/TransferTabs/constants';
 
 export const FormSchema = z.object({
@@ -26,7 +27,7 @@ export const FormSchema = z.object({
 export type FormSchema = z.infer<typeof FormSchema>;
 
 export default function Transfer({ className }: { className?: string }) {
-  const formMethods = useForm<FormSchema>({
+  const form = useForm<FormSchema>({
     defaultValues: {
       intent: TABS[0].id,
       amount: '',
@@ -34,32 +35,36 @@ export default function Transfer({ className }: { className?: string }) {
     },
     resolver: zodResolver(FormSchema)
   });
-  const { control, setValue, watch } = formMethods;
 
-  const amount: FormSchema['amount'] = watch('amount');
-  const intent: FormSchema['intent'] = watch('intent');
-  const token: FormSchema['token'] = watch('token');
+  const { control, setValue, watch } = form;
+  const { amount, intent, token } = watch();
 
-  const sourceChainId = useMemo(
-    () => (intent === 'deposit' ? 'arbMainnet' : 'eduMainnet'),
-    [intent]
+  const chainId = useChainId();
+  const parentChainId = useParentChainId();
+
+  const parentBalance = useTokenBalance(parentChainId, token);
+  const childBalance = useTokenBalance(chainId, token);
+
+  const sourceBalance = useMemo(
+    () => (intent === 'deposit' ? parentBalance : childBalance),
+    [childBalance, intent, parentBalance]
   );
-  const sourceTokenBalance = useTokenBalance(sourceChainId, token);
 
-  // const targetChainId = useMemo(() => (intent === 'deposit' ? 'eduMainnet' : 'arbMainnet'), [intent])
-  // const targetTokenBalance = useTokenBalance(targetChainId, token)
-
-  const from: IBlockchain = useMemo(
-    () => (intent === 'deposit' ? 'arb' : 'edu'),
-    [intent]
+  const targetBalance = useMemo(
+    () => (intent === 'deposit' ? childBalance : parentBalance),
+    [childBalance, intent, parentBalance]
   );
-  const to: IBlockchain = useMemo(
-    () => (intent === 'deposit' ? 'edu' : 'arb'),
+
+  const { from, to } = useMemo<{ from: IBlockchain; to: IBlockchain }>(
+    () =>
+      intent === 'deposit'
+        ? { from: 'arb', to: 'edu' }
+        : { from: 'edu', to: 'arb' },
     [intent]
   );
 
   return (
-    <FormProvider {...formMethods}>
+    <FormProvider {...form}>
       <BorderBlock className={cn(className)} variant="yellow" padding="none">
         <div>
           <div className="px-6 py-6 md:px-8">
@@ -76,7 +81,7 @@ export default function Transfer({ className }: { className?: string }) {
             <button
               type="button"
               className="block w-full"
-              onClick={() => setValue('amount', sourceTokenBalance.data)}
+              onClick={() => setValue('amount', sourceBalance.data)}
             >
               <InfoItem
                 className="mt-4"
@@ -85,9 +90,7 @@ export default function Transfer({ className }: { className?: string }) {
                   <>
                     <span>MAX </span>
                     <span className="text-foreground">
-                      {Number.parseFloat(
-                        sourceTokenBalance.data
-                      ).toLocaleString()}{' '}
+                      {Number.parseFloat(sourceBalance.data).toLocaleString()}{' '}
                       {tokens[token]}
                     </span>
                   </>
@@ -106,9 +109,7 @@ export default function Transfer({ className }: { className?: string }) {
                       <Controller
                         name="token"
                         control={control}
-                        render={({ field: currencyField }) => (
-                          <CurrencySelect {...currencyField} />
-                        )}
+                        render={({ field }) => <CurrencySelect {...field} />}
                       />
                     )}
                   />
@@ -135,6 +136,18 @@ export default function Transfer({ className }: { className?: string }) {
                       className="font-medium"
                       currency={tokens[token]}
                       from={amount}
+                    />
+                  }
+                />
+
+                <InfoItem
+                  className="mt-3"
+                  title="Balance"
+                  value={
+                    <TransformCurrency
+                      className="font-medium"
+                      currency={tokens[token]}
+                      from={targetBalance.data}
                     />
                   }
                 />

@@ -1,96 +1,59 @@
-import {
-  Erc20Bridger,
-  EthBridger,
-  getArbitrumNetwork,
-  registerCustomArbitrumNetwork
-} from '@arbitrum/sdk';
+import { Erc20Bridger, EthBridger, getArbitrumNetwork } from '@arbitrum/sdk';
 import Big from 'big.js';
-import { BigNumber, type BytesLike } from 'ethers';
-import {
-  type Account,
-  type Address,
-  type Chain,
-  type Hex,
-  type Transport,
-  type WalletClient,
-  toHex
-} from 'viem';
+import { BigNumber } from 'ethers';
+import type { Address, Hex } from 'viem';
 import type { IChainId } from '../chains';
 import { getPublicClient } from '../clients';
-import { clientToProvider, clientToSigner } from '../compat';
+import { clientToProvider } from '../compat';
 import { eduMainnetConfig } from '../networks';
-import type { ITxRequest } from '../requests';
+import { encodeTxRequest } from '../requests';
 import { getERC20Contract } from './erc20';
-
-registerCustomArbitrumNetwork(eduMainnetConfig);
-
-/**
- * Bridged Token Address on Child Chain
- */
-
-export const getChildTokenContract = async (params: {
-  child: IChainId;
-  parent: IChainId;
-  parentToken: Hex;
-}) => {
-  const childProvider = clientToProvider(getPublicClient(params.child));
-  const parentProvider = clientToProvider(getPublicClient(params.parent));
-  const childNetwork = await getArbitrumNetwork(childProvider);
-  const erc20Bridger = new Erc20Bridger(childNetwork);
-
-  const tokenAddress = await erc20Bridger.getChildErc20Address(
-    params.parentToken,
-    parentProvider
-  );
-
-  return erc20Bridger.getChildTokenContract(childProvider, tokenAddress);
-};
 
 /**
  * Deposits
  */
 
-export const getApproveDepositRequest = async (params: {
+// TODO: need to check for sufficient EDU balance and allowance when interacting w/ `parentErc20Gateway`
+// it's possible to check allowance
+
+// TODO: need to check for sufficient EDU balance and allowance when interacting w/ `parentErc20Gateway`
+// it's possible to check allowance
+
+// TODO: index txs
+
+export const getApproveRequest = async (params: {
   parent: IChainId;
   child: IChainId;
   parentToken: Hex;
+  amount: string;
+  account: Address;
 }) => {
   const childProvider = clientToProvider(getPublicClient(params.child));
   const parentProvider = clientToProvider(getPublicClient(params.parent));
   const childNetwork = await getArbitrumNetwork(childProvider);
-  const parentToken = params.parentToken.toLowerCase();
-  const nativeToken = eduMainnetConfig.nativeToken?.toLowerCase();
-  const isNativeToken = parentToken === nativeToken;
+  const erc20ParentAddress = params.parentToken.toLowerCase();
+  const nativeToken = childNetwork.nativeToken?.toLowerCase();
+  const isNativeToken = erc20ParentAddress === nativeToken;
+  const token = getERC20Contract(params.parent, params.parentToken);
+  const decimals = await token.read.decimals();
+  const amount = new Big(params.amount).mul(10 ** decimals).toFixed(0);
+  const ethBridger = new EthBridger(childNetwork);
+  const ercBridger = new Erc20Bridger(childNetwork);
 
   if (isNativeToken) {
-    return new EthBridger(childNetwork).getApproveGasTokenRequest();
-    // biome-ignore lint/style/noUselessElse: <explanation>
-  } else {
-    const bridger = new Erc20Bridger(childNetwork);
-    if (
-      !(await bridger.isRegistered({
-        erc20ParentAddress: params.parentToken,
-        childProvider,
-        parentProvider
-      }))
-    ) {
-      throw new Error('token bridge is not registered');
-    }
-    return bridger.getApproveTokenRequest({
-      erc20ParentAddress: params.parentToken,
-      parentProvider
+    const request = ethBridger.getApproveGasTokenRequest({
+      amount: BigNumber.from(amount)
     });
+    return encodeTxRequest({ from: params.account, ...request });
+  } else {
+    return ercBridger
+      .getApproveTokenRequest({
+        erc20ParentAddress,
+        parentProvider,
+        amount: BigNumber.from(amount)
+      })
+      .then((request) => encodeTxRequest({ from: params.account, ...request }));
   }
-};
-
-export const approveDeposit = async (params: {
-  parent: IChainId;
-  child: IChainId;
-  parentToken: Hex;
-  parentSigner: WalletClient<Transport, Chain, Account>;
-}) => {
-  const request = await getApproveDepositRequest(params);
-  return clientToSigner(params.parentSigner).sendTransaction(request);
 };
 
 export const getDepositRequest = async (params: {
@@ -98,66 +61,40 @@ export const getDepositRequest = async (params: {
   child: IChainId;
   parentToken: Hex;
   amount: string;
-  from: Hex;
+  account: Hex;
 }) => {
   const childProvider = clientToProvider(getPublicClient(params.child));
   const parentProvider = clientToProvider(getPublicClient(params.parent));
   const childNetwork = await getArbitrumNetwork(childProvider);
-  const parentToken = params.parentToken.toLowerCase();
+  const erc20ParentAddress = params.parentToken.toLowerCase();
   const nativeToken = eduMainnetConfig.nativeToken?.toLowerCase();
-  const isNativeToken = parentToken === nativeToken;
+  const isNativeToken = erc20ParentAddress === nativeToken;
   const token = getERC20Contract(params.parent, params.parentToken);
   const decimals = await token.read.decimals();
   const amount = new Big(params.amount).mul(10 ** decimals).toFixed(0);
+  const ethBridger = new EthBridger(childNetwork);
+  const ercBridger = new Erc20Bridger(childNetwork);
 
   if (isNativeToken) {
-    return new EthBridger(childNetwork).getDepositRequest({
-      amount: BigNumber.from(amount),
-      from: params.from
-    });
-    // biome-ignore lint/style/noUselessElse: <explanation>
+    return ethBridger
+      .getDepositRequest({
+        from: params.account,
+        amount: BigNumber.from(amount)
+      })
+      .then(({ txRequest }) => txRequest)
+      .then(encodeTxRequest);
   } else {
-    const bridger = new Erc20Bridger(childNetwork);
-    if (
-      !(await bridger.isRegistered({
-        erc20ParentAddress: params.parentToken,
+    return ercBridger
+      .getDepositRequest({
+        from: params.account,
+        erc20ParentAddress,
         childProvider,
-        parentProvider
-      }))
-    ) {
-      throw new Error('token bridge is not registered');
-    }
-    return bridger.getDepositRequest({
-      amount: BigNumber.from(amount),
-      erc20ParentAddress: params.parentToken,
-      from: params.from,
-      childProvider,
-      parentProvider
-    });
+        parentProvider,
+        amount: BigNumber.from(amount)
+      })
+      .then(({ txRequest }) => txRequest)
+      .then(encodeTxRequest);
   }
-};
-
-export const deposit = async (params: {
-  parent: IChainId;
-  child: IChainId;
-  parentToken: Hex;
-  amount: string;
-  account: Address;
-  // parentSigner: WalletClient<Transport, Chain, Account>;
-}): Promise<{ request: ITxRequest }> => {
-  // const parentProvider = clientToProvider(getPublicClient(params.parent));
-  // const parentSigner = clientToSigner(params.parentSigner);
-  const request = await getDepositRequest({ ...params, from: params.account });
-  // return parentSigner.sendTransaction(request.txRequest);
-  const { txRequest } = request;
-  return {
-    request: {
-      from: txRequest.from as Hex,
-      to: txRequest.to as Hex,
-      data: toHexString(txRequest.data),
-      value: BigInt(txRequest.value.toString())
-    }
-  };
 };
 
 /**
@@ -172,66 +109,36 @@ export const getWithdrawRequest = async (params: {
   account: Hex;
 }) => {
   const childProvider = clientToProvider(getPublicClient(params.child));
-  const parentProvider = clientToProvider(getPublicClient(params.parent));
   const childNetwork = await getArbitrumNetwork(childProvider);
-  const parentToken = params.parentToken.toLowerCase();
+  const erc20ParentAddress = params.parentToken.toLowerCase();
   const nativeToken = eduMainnetConfig.nativeToken?.toLowerCase();
-  const isNativeToken = parentToken === nativeToken;
+  const isNativeToken = erc20ParentAddress === nativeToken;
   const token = getERC20Contract(params.parent, params.parentToken);
   const decimals = await token.read.decimals();
   const amount = new Big(params.amount).mul(10 ** decimals).toFixed(0);
+  const ethBridger = new EthBridger(childNetwork);
+  const ercBridger = new Erc20Bridger(childNetwork);
 
   if (isNativeToken) {
-    return new EthBridger(childNetwork).getWithdrawalRequest({
-      amount: BigNumber.from(amount),
-      from: params.account,
-      destinationAddress: params.account
-    });
-    // biome-ignore lint/style/noUselessElse: <explanation>
+    return ethBridger
+      .getWithdrawalRequest({
+        from: params.account,
+        destinationAddress: params.account,
+        amount: BigNumber.from(amount)
+      })
+      .then(({ txRequest }) => txRequest)
+      .then(encodeTxRequest);
   } else {
-    const bridger = new Erc20Bridger(childNetwork);
-    if (
-      !(await bridger.isRegistered({
+    return ercBridger
+      .getWithdrawalRequest({
+        from: params.account,
+        destinationAddress: params.account,
         erc20ParentAddress: params.parentToken,
-        childProvider,
-        parentProvider
-      }))
-    ) {
-      throw new Error('token bridge is not registered');
-    }
-    return bridger.getWithdrawalRequest({
-      amount: BigNumber.from(amount),
-      destinationAddress: params.account,
-      erc20ParentAddress: params.parentToken,
-      from: params.account
-    });
+        amount: BigNumber.from(amount)
+      })
+      .then(({ txRequest }) => txRequest)
+      .then(encodeTxRequest);
   }
-};
-
-export const withdraw = async (params: {
-  parent: IChainId;
-  child: IChainId;
-  parentToken: Hex;
-  amount: string;
-  account: Address;
-}): Promise<{ request: ITxRequest; parentGasLimit: string }> => {
-  const parentProvider = clientToProvider(getPublicClient(params.parent));
-  // const childSigner = clientToSigner(getWalletClient(params.child));
-  // const childProvider = clientToProvider(getPublicClient(params.child));
-  const request = await getWithdrawRequest(params);
-  const { txRequest, estimateParentGasLimit } = request;
-  // return childSigner.sendTransaction(txRequest);
-  const gasLimit = await estimateParentGasLimit(parentProvider);
-  const parentGasLimit = gasLimit.toString();
-  return {
-    request: {
-      from: txRequest.from as Hex,
-      to: txRequest.to as Hex,
-      data: toHexString(txRequest.data),
-      value: BigInt(txRequest.value.toString())
-    },
-    parentGasLimit
-  };
 };
 
 /**
@@ -272,6 +179,28 @@ export const getTVL = async (params: {
   return new Big(balance.toString()).div(10 ** decimals).toFixed(decimals);
 };
 
+/**
+ * Bridged Token Address on Child Chain
+ */
+
+export const getChildTokenContract = async (params: {
+  child: IChainId;
+  parent: IChainId;
+  parentToken: Hex;
+}) => {
+  const childProvider = clientToProvider(getPublicClient(params.child));
+  const parentProvider = clientToProvider(getPublicClient(params.parent));
+  const childNetwork = await getArbitrumNetwork(childProvider);
+  const erc20Bridger = new Erc20Bridger(childNetwork);
+
+  const tokenAddress = await erc20Bridger.getChildErc20Address(
+    params.parentToken,
+    parentProvider
+  );
+
+  return erc20Bridger.getChildTokenContract(childProvider, tokenAddress);
+};
+
 export const getChildTokenAddress = async (params: {
   parent: IChainId;
   child: IChainId;
@@ -283,18 +212,3 @@ export const getChildTokenAddress = async (params: {
   const erc20Bridger = new Erc20Bridger(childNetwork);
   return erc20Bridger.getChildErc20Address(params.parentToken, parentProvider);
 };
-
-export const toHexString = (bytes: BytesLike): Hex => {
-  if (typeof bytes === 'string') return bytes as Hex;
-  return toHex(new Uint8Array(bytes));
-};
-
-// (async () => {
-// 	const tvl = await getTVL({
-// 		child: "eduMainnet",
-// 		parent: "arbMainnet",
-// 		parentToken: arbMainnet.contracts.edu.address,
-// 	});
-
-// 	console.log(tvl);
-// })();

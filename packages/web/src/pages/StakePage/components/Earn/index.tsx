@@ -1,14 +1,15 @@
 import BorderBlock from '@/components/BorderBlock';
 import InfoItem from '@/components/InfoItem';
-import { chainId } from '@/constants/config';
 import BalanceInfo from '@/containers/BalanceInfo';
 import { formatTimeToDate } from '@/helpers/date';
 import { formatNumberWithCommas } from '@/helpers/format';
 import { cn } from '@/helpers/lib';
 import { useTokenBalance } from '@/hooks/api';
+import { useChainId } from '@/hooks/use-chain-id';
 import { useMemo } from 'react';
 
 export default function Earn({ className }: { className?: string }) {
+  const chainId = useChainId();
   const weduBalance = useTokenBalance(chainId, 'wedu');
 
   const earnInfo = useMemo(

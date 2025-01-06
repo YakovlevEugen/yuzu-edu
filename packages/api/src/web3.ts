@@ -18,7 +18,7 @@ export const getTokenBalance = async (
     symbol: string;
   }
 ) => {
-  const { chainId, address, symbol } = params;
+  let { chainId, address, symbol } = params;
   const { nativeCurrency } = getChain(chainId);
   const isNativeCurrency = nativeCurrency.symbol.toLowerCase() === symbol;
 
@@ -27,6 +27,8 @@ export const getTokenBalance = async (
     const balance = await client.getBalance({ address });
     return new Big(balance.toString()).div(1e18).toFixed();
   }
+
+  if (symbol === 'eth') symbol = 'weth';
 
   const tokenAddress = getTokenAddress(chainId, symbol);
   assert(tokenAddress, 'token symbol not found');

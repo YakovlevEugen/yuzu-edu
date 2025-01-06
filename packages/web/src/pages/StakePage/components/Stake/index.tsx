@@ -2,10 +2,11 @@ import BorderBlock from '@/components/BorderBlock';
 import CurrencyInput from '@/components/CurrencyInput';
 import InfoItem from '@/components/InfoItem';
 import TransformCurrency from '@/components/TransformCurrency';
-import { chainId } from '@/constants/config';
+
 import { isNumberish } from '@/helpers/common';
 import { cn } from '@/helpers/lib';
 import { useStakingEstimate, useTokenBalance } from '@/hooks/api';
+import { useChainId } from '@/hooks/use-chain-id';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Big from 'big.js';
 import { useMemo } from 'react';
@@ -28,6 +29,7 @@ interface Props {
 const BLOCK_PADDING = 'py-6 px-6 md:px-8';
 
 export default function Stake({ className }: Props) {
+  const chainId = useChainId();
   const eduBalance = useTokenBalance(chainId, 'edu');
   const weduBalance = useTokenBalance(chainId, 'wedu');
 

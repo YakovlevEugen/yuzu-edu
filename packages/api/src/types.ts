@@ -6,7 +6,7 @@ export type IEnv = {
   Bindings: {
     SUPABASE_URL: string;
     SUPABASE_KEY: string;
-    CONTRACTS_ENV: 'mainnet' | 'testnet';
+    CONTRACTS_ENV: IContractsEnv;
     DOMAIN: string;
   };
   Variables: {
@@ -15,6 +15,7 @@ export type IEnv = {
   };
 };
 
+export type IContractsEnv = 'mainnet' | 'testnet';
 export type IContext = Context<IEnv>;
 export type IPointsType = 'stake' | 'bridge';
 export type IEligibility = 'eligible' | 'not-eligible' | 'claimed';

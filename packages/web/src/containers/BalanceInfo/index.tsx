@@ -1,12 +1,13 @@
 import Balance from '@/components/Balance';
-import { chainId } from '@/constants/config';
 import { cn } from '@/helpers/lib';
 import { useStakingPoints, useTokenBalance } from '@/hooks/api';
+import { useChainId } from '@/hooks/use-chain-id';
 import { useRaf } from '@/hooks/use-raf';
 import Big from 'big.js';
 import { useCallback, useEffect, useState } from 'react';
 
 export default function BalanceInfo({ className }: { className?: string }) {
+  const chainId = useChainId();
   const points = useStakingPoints();
   const weduBalance = useTokenBalance(chainId, 'wedu');
   const [value, setValue] = useState(points.data);

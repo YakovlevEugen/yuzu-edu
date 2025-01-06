@@ -4,7 +4,7 @@ import { type Address, encodeFunctionData, getContract } from 'viem';
 import type { IChainId } from '../chains';
 import { getPublicClient } from '../clients';
 import { getWEDUAddress } from '../helpers';
-import type { ITxRequest } from '../requests';
+import { encodeTxRequest } from '../requests';
 
 export const getWEDUContract = (chainId: IChainId) =>
   getContract({
@@ -32,19 +32,19 @@ export const wrapEDU = async (params: {
   chainId: IChainId;
   amount: string;
   account: Address;
-}): Promise<ITxRequest> => {
+}) => {
   const { chainId, amount, account } = params;
   const value = BigInt(new Big(amount).mul(10 ** 18).toFixed(0));
   const { address, abi } = getWEDUContract(chainId);
   const data = encodeFunctionData({ functionName: 'deposit', abi });
-  return { from: account, to: address, data, value };
+  return encodeTxRequest({ from: account, to: address, data, value });
 };
 
 export const unwrapWEDU = async (params: {
   chainId: IChainId;
   amount: string;
   account: Address;
-}): Promise<ITxRequest> => {
+}) => {
   const { chainId, amount, account } = params;
   const value = BigInt(new Big(amount).mul(10 ** 18).toFixed(0));
   const { address, abi } = getWEDUContract(chainId);
@@ -53,5 +53,5 @@ export const unwrapWEDU = async (params: {
     abi,
     args: [value]
   });
-  return { from: account, to: address, data };
+  return encodeTxRequest({ from: account, to: address, data });
 };

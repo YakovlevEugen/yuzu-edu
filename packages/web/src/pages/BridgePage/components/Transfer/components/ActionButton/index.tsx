@@ -1,30 +1,53 @@
 import WalletConnect from '@/containers/WalletConnect';
 import { cn } from '@/helpers/lib';
+import {
+  useBridgeApproveTx,
+  useBridgeDepositTx,
+  useBridgeWithdrawTx,
+  useTokenBalance
+} from '@/hooks/api';
+import { useChainId, useParentChainId } from '@/hooks/use-chain-id';
 import { useToast } from '@/hooks/use-toast';
 import { useFormContext } from 'react-hook-form';
 import { Button } from 'ui/button';
-import { useAccount } from 'wagmi';
+import { useAccount, useSendTransaction } from 'wagmi';
+import type { FormSchema } from '../..';
 
 interface Props {
   className?: string;
 }
 
 export default function ActionButton({ className }: Props) {
-  const { isConnected } = useAccount();
-  const { watch } = useFormContext();
   const { toast } = useToast();
+  const { isConnected } = useAccount();
+  const form = useFormContext<FormSchema>();
+  const { sendTransactionAsync } = useSendTransaction();
 
-  const classRoot = cn('', className);
-  const activeTabId = watch('activeTabId');
-  const amount = watch('amount');
+  const approveTx = useBridgeApproveTx();
+  const depositTx = useBridgeDepositTx();
+  const withdrawTx = useBridgeWithdrawTx();
+
+  const { intent, amount, token: symbol } = form.watch();
+
+  const chainId = useChainId();
+  const parentChainId = useParentChainId();
+
+  const parentBalance = useTokenBalance(parentChainId, symbol);
+  const childBalance = useTokenBalance(chainId, symbol);
 
   async function deposit() {
     try {
-      // TODO: add deposit method
-      // await sendTransactionAsync({
-      //   to: '0xDbD8e8bc1A1b6a563d4b9F75F72E577C42890fF7',
-      //   value: parseEther(amount)
-      // })
+      await approveTx
+        .mutateAsync({ symbol, amount })
+        .then(sendTransactionAsync);
+
+      await depositTx
+        .mutateAsync({ symbol, amount })
+        .then(sendTransactionAsync);
+
+      parentBalance.refetch();
+      childBalance.refetch();
+
       toast({ title: 'Success Deposit', variant: 'success' });
     } catch (error) {
       toast({ title: 'Deposit Failed', variant: 'destructive' });
@@ -34,11 +57,13 @@ export default function ActionButton({ className }: Props) {
 
   async function withdraw() {
     try {
-      // TODO: add withdraw method
-      // await sendTransactionAsync({
-      //   to: '0xDbD8e8bc1A1b6a563d4b9F75F72E577C42890fF7',
-      //   value: parseEther(amount)
-      // })
+      await withdrawTx
+        .mutateAsync({ symbol, amount })
+        .then(sendTransactionAsync);
+
+      parentBalance.refetch();
+      childBalance.refetch();
+
       toast({ title: 'Success Withdraw', variant: 'success' });
     } catch (error) {
       toast({ title: 'Withdraw Failed', variant: 'destructive' });
@@ -46,16 +71,14 @@ export default function ActionButton({ className }: Props) {
     }
   }
 
-  const actionFunction = activeTabId === 'deposit' ? deposit : withdraw;
-
   return (
-    <div className={classRoot}>
+    <div className={cn(className)}>
       {isConnected ? (
         <Button
           className="w-full"
           disabled={!amount}
           size="lg"
-          onClick={actionFunction}
+          onClick={intent === 'deposit' ? deposit : withdraw}
         >
           Bridge
         </Button>

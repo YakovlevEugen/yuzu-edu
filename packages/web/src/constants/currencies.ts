@@ -9,6 +9,7 @@ export const tokens = {
   edu: 'EDU',
   usdc: 'USDC',
   usdt: 'USDT',
+  eth: 'ETH',
   weth: 'WETH'
 };
 
