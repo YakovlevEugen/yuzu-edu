@@ -1,3 +1,5 @@
+import { forwardRef } from 'react';
+
 import RoundedTabs from '@/components/RoundedTabs';
 import { Tabs } from 'ui/tabs';
 
@@ -13,26 +15,32 @@ export interface TStakeTabs extends Omit<ITab, 'id'> {
 
 interface Props {
   className?: string;
+  tabs?: TStakeTabs[];
   value?: string;
   onChange?: (tabId: TStakeTabId) => void;
 }
 
-export default function StakeTabs({ className, value, onChange }: Props) {
-  const classRoot = cn('', className);
-  const resultValue = value ?? DEFAULT_ACTIVE_TAB;
+const StakeTabs = forwardRef<HTMLDivElement, Props>(
+  ({ className, tabs, value, onChange }, ref) => {
+    const classRoot = cn('', className);
+    const resultValue = value ?? DEFAULT_ACTIVE_TAB;
+    const resultTabs = tabs ?? TABS;
 
-  function handleChange(tabId: string) {
-    onChange?.(tabId as TStakeTabId);
+    function handleChange(tabId: string) {
+      onChange?.(tabId as TStakeTabId);
+    }
+
+    return (
+      <Tabs
+        className={classRoot}
+        defaultValue={DEFAULT_ACTIVE_TAB}
+        value={resultValue}
+        onValueChange={handleChange}
+      >
+        <RoundedTabs ref={ref} tabs={resultTabs} />
+      </Tabs>
+    );
   }
+);
 
-  return (
-    <Tabs
-      className={classRoot}
-      defaultValue={DEFAULT_ACTIVE_TAB}
-      value={resultValue}
-      onValueChange={handleChange}
-    >
-      <RoundedTabs tabs={TABS} />
-    </Tabs>
-  );
-}
+export default StakeTabs;

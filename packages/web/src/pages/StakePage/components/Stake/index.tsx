@@ -14,7 +14,7 @@ import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import ActionButton from './components/ActionButton';
 import StakeTabs from './components/StakeTabs';
-import { DEFAULT_ACTIVE_TAB } from './components/StakeTabs/constants';
+import { DEFAULT_ACTIVE_TAB, TABS } from './components/StakeTabs/constants';
 
 export const FormSchema = z.object({
   activeTabId: z.string(),
@@ -41,10 +41,24 @@ export default function Stake({ className }: Props) {
     resolver: zodResolver(FormSchema)
   });
 
-  const { control, watch } = formMethods;
+  const { control, setValue, watch } = formMethods;
   const classRoot = cn('', className);
   const amount = watch('amount');
   const activeTabId = watch('activeTabId');
+
+  const tabs = useMemo(() => {
+    return TABS.map((tab) => {
+      const weduBalanceBig = new Big(weduBalance.data);
+      if (tab.id === 'unwrap' && weduBalanceBig.eq(0)) {
+        return {
+          ...tab,
+          disabled: true
+        };
+      }
+
+      return tab;
+    });
+  }, [weduBalance.data]);
 
   const total = useMemo(() => {
     if (isNumberish(amount)) {
@@ -72,21 +86,24 @@ export default function Stake({ className }: Props) {
             <Controller
               name="activeTabId"
               control={control}
-              render={({ field }) => <StakeTabs {...field} className="mb-4" />}
+              render={({ field }) => (
+                <StakeTabs {...field} className="mb-4" tabs={tabs} />
+              )}
             />
 
             <div>
               <InfoItem
                 title={
                   <span className="fs-14">
-                    Available to {activeTabId === 'stake' ? 'Stake' : 'Unstake'}
+                    Available to{' '}
+                    {tabs.find(({ id }) => id === activeTabId)?.title}
                   </span>
                 }
                 value={
                   <button
                     type="button"
                     onClick={() =>
-                      formMethods.setValue(
+                      setValue(
                         'amount',
                         activeTabId === 'stake'
                           ? eduBalance.data
