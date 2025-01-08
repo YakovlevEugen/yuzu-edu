@@ -1,6 +1,6 @@
-import type { TStakeTabs } from './index';
+import type { IStakeTabs } from './index';
 
-export const TABS: TStakeTabs[] = [
+export const TABS: IStakeTabs[] = [
   {
     id: 'stake',
     disabled: false,

@@ -13,7 +13,7 @@ import { useMemo } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import ActionButton from './components/ActionButton';
-import StakeTabs from './components/StakeTabs';
+import StakeTabs, { type IStakeTabs } from './components/StakeTabs';
 import { DEFAULT_ACTIVE_TAB, TABS } from './components/StakeTabs/constants';
 
 export const FormSchema = z.object({
@@ -46,7 +46,15 @@ export default function Stake({ className }: Props) {
   const amount = watch('amount');
   const activeTabId = watch('activeTabId');
 
-  const tabs = useMemo(() => {
+  const isActiveTabStake = useMemo(
+    () => activeTabId === 'stake',
+    [activeTabId]
+  );
+  const activeTabBalance = new Big(
+    isActiveTabStake ? eduBalance.data : weduBalance.data
+  );
+
+  const tabs = useMemo<IStakeTabs[]>(() => {
     return TABS.map((tab) => {
       const weduBalanceBig = new Big(weduBalance.data);
       if (tab.id === 'unwrap' && weduBalanceBig.eq(0)) {
@@ -64,7 +72,7 @@ export default function Stake({ className }: Props) {
     if (isNumberish(amount)) {
       try {
         return new Big(weduBalance.data)
-          .add(activeTabId === 'stake' ? amount : `-${amount}`)
+          .add(isActiveTabStake ? amount : `-${amount}`)
           .toFixed(18);
       } catch (error) {
         console.warn(error);
@@ -72,11 +80,9 @@ export default function Stake({ className }: Props) {
       }
     }
     return '0';
-  }, [activeTabId, amount, weduBalance]);
+  }, [isActiveTabStake, amount, weduBalance]);
 
-  const estimate = useStakingEstimate(
-    activeTabId === 'stake' ? amount : `-${amount}`
-  );
+  const estimate = useStakingEstimate(isActiveTabStake ? amount : `-${amount}`);
 
   return (
     <FormProvider {...formMethods}>
@@ -103,20 +109,14 @@ export default function Stake({ className }: Props) {
                   <button
                     type="button"
                     onClick={() =>
-                      setValue(
-                        'amount',
-                        activeTabId === 'stake'
-                          ? eduBalance.data
-                          : weduBalance.data
-                      )
+                      setValue('amount', activeTabBalance.toString())
                     }
                     className="hover:brightness-75 active:brightness-125"
                   >
                     <span>MAX </span>
                     <span className="text-foreground">
-                      {activeTabId === 'stake'
-                        ? `${eduBalance.data} EDU`
-                        : `${weduBalance.data} WEDU`}
+                      {activeTabBalance.toFixed(3)}{' '}
+                      {isActiveTabStake ? 'EDU' : 'WEDU'}
                     </span>
                   </button>
                 }

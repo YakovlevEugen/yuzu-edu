@@ -9,13 +9,13 @@ import { DEFAULT_ACTIVE_TAB, TABS } from './constants';
 
 export type TStakeTabId = 'stake' | 'unwrap';
 
-export interface TStakeTabs extends Omit<ITab, 'id'> {
+export interface IStakeTabs extends Omit<ITab, 'id'> {
   id: TStakeTabId;
 }
 
 interface Props {
   className?: string;
-  tabs?: TStakeTabs[];
+  tabs?: IStakeTabs[];
   value?: string;
   onChange?: (tabId: TStakeTabId) => void;
 }
