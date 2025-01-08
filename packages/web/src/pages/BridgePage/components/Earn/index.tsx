@@ -1,6 +1,7 @@
 import BorderBlock from '@/components/BorderBlock';
 import InfoItem from '@/components/InfoItem';
 import BalanceInfo from '@/containers/BalanceInfo';
+import ReferralBlock from '@/containers/ReferralBlock';
 import { formatBigWithComas } from '@/helpers/format';
 import { cn } from '@/helpers/lib';
 import { useTokenBalance } from '@/hooks/api';
@@ -25,11 +26,15 @@ export default function Earn({ className }: { className?: string }) {
     <BorderBlock className={cn(className)}>
       <div className="mt-3 text-center">Yuzu Earned</div>
       <BalanceInfo className="mb-4 justify-center" />
-      <div className="group">
-        {earnInfo.map((info) => (
-          <InfoItem key={info.title} className="mt-4 first:mt-0" {...info} />
-        ))}
-      </div>
+      {!!earnInfo.length && (
+        <div className="group">
+          {earnInfo.map((info) => (
+            <InfoItem key={info.title} className="mt-4 first:mt-0" {...info} />
+          ))}
+        </div>
+      )}
+
+      <ReferralBlock className="mt-4 md:mt-6" />
     </BorderBlock>
   );
 }

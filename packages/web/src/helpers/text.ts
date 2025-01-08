@@ -18,3 +18,11 @@ export function replaceCenterWithEllipsis(
 
   return start + '...' + end;
 }
+
+export async function copyToClipboard(text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (error) {
+    console.error('Failed to copy text: ', error);
+  }
+}
