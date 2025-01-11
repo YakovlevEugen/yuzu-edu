@@ -1,4 +1,5 @@
 import { type IChainId, getPublicClient } from '@yuzu/sdk';
+import type { Address, Transaction } from 'viem';
 import { getExcludedAddresses, getStartingBlock } from './config';
 import {
   filter,
@@ -72,4 +73,30 @@ export const countWalletTxs = async (chainId: IChainId) => {
   }
 
   return index;
+};
+
+export const getWalletTxs = async (chainId: IChainId, address: Address) => {
+  const set = new Set<Transaction>();
+
+  const blacklist = getExcludedAddresses(chainId);
+  const startingBlock = getStartingBlock(chainId);
+  const transactions = readTransactions(chainId);
+
+  const eligibleTxs = filter(
+    transactions,
+    (tx) =>
+      tx.blockNumber &&
+      tx.blockNumber >= startingBlock &&
+      !blacklist.includes(tx.from.toLowerCase())
+  );
+
+  for await (const tx of eligibleTxs) {
+    const sender = tx.from.toLowerCase();
+
+    if (sender === address) {
+      set.add(tx);
+    }
+  }
+
+  return Array.from(set);
 };

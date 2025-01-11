@@ -4,7 +4,9 @@
 
 import fs from 'fs';
 import { program } from '@commander-js/extra-typings';
+import { type Address, isAddress } from 'viem';
 import { context } from '../context';
+import { getTestnetParticipantPoints } from './config';
 import { countWalletTxs, indexTransactions } from './helpers';
 
 program
@@ -27,4 +29,13 @@ program
 
     fs.writeFileSync(filename, lines.join('\n'));
     console.log(`Written ${filename}.`);
+  });
+
+program
+  //
+  .command('get-wallet-points')
+  .argument('<address>', 'wallet address')
+  .action(async (address) => {
+    if (!isAddress(address)) throw new Error('invalid address');
+    console.log(await getTestnetParticipantPoints(address as Address));
   });

@@ -1,9 +1,11 @@
 import type { IChainId } from '@yuzu/sdk';
+import type { Address } from 'viem';
+import { getWalletTxs } from './helpers';
 
 export const getStartingBlock = (chainId: IChainId) => {
   switch (chainId) {
     case 'eduTestnet':
-      return 68862n;
+      return 68862n; // Sep 25 2024 08:16:49 AM
     default:
       return 0n;
   }
@@ -30,6 +32,21 @@ export const getExcludedAddresses = (chainId: IChainId) => {
       return [];
   }
 };
+
+export const getTestnetParticipantPoints = (address: Address) => {
+  // based on address, how much points gets produced?
+  return getTestnetWalletTxs(address)
+    .then((txs) =>
+      txs.map((tx) => getAddressBoost(tx.to?.toLowerCase() as Address))
+    )
+    .then((points) => points.reduce((mem, elem) => mem + elem, 0));
+};
+
+const getTestnetWalletTxs = async (address: Address) =>
+  getWalletTxs('eduTestnet', address.toLowerCase() as Address);
+
+const getAddressBoost = (address?: Address) =>
+  contracts.find((c) => address && c.addresses.includes(address))?.boost || 1;
 
 export const contracts = [
   {
@@ -190,4 +207,4 @@ export const contracts = [
     ],
     boost: 1
   }
-] as const;
+];

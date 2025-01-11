@@ -6,4 +6,11 @@ assets = { directory = "build", not_found_handling = "single-page-application" }
 
 [env.staging]
 name = "yuzu-web-staging"
-routes = [{ pattern = "yuzu-web-staging.r8edev.xyz", custom_domain = true }]
+routes = [
+  { pattern = "yuzu-web-staging.r8edev.xyz", custom_domain = true },
+  { pattern = "https://yuzu-staging.educhain.xyz/*", zone_name = 'educhain.xyz' }
+]
+
+[env.production]
+name = "yuzu-web-production"
+routes = [{ pattern = "yuzu-web.r8edev.xyz", custom_domain = true }]

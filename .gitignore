@@ -5,6 +5,7 @@
 .env.*
 .dev.vars
 .idea
+.*.vars.json
 build
 node_modules
 tsconfig.tsbuildinfo

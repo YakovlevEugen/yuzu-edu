@@ -17,7 +17,8 @@
     "svgo": "svgo -f ./src/assets/svg --config=./svgo.config.cjs",
     "test": "vitest",
     "test-storybook": "test-storybook",
-    "deploy:staging": "wrangler deploy --env staging"
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production"
   },
   "cloudflared": {
     "name": "yuzu-web-$USER",
