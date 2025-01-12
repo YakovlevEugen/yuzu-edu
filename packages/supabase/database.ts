@@ -27,36 +27,33 @@ export type Database = {
         };
         Relationships: [];
       };
-      transactions: {
+      faucet_wallets: {
         Row: {
           address: string;
-          block: number;
           createdAt: string;
-          details: Json;
-          id: string;
-          transactionId: string;
-          type: string;
-          value: number;
         };
         Insert: {
           address: string;
-          block: number;
-          createdAt: string;
-          details: Json;
-          id?: string;
-          transactionId: string;
-          type: string;
-          value: number;
+          createdAt?: string;
         };
         Update: {
           address?: string;
-          block?: number;
           createdAt?: string;
-          details?: Json;
-          id?: string;
-          transactionId?: string;
-          type?: string;
-          value?: number;
+        };
+        Relationships: [];
+      };
+      testnet_points: {
+        Row: {
+          address: string;
+          points: number;
+        };
+        Insert: {
+          address: string;
+          points?: number;
+        };
+        Update: {
+          address?: string;
+          points?: number;
         };
         Relationships: [];
       };
@@ -98,6 +95,7 @@ export type Database = {
       wedu_agg_point_balances_view: {
         Row: {
           address: string | null;
+          chain: string | null;
           points: number | null;
           timestamp: string | null;
         };

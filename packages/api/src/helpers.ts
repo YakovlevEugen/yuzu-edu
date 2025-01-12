@@ -176,3 +176,15 @@ export const getCommunities = async (c: IContext) => {
 export const getRewardsPoints = async (c: IContext, address: string) => {
   return '0;';
 };
+
+/**
+ * Testnet activity
+ */
+
+export const getTestnetActivityPoints = async (c: IContext, address: string) =>
+  c.var.db
+    .from('testnet_points')
+    .select('*')
+    .eq('address', address)
+    .maybeSingle()
+    .then((res) => new Big(res.data?.points || 0).toFixed(6));

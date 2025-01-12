@@ -14,6 +14,7 @@ import {
   getClaimEligibility,
   getCommunities,
   getRewardsPoints,
+  getTestnetActivityPoints,
   getWEDUPoints,
   getWEDUTransfers,
   vAddress,
@@ -231,12 +232,13 @@ const app = new Hono<IEnv>()
       const { address } = c.req.valid('param');
       const chainId = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
       const chain = getChain(chainId);
-      const [staking, bridge, rewards] = await Promise.all([
+      const [staking, bridge, rewards, testnetActivity] = await Promise.all([
         getWEDUPoints(c, chain.name, address),
         getBridgePoints(c, address),
-        getRewardsPoints(c, address)
+        getRewardsPoints(c, address),
+        getTestnetActivityPoints(c, address)
       ]);
-      return c.json({ staking, bridge, rewards });
+      return c.json({ staking, bridge, rewards, testnetActivity });
     }
   );
 
