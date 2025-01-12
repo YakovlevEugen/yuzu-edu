@@ -6,6 +6,7 @@ import type { IChainId } from '@yuzu/sdk';
 import { type ITxRequest, decodeTxRequest } from '@yuzu/sdk/src/requests';
 import type { Hex } from 'viem';
 import { useAccount } from 'wagmi';
+import { useChainId } from './use-chain-id';
 import { useReferral } from './use-referral';
 
 const client = createClient(apiUrl);
@@ -37,12 +38,13 @@ export const useTokenBalance = (chainId: IChainId, symbol: string) => {
 export const useStakingPoints = () => {
   const account = useAccount();
   const address = account.address as Hex;
+  const chainId = useChainId();
 
   return useQuery({
-    queryKey: ['staking', address, 'points'],
+    queryKey: ['staking', chainId, address, 'points'],
     queryFn: () =>
-      client.staking[':address'].points
-        .$get({ param: { address } })
+      client.staking[':chainId'][':address'].points
+        .$get({ param: { chainId, address } })
         .then((res) => res.json()),
     enabled: Boolean(address),
     initialData: 0
@@ -52,13 +54,14 @@ export const useStakingPoints = () => {
 export const useStakingEstimate = (value: string) => {
   const account = useAccount();
   const address = account.address as Hex;
+  const chainId = useChainId();
 
   return useQuery({
-    queryKey: ['staking', address, 'estimate', value],
+    queryKey: ['staking', chainId, address, 'estimate', value],
     queryFn: () =>
-      client.staking[':address'].estimate
+      client.staking[':chainId'][':address'].estimate
         .$get({
-          param: { address },
+          param: { chainId, address },
           query: { value }
         })
         .then((res) => res.json()),
@@ -70,13 +73,14 @@ export const useStakingEstimate = (value: string) => {
 export const useStakingHistory = () => {
   const account = useAccount();
   const address = account.address as Hex;
+  const chainId = useChainId();
 
   return useInfiniteQuery({
     queryKey: ['staking', address, 'history'],
     queryFn: ({ pageParam }) =>
-      client.staking[':address'].history
+      client.staking[':chainId'][':address'].history
         .$get({
-          param: { address },
+          param: { chainId, address },
           query: { page: pageParam.toString() }
         })
         .then((res) => res.json()),
@@ -89,13 +93,14 @@ export const useStakingHistory = () => {
 export const useCreateStakeTx = () => {
   const account = useAccount();
   const address = account.address as Hex;
+  const chainId = useChainId();
 
   return useMutation<ITxRequest, unknown, { amount: string }>({
-    mutationKey: ['staking', address, 'wrap'],
+    mutationKey: ['staking', chainId, address, 'wrap'],
     mutationFn: async ({ amount }) =>
-      client.staking[':address'].wrap
+      client.staking[':chainId'][':address'].wrap
         .$get({
-          param: { address },
+          param: { chainId, address },
           query: { amount }
         })
         .then((res) => res.json())
@@ -106,13 +111,14 @@ export const useCreateStakeTx = () => {
 export const useCreateUnstakeTx = () => {
   const account = useAccount();
   const address = account.address as Hex;
+  const chainId = useChainId();
 
   return useMutation<ITxRequest, unknown, { amount: string }>({
-    mutationKey: ['staking', address, 'unwrap'],
+    mutationKey: ['staking', chainId, address, 'unwrap'],
     mutationFn: async ({ amount }) =>
-      client.staking[':address'].unwrap
+      client.staking[':chainId'][':address'].unwrap
         .$get({
-          param: { address },
+          param: { chainId, address },
           query: { amount }
         })
         .then((res) => res.json())

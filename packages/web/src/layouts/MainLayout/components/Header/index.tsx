@@ -37,7 +37,7 @@ export default function Header({ className }: Props) {
   return (
     <BorderBlock className={classRoot}>
       <div className="flex items-center">
-        <Link to={ROUTES.dashboard}>
+        <Link to={ROUTES.home}>
           <SvgIcon className="h-10 w-[114px] md:h-8 md:w-[83px]" name="logo" />
         </Link>
       </div>

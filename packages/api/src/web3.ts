@@ -25,7 +25,7 @@ export const getTokenBalance = async (
   if (isNativeCurrency) {
     const client = getPublicClient(params.chainId);
     const balance = await client.getBalance({ address });
-    return new Big(balance.toString()).div(1e18).toFixed();
+    return new Big(balance.toString()).div(1e18).toFixed(18);
   }
 
   if (symbol === 'eth') symbol = 'weth';
@@ -39,7 +39,7 @@ export const getTokenBalance = async (
     contract.read.decimals()
   ]);
 
-  return new Big(balance.toString()).div(10 ** decimals).toFixed();
+  return new Big(balance.toString()).div(10 ** decimals).toFixed(decimals);
 };
 
 export const getBlock = async (c: IContext) =>

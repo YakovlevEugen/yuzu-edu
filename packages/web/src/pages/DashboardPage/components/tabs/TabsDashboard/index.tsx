@@ -24,7 +24,7 @@ const TABS: ITab[] = [
   {
     id: 'eduStacking',
     contentComponent: () => <div>EDU Staking</div>,
-    disabled: true,
+    disabled: false,
     title: 'EDU Staking'
   },
   {

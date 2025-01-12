@@ -6,6 +6,7 @@ import {
   getTokenAddress,
   getWithdrawRequest
 } from '@yuzu/sdk';
+import Big from 'big.js';
 import { type Address, type Hex, isAddress, isHex } from 'viem';
 import * as v from 'zod';
 import type { IContext, IEligibility } from './types';
@@ -34,26 +35,40 @@ export const vChainId = v.string().refine<IChainId>(isChainId);
  * Staking
  */
 
-export const getWEDUPoints = (c: IContext, address: Hex) =>
+export const getWEDUPoints = (c: IContext, chain: string, address: Hex) =>
   c.var.db
     .from('wedu_agg_point_balances_view')
     .select('*')
     .eq('address', address)
+    .eq('chain', chain)
     .maybeSingle()
     .then((res) => Number.parseFloat(res.data?.points?.toFixed(6) || '0'));
 
 export const getWEDUTransfers = async (
   c: IContext,
+  chain: string,
   address: Hex,
   page: number
 ) => {
-  return [
-    {
-      timestamp: new Date().toISOString(),
-      amount: '1000000000000000000000',
-      points: '1000'
-    }
-  ];
+  const limit = 5;
+  const from = page * limit;
+  const to = (page + 1) * limit - 1;
+
+  return c.var.db
+    .from('wedu_point_balances_view')
+    .select('blockTimestamp,amount,points')
+    .eq('address', address)
+    .eq('chain', chain)
+    .order('blockTimestamp', { ascending: false })
+    .range(from, to)
+    .then(
+      (res) =>
+        res.data?.map((item) => ({
+          timestamp: new Date(item.blockTimestamp as string).toISOString(),
+          amount: new Big(item.amount as number).div(1e18).toFixed(18),
+          points: new Big(item.points as number).toFixed(6)
+        })) || []
+    );
 };
 
 /**

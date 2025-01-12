@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 import MainLayout from '@/layouts/MainLayout';
 import BridgePage from '@/pages/BridgePage';
@@ -14,6 +14,7 @@ export default function AppRouter() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
+        <Route path="/" element={<Navigate to={ROUTES.stake} replace />} />
         <Route path={ROUTES.dashboard} index element={<DashboardPage />} />
         <Route path={ROUTES.stake} element={<StakePage />} />
         <Route path={ROUTES.land} element={<EDULandPage />} />

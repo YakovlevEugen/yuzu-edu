@@ -2,7 +2,6 @@ import BorderBlock from '@/components/BorderBlock';
 import CurrencyInput from '@/components/CurrencyInput';
 import InfoItem from '@/components/InfoItem';
 import TransformCurrency from '@/components/TransformCurrency';
-
 import { isNumberish } from '@/helpers/common';
 import { cn } from '@/helpers/lib';
 import { useStakingEstimate, useTokenBalance } from '@/hooks/api';
@@ -50,6 +49,7 @@ export default function Stake({ className }: Props) {
     () => activeTabId === 'stake',
     [activeTabId]
   );
+
   const activeTabBalance = new Big(
     isActiveTabStake ? eduBalance.data : weduBalance.data
   );

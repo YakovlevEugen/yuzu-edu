@@ -6,9 +6,9 @@ import {
   type PropsWithChildren,
   createContext,
   useContext,
-  useEffect
+  useEffect,
+  useMemo
 } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { useLocalStorage } from 'react-use';
 
 const EnvContext = createContext<IContractsEnv>(contractsEnv);
@@ -16,7 +16,7 @@ export const useEnv = () => useContext(EnvContext);
 const KEY = 'env';
 
 export const EnvProvider = ({ children }: PropsWithChildren) => {
-  const [query] = useSearchParams();
+  const query = useMemo(() => new URL(window.location.href).searchParams, []);
 
   const [value, setValue] = useLocalStorage<IContractsEnv>(
     KEY,

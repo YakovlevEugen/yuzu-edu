@@ -1,11 +1,17 @@
+import { arbMainnet, arbTestnet, eduMainnet, eduTestnet } from '@yuzu/sdk';
 import { http, createConfig } from 'wagmi';
-import { sepolia } from 'wagmi/chains';
+import type { Chain } from 'wagmi/chains';
 import { metaMask } from 'wagmi/connectors';
 
+type Chains = [Chain, ...Chain[]];
+
 export const config = createConfig({
-  chains: [sepolia],
+  chains: [arbMainnet, arbTestnet, eduMainnet, eduTestnet] as Chains,
   connectors: [metaMask()],
   transports: {
-    [sepolia.id]: http()
+    [arbMainnet.id]: http(),
+    [arbTestnet.id]: http(),
+    [eduMainnet.id]: http(),
+    [eduTestnet.id]: http()
   }
 });

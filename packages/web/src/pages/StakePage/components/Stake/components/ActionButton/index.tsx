@@ -8,7 +8,9 @@ import {
   useTokenBalance
 } from '@/hooks/api';
 import { useChainId } from '@/hooks/use-chain-id';
+import { useEnsureChain } from '@/hooks/use-ensure-chain';
 import { useToast } from '@/hooks/use-toast';
+import Big from 'big.js';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Button } from 'ui/button';
@@ -19,15 +21,20 @@ interface Props {
   className?: string;
 }
 
+const STAKE_FEE = 0.0001;
+
 export default function ActionButton({ className }: Props) {
   const { isConnected } = useAccount();
-  const { watch } = useFormContext<FormSchema>();
+  const { watch, setValue } = useFormContext<FormSchema>();
+
   const { sendTransactionAsync } = useSendTransaction();
   const { toast } = useToast();
-  const stakeTx = useCreateStakeTx();
-  const unstakeTx = useCreateUnstakeTx();
 
   const chainId = useChainId();
+  const stakeTx = useCreateStakeTx();
+  const unstakeTx = useCreateUnstakeTx();
+  const ensureChain = useEnsureChain();
+
   const eduBalance = useTokenBalance(chainId, 'edu');
   const weduBalance = useTokenBalance(chainId, 'wedu');
   const stakingPoints = useStakingPoints();
@@ -42,9 +49,28 @@ export default function ActionButton({ className }: Props) {
     try {
       setLoading(true);
 
-      const txId = await stakeTx
-        .mutateAsync({ amount })
-        .then(sendTransactionAsync);
+      if (new Big(eduBalance.data).lt(amount)) {
+        toast({
+          title: 'Not enough EDU to stake',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      if (new Big(eduBalance.data).minus(STAKE_FEE).lt(amount)) {
+        toast({
+          title: 'Not enough EDU left to pay for gas (0.0001EDU)',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      const [txId] = await Promise.all([
+        stakeTx.mutateAsync({ amount }).then(sendTransactionAsync),
+        ensureChain(chainId)
+      ]);
+
+      setValue('amount', '0');
 
       eduBalance.refetch();
       weduBalance.refetch();
@@ -53,9 +79,14 @@ export default function ActionButton({ className }: Props) {
       console.log('View Tx in explorer', txId);
 
       toast({ title: 'EDU Successfully Staked', variant: 'success' });
-    } catch (error) {
-      toast({ title: 'EDU Stake Failed', variant: 'destructive' });
-      console.error(error);
+    } catch (error: unknown) {
+      const { message } = error as { message: string };
+      if (message.includes('User rejected the request.')) {
+        toast({ title: 'User cancelled', variant: 'default' });
+      } else {
+        toast({ title: 'EDU Stake Failed', variant: 'destructive' });
+        console.error(error);
+      }
     } finally {
       setLoading(false);
     }
@@ -65,18 +96,31 @@ export default function ActionButton({ className }: Props) {
     try {
       setLoading(true);
 
-      const txId = await unstakeTx
-        .mutateAsync({ amount })
-        .then(sendTransactionAsync);
+      const [txId] = await Promise.all([
+        unstakeTx.mutateAsync({ amount }).then(sendTransactionAsync),
+        ensureChain(chainId)
+      ]);
+
+      setValue('amount', '0');
+
+      eduBalance.refetch();
+      weduBalance.refetch();
+      stakingPoints.refetch();
+
       console.log('View Tx in explorer', txId);
 
       toast({
         title: 'EDU Successfully Unstaked',
         variant: 'success'
       });
-    } catch (error) {
-      toast({ title: 'EDU Unstaking Failed', variant: 'destructive' });
-      console.error(error);
+    } catch (error: unknown) {
+      const { message } = error as { message: string };
+      if (message.includes('User rejected the request.')) {
+        toast({ title: 'User cancelled', variant: 'default' });
+      } else {
+        toast({ title: 'EDU Unstaking Failed', variant: 'destructive' });
+        console.error(error);
+      }
     } finally {
       setLoading(false);
     }

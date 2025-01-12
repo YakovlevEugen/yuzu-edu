@@ -19,17 +19,17 @@ const root = document.getElementById('root') as HTMLElement;
 
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
-    <Web3Provider>
-      <QueryProvider>
-        <BrowserRouter>
-          <EnvProvider>
+    <EnvProvider>
+      <Web3Provider>
+        <QueryProvider>
+          <BrowserRouter>
             <ReferralProvider>
               <App />
               <Toaster />
             </ReferralProvider>
-          </EnvProvider>
-        </BrowserRouter>
-      </QueryProvider>
-    </Web3Provider>
+          </BrowserRouter>
+        </QueryProvider>
+      </Web3Provider>
+    </EnvProvider>
   </React.StrictMode>
 );

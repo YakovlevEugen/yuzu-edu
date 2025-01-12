@@ -1,6 +1,5 @@
 import { zValidator } from '@hono/zod-validator';
-import { unwrapWEDU, wrapEDU } from '@yuzu/sdk';
-import { encodeTxRequest } from '@yuzu/sdk/src/requests';
+import { getChain, unwrapWEDU, wrapEDU } from '@yuzu/sdk';
 import Big from 'big.js';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
@@ -51,61 +50,59 @@ const app = new Hono<IEnv>()
    */
 
   .get(
-    '/staking/:address/points',
-    zValidator('param', v.object({ address: vAddress })),
+    '/staking/:chainId/:address/points',
+    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
     async (c) => {
-      const { address } = c.req.valid('param');
-      const points = await getWEDUPoints(c, address);
+      const { chainId, address } = c.req.valid('param');
+      const chain = getChain(chainId);
+      const points = await getWEDUPoints(c, chain.name, address);
       return c.json(points);
     }
   )
 
   .get(
-    '/staking/:address/history',
+    '/staking/:chainId/:address/history',
     zValidator('query', v.object({ page: v.string() })),
-    zValidator('param', v.object({ address: vAddress })),
+    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
     async (c) => {
-      const { address } = c.req.valid('param');
-      const { page } = c.req.valid('query');
-      const transfers = await getWEDUTransfers(c, address, parseInt(page));
+      const { chainId, address } = c.req.valid('param');
+      const page = parseInt(c.req.valid('query').page);
+      const chain = getChain(chainId);
+      const transfers = await getWEDUTransfers(c, chain.name, address, page);
       return c.json(transfers);
     }
   )
 
   .get(
-    '/staking/:address/estimate',
+    '/staking/:chainId/:address/estimate',
     zValidator('query', v.object({ value: v.string() })),
-    zValidator('param', v.object({ address: vAddress })),
+    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
     async (c) => {
-      const { address } = c.req.valid('param');
       const { value } = c.req.valid('query');
-      const points = await getWEDUPoints(c, address);
-      const combined = new Big(value || 0).mul(24).toNumber();
-      return c.json(combined);
+      const estimate = new Big(value || 0).mul(24).toNumber();
+      return c.json(estimate);
     }
   )
 
   .get(
-    '/staking/:address/wrap',
+    '/staking/:chainId/:address/wrap',
     zValidator('query', v.object({ amount: v.string() })),
-    zValidator('param', v.object({ address: vAddress })),
+    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
     async (c) => {
-      const { address } = c.req.valid('param');
+      const { chainId, address } = c.req.valid('param');
       const { amount } = c.req.valid('query');
-      const chainId = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
       const request = await wrapEDU({ chainId, amount, account: address });
       return c.json(request);
     }
   )
 
   .get(
-    '/staking/:address/unwrap',
+    '/staking/:chainId/:address/unwrap',
     zValidator('query', v.object({ amount: v.string() })),
-    zValidator('param', v.object({ address: vAddress })),
+    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
     async (c) => {
-      const { address } = c.req.valid('param');
+      const { chainId, address } = c.req.valid('param');
       const { amount } = c.req.valid('query');
-      const chainId = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
       const request = await unwrapWEDU({ chainId, amount, account: address });
       return c.json(request);
     }
@@ -232,8 +229,10 @@ const app = new Hono<IEnv>()
     zValidator('param', v.object({ address: vAddress })),
     async (c) => {
       const { address } = c.req.valid('param');
+      const chainId = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
+      const chain = getChain(chainId);
       const [staking, bridge, rewards] = await Promise.all([
-        getWEDUPoints(c, address),
+        getWEDUPoints(c, chain.name, address),
         getBridgePoints(c, address),
         getRewardsPoints(c, address)
       ]);
