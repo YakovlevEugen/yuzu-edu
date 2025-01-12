@@ -20,7 +20,7 @@ export default function Earn({ className }: { className?: string }) {
       },
       {
         title: 'End-of-Semester Claim in',
-        value: formatTimeToDate(new Date(), new Date('2025-05-01T00:00:00Z'))
+        value: formatTimeToDate(new Date(), new Date('2025-03-17T00:00:00Z'))
       }
     ],
     [weduBalance]

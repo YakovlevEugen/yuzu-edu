@@ -27,7 +27,7 @@ export default function Header({ className }: Props) {
 
   const menuRef = useRef(null);
   useClickAway(menuRef, () => {
-    setIsMenuOpen(false);
+    setIsMenuOpen(() => false);
   });
 
   function toggleMenu() {
