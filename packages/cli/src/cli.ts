@@ -1,7 +1,7 @@
 #!/usr/bin/env -S pnpm tsx
 
 import dotnet from 'dotenv';
-dotnet.config({ path: `${__dirname}/../.env` });
+dotnet.config({ path: resolve(__dirname, '..', '.env') });
 
 import { program } from '@commander-js/extra-typings';
 import { type IChainId, chains } from '@yuzu/sdk';
@@ -31,6 +31,7 @@ program
  */
 
 import './index';
+import { resolve } from 'path';
 
 /**
  * Parse cli args

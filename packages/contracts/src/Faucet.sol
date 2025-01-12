@@ -12,10 +12,15 @@ contract Faucet is EIP712("Faucet", "1.0.0") {
 
     event Claim(address indexed receiver);
     event Withdrawal(address indexed receiver, uint256 amount);
+    event Received(address, uint256);
 
     constructor(address signer) {
         _signer = signer;
         _owner = msg.sender;
+    }
+
+    receive() external payable {
+        emit Received(msg.sender, msg.value);
     }
 
     function claim(bytes calldata signature) external payable {
@@ -29,6 +34,22 @@ contract Faucet is EIP712("Faucet", "1.0.0") {
         require(sent, "Failed to send Ether");
 
         emit Claim(msg.sender);
+    }
+
+    function claimTo(address receiver) external payable {
+        require(msg.sender == _signer, "only signer");
+
+        require(ledger[receiver] == false, "already claimed");
+        ledger[receiver] = true;
+
+        bool sent = payable(receiver).send(0.1 ether);
+        require(sent, "Failed to send Ether");
+
+        emit Claim(receiver);
+    }
+
+    function claimed(address receiver) external view returns (bool) {
+        return ledger[receiver];
     }
 
     function withdraw(uint256 amount) external payable {

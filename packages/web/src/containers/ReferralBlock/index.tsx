@@ -5,6 +5,8 @@ import { ROUTES } from '@/constants/routes';
 import { cn } from '@/helpers/lib';
 import { copyToClipboard } from '@/helpers/text';
 import { useToast } from '@/hooks/use-toast';
+import { useAccount } from 'wagmi';
+import WalletConnectFilter from '../WalletConnectFilter';
 
 interface Props {
   className?: string;
@@ -12,10 +14,9 @@ interface Props {
 
 export default function ReferralBlock({ className }: Props) {
   const { toast } = useToast();
-
+  const account = useAccount();
   const classRoot = cn('text-center', className);
-  // TODO: add real referral link
-  const referralLink = `${location.origin || 'yuzu.educhain.xyz'}${ROUTES.bridge}/ref=8DN2HS`;
+  const referralLink = `${location.origin}${ROUTES.bridge}?ref=${account.address?.toLowerCase()}`;
 
   async function copyReferralLink() {
     try {
@@ -29,11 +30,13 @@ export default function ReferralBlock({ className }: Props) {
   return (
     <BackgroundBlock className={classRoot}>
       <div className="font-semibold">Invite your friends to EDUChain</div>
-      <div className="mt-2 break-words text-sm text-green">{referralLink}</div>
+      {/* <div className="mt-2 break-words text-sm text-green">{referralLink}</div> */}
       <div className="mt-4">
-        <Button className="w-full" onClick={copyReferralLink}>
-          Copy Referral Link
-        </Button>
+        <WalletConnectFilter label="Connect Wallet to get Referral Link">
+          <Button className="w-full" onClick={copyReferralLink}>
+            Copy Referral Link
+          </Button>
+        </WalletConnectFilter>
       </div>
     </BackgroundBlock>
   );

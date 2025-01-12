@@ -1,13 +1,24 @@
 import {
   type IChainId,
   chains,
+  claim,
+  claimTo,
   getApproveRequest,
   getDepositRequest,
   getTokenAddress,
-  getWithdrawRequest
+  getWithdrawRequest,
+  hasClaimed
 } from '@yuzu/sdk';
 import Big from 'big.js';
-import { type Address, type Hex, isAddress, isHex } from 'viem';
+import {
+  type Address,
+  type Hex,
+  type PrivateKeyAccount,
+  getAddress,
+  isAddress,
+  isHex
+} from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
 import * as v from 'zod';
 import type { IContext, IEligibility } from './types';
 
@@ -151,19 +162,71 @@ export const getBridgePoints = async (c: IContext, address: Address) => {
 
 export const getClaimEligibility = async (
   c: IContext,
+  chainId: IChainId,
   address: Address
 ): Promise<IEligibility> => {
-  return 'eligible';
+  let eligiblity: IEligibility = await c.var.db
+    .from('faucet_wallets')
+    .select('*')
+    .eq('address', getAddress(address))
+    .maybeSingle()
+    .then((res) => (res.data ? 'eligible' : 'not-eligible'));
+
+  if (eligiblity === 'eligible') {
+    if (await hasClaimed({ chainId, account: address })) {
+      eligiblity = 'claimed';
+    }
+  }
+
+  return eligiblity;
 };
 
-export const createClaimTx = async (c: IContext, address: Address) => {
-  const eligibility = await getClaimEligibility(c, address);
+export const createClaimTx = async (
+  c: IContext,
+  chainId: IChainId,
+  address: Address
+) => {
+  const eligibility = await getClaimEligibility(c, chainId, address);
   assert(eligibility === 'eligible');
 
-  // const signature = await getWithdrawalSignature({ client, signer, params });
+  const txRequest = await claim({
+    chainId,
+    account: address,
+    signer: privateKeyToAccount(c.env.SIGNER_PK)
+  });
 
-  return '';
+  return txRequest;
 };
+
+export const execClaimTx = async (
+  c: IContext,
+  chainId: IChainId,
+  address: Address
+) => {
+  const eligibility = await getClaimEligibility(c, chainId, address);
+  assert(eligibility === 'eligible');
+
+  const signature = await claimTo({
+    chainId,
+    account: address,
+    signer: privateKeyToAccount(c.env.SIGNER_PK)
+  });
+
+  return signature;
+};
+
+export const verifyCaptcha = (c: IContext, token: string, ip?: string) =>
+  fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'post',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      secret: c.env.TURNSTILE_KEY,
+      response: token,
+      remoteip: ip
+    })
+  })
+    .then((res) => res.json() as Promise<{ success: boolean }>)
+    .then((res) => res.success);
 
 /**
  * Rewards

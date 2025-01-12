@@ -4,7 +4,9 @@
   "main": "index.ts",
   "scripts": {
     "build": "forge build && pnpm typegen",
+    "test": "forge test",
     "typegen": "forge inspect Faucet abi > abi/faucet.json && forge inspect WrappedEDU abi > abi/wedu.json && tsx typegen.ts",
+    "deploy:mainnet:faucet": "source .env.mainnet; forge script script/FaucetMainnet.s.sol --force --ffi --broadcast --chain-id 41923 --rpc-url $RPC_URL --skip-simulation && pnpm typegen",
     "deploy:testnet:faucet": "source .env.testnet; forge script script/FaucetTestnet.s.sol --force --ffi --broadcast --chain-id 656476 --rpc-url $RPC_URL --skip-simulation && pnpm typegen",
     "deploy:testnet:wedu": "source .env.testnet; forge script script/WrappedEDU.s.sol --force --ffi --broadcast --chain-id 656476 --rpc-url $RPC_URL --skip-simulation && pnpm typegen",
     "clean": "rm -rf .turbo cache out build node_modules"

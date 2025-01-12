@@ -1,12 +1,13 @@
 import { faucet } from '@yuzu/contracts';
 import {
   type Address,
+  type Hex,
   type PrivateKeyAccount,
   encodeFunctionData,
   getContract
 } from 'viem';
 import type { IChainId } from '../chains';
-import { getPublicClient } from '../clients';
+import { getPublicClient, getWalletClient } from '../clients';
 import { getFaucetAddress } from '../helpers';
 import type { ITxRequest } from '../requests';
 
@@ -48,4 +49,35 @@ export const claim = async (params: {
     args: [signature]
   });
   return { from: account, to: contract.address, data };
+};
+
+export const claimTo = async (params: {
+  chainId: IChainId;
+  account: Address;
+  signer: PrivateKeyAccount;
+}): Promise<Hex> => {
+  const { chainId, account, signer } = params;
+  const contract = getFaucetContract(chainId);
+  const wallet = getWalletClient(chainId, signer);
+
+  const signature = await wallet.sendTransaction({
+    from: signer.address,
+    to: contract.address,
+    data: encodeFunctionData({
+      functionName: 'claimTo',
+      abi: contract.abi,
+      args: [account]
+    })
+  });
+
+  return signature;
+};
+
+export const hasClaimed = async (params: {
+  chainId: IChainId;
+  account: Address;
+}): Promise<boolean> => {
+  const { chainId, account } = params;
+  const contract = getFaucetContract(chainId);
+  return contract.read.claimed([account]);
 };

@@ -195,6 +195,42 @@ export const useBridgeWithdrawTx = () => {
   });
 };
 
+/**
+ * Faucet
+ */
+
+export const useClaimTo = () => {
+  const account = useAccount();
+  const address = account.address as Hex;
+  const chainId = useChainId();
+
+  return useMutation<Hex, unknown, { token: string }>({
+    mutationKey: ['faucet', address, 'claimTo'],
+    mutationFn: async ({ token }) =>
+      client.claim[':chainId'][':address'].exec
+        .$post({
+          param: { chainId, address },
+          json: { token }
+        })
+        .then((res) => res.json())
+  });
+};
+
+export const useClaimEligilibity = () => {
+  const account = useAccount();
+  const address = account.address as Hex;
+  const chainId = useChainId();
+
+  return useQuery({
+    queryKey: ['faucet', chainId, address, 'eligibility'],
+    queryFn: () =>
+      client.claim[':chainId'][':address'].eligibility
+        .$get({ param: { chainId, address } })
+        .then((res) => res.json()),
+    enabled: account.isConnected
+  });
+};
+
 // export const usePointBalance = () => {
 //   const { address } = useAccount();
 

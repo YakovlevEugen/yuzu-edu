@@ -11,9 +11,11 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@commander-js/extra-typings": "^12.1.0",
+    "@supabase/supabase-js": "^2.47.12",
     "@types/big.js": "^6.2.2",
     "@types/cli-progress": "^3.11.6",
     "@yuzu/sdk": "workspace:*",
+    "@yuzu/supabase": "workspace:*",
     "big.js": "^6.2.2",
     "bs58": "^6.0.0",
     "cli-progress": "^3.12.0",

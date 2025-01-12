@@ -136,7 +136,14 @@ export type Database = {
       };
     };
     Functions: {
-      [_ in never]: never;
+      reset_faucet_wallets: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
+      reset_testnet_points: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
     };
     Enums: {
       [_ in never]: never;

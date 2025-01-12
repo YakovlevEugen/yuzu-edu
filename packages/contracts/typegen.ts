@@ -1,4 +1,5 @@
 import fs from 'fs';
+import faucetMainnet from './abi/faucet.mainnet.json';
 import faucetTestnet from './abi/faucet.testnet.json';
 import weduTestnet from './abi/wedu.testnet.json';
 
@@ -9,6 +10,9 @@ fs.writeFileSync(
       testnet: {
         faucet: faucetTestnet.address,
         wedu: weduTestnet.address
+      },
+      mainnet: {
+        faucet: faucetMainnet.address
       }
     },
     null,

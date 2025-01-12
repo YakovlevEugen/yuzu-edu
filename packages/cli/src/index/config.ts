@@ -11,6 +11,15 @@ export const getStartingBlock = (chainId: IChainId) => {
   }
 };
 
+export const getEndingBlock = (chainId: IChainId) => {
+  switch (chainId) {
+    case 'eduTestnet':
+      return 29593368n;
+    default:
+      throw new Error('no ending block');
+  }
+};
+
 export const getExcludedAddresses = (chainId: IChainId) => {
   switch (chainId) {
     case 'eduTestnet':

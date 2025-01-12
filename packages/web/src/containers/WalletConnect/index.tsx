@@ -12,16 +12,21 @@ import WalletConnectOptions from '@/containers/WalletConnectOptions';
 import { cn } from '@/helpers/lib';
 import { buttonVariants } from 'ui/button';
 
-interface Props {
+export interface Props {
+  label?: string;
   triggerClass?: string;
   triggerProps?: VariantProps<typeof buttonVariants>;
 }
 
-export default function WalletConnect({ triggerClass, triggerProps }: Props) {
+export default function WalletConnect({
+  label,
+  triggerClass,
+  triggerProps
+}: Props) {
   return (
     <Dialog>
       <DialogTrigger className={cn(triggerClass, buttonVariants(triggerProps))}>
-        Connect wallet
+        {label ?? 'Connect wallet'}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

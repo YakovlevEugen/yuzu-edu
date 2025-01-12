@@ -16,5 +16,8 @@
   },
   "[solidity]": {
     "editor.defaultFormatter": "JuanBlanco.solidity"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
   }
 }

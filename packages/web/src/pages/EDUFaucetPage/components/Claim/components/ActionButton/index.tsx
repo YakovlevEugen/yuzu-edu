@@ -1,57 +1,86 @@
-// import { parseEther } from 'viem';
-import { useAccount } from 'wagmi';
-
-import WalletConnect from '@/containers/WalletConnect';
-import { Button } from 'ui/button';
-
+import { Captcha } from '@/components/Captcha';
+import { useCaptcha } from '@/components/CaptchaProvider';
+import WalletConnectFilter from '@/containers/WalletConnectFilter';
 import { cn } from '@/helpers/lib';
-// import { useToast } from '@/hooks/use-toast';
+import { useClaimTo } from '@/hooks/api';
+import { useToast } from '@/hooks/use-toast';
+import type { IEligibility } from '@yuzu/api';
+import { useCallback, useMemo } from 'react';
+import { Button } from 'ui/button';
 
 interface Props {
   className?: string;
+  eligibility: IEligibility;
+  refresh: () => unknown;
 }
 
-export default function ActionButton({ className }: Props) {
-  const { isConnected } = useAccount();
-  // const { sendTransactionAsync } = useSendTransaction()
-  // const { toast } = useToast()
+export default function ActionButton({
+  className,
+  eligibility,
+  refresh
+}: Props) {
+  const captcha = useCaptcha();
+  const { toast } = useToast();
+  const claimTo = useClaimTo();
 
-  const classRoot = cn('', className);
-  const isClaimed = false;
-  const isConfirming = false;
-  const value = '2132'; // TODO: integrate with wallet
+  const claim = useCallback(async () => {
+    try {
+      const signature = await claimTo.mutateAsync({
+        token: captcha.token ?? 'xxx'
+      });
+      console.log({ signature });
+      refresh();
+      toast({ title: 'Successfully Claimed 0.1 EDU', variant: 'success' });
+    } catch (error) {
+      console.error(error);
+      toast({ title: 'Failed to claim', variant: 'destructive' });
+    }
+  }, [claimTo, captcha.token, refresh, toast]);
 
-  // async function claim() {
-  //   try {
-  //     await sendTransactionAsync({
-  //       to: '0xDbD8e8bc1A1b6a563d4b9F75F72E577C42890fF7',
-  //       value: parseEther(value)
-  //     })
-  //     toast({ title: 'EDU Successfully Claimed', variant: 'success' })
-  //   } catch (error) {
-  //     toast({ title: 'EDU Claim Failed', variant: 'destructive' })
-  //     console.error(error)
-  //   }
-  // }
+  const state = useMemo(() => {
+    if (claimTo.isPending) return 'claiming';
+    return eligibility;
+  }, [eligibility, claimTo]);
+
+  const label = useMemo(() => {
+    switch (state) {
+      case 'not-eligible':
+        return 'Not Eligible';
+      case 'claiming':
+        return 'Claiming...';
+      case 'claimed':
+        return 'Already Claimed';
+      case 'eligible':
+        return 'Claim';
+    }
+  }, [state]);
+
+  const disabled = useMemo(() => {
+    switch (state) {
+      case 'claiming':
+      case 'claimed':
+      case 'not-eligible':
+        return true;
+      case 'eligible':
+        return false;
+    }
+  }, [state]);
 
   return (
-    <div className={classRoot}>
-      {isConnected ? (
-        <Button
-          className="w-full"
-          disabled={!value || isConfirming || isClaimed}
-          size="lg"
-          type="submit"
-        >
-          {isConfirming
-            ? 'Confirm on Wallet...'
-            : isClaimed
-              ? 'Claimed'
-              : 'Claim'}
-        </Button>
-      ) : (
-        <WalletConnect triggerClass="w-full" triggerProps={{ size: 'lg' }} />
-      )}
+    <div className={cn(className)}>
+      <WalletConnectFilter triggerClass="w-full" triggerProps={{ size: 'lg' }}>
+        <Captcha>
+          <Button
+            className="w-full"
+            size="lg"
+            type="submit"
+            onClick={claim}
+            disabled={disabled}
+          >
+            {label}
+          </Button>
+        </Captcha>
+      </WalletConnectFilter>
     </div>
   );
 }

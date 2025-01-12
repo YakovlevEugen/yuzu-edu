@@ -54,7 +54,7 @@ export const eduMainnet = defineChain({
   },
   contracts: {
     edu: { address: '0x0000000000000000000000000000000000000000' },
-    faucet: { address: null }, // TODO: addresses.mainnet.faucet
+    faucet: { address: addresses.mainnet.faucet as Address },
     usdc: { address: '0x836d275563bAb5E93Fd6Ca62a95dB7065Da94342' },
     usdt: { address: '0x7277Cc818e3F3FfBb169c6Da9CC77Fc2d2a34895' },
     wedu: { address: '0xd02E8c38a8E3db71f8b2ae30B8186d7874934e12' },

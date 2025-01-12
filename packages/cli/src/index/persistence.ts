@@ -13,7 +13,7 @@ import fs from 'fs';
 import readline from 'readline';
 import type { IChainId } from '@yuzu/sdk';
 import Big from 'big.js';
-import type { Transaction } from 'viem';
+import type { Hex, Transaction } from 'viem';
 
 (BigInt.prototype as unknown as Record<string, unknown>).toJSON = function () {
   return this.toString();

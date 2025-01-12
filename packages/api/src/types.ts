@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@yuzu/supabase';
 import type { Context } from 'hono';
+import type { Hex } from 'viem';
 
 export type IEnv = {
   Bindings: {
@@ -8,6 +9,8 @@ export type IEnv = {
     SUPABASE_KEY: string;
     CONTRACTS_ENV: IContractsEnv;
     DOMAIN: string;
+    TURNSTILE_KEY: string;
+    SIGNER_PK: Hex;
   };
   Variables: {
     db: SupabaseClient<Database>;

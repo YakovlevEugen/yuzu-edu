@@ -4,8 +4,7 @@ import {
   arbMainnet,
   arbTestnet,
   eduMainnet,
-  eduTestnet,
-  getChain
+  eduTestnet
 } from './chains';
 
 export function assert(
@@ -47,9 +46,8 @@ export const getFaucetAddress = (chainId: IChainId) => {
   switch (chainId) {
     case 'eduTestnet':
       return eduTestnet.contracts.faucet.address as Address;
-    // TODO: deploy faucet to mainnet
-    // TODO: ensure faucet has claimTo(address receiver, bytes signature)
-    // since we are paying for 0.1 edu claims
+    case 'eduMainnet':
+      return eduMainnet.contracts.faucet.address as Address;
     default:
       throw new Error('unsupported chain');
   }

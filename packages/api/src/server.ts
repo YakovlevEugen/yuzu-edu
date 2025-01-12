@@ -1,14 +1,16 @@
 import { zValidator } from '@hono/zod-validator';
-import { getChain, unwrapWEDU, wrapEDU } from '@yuzu/sdk';
+import { chains, getChain, unwrapWEDU, wrapEDU } from '@yuzu/sdk';
 import Big from 'big.js';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import * as v from 'zod';
 import {
+  assert,
   createBridgeApproveDepositReq,
   createBridgeDepositReq,
   createBridgeWithdrawReq,
   createClaimTx,
+  execClaimTx,
   getBridgePoints,
   getBridgeTransfers,
   getClaimEligibility,
@@ -18,7 +20,8 @@ import {
   getWEDUPoints,
   getWEDUTransfers,
   vAddress,
-  vChainId
+  vChainId,
+  verifyCaptcha
 } from './helpers';
 import { database, network } from './middleware';
 import type { IEnv } from './types';
@@ -183,22 +186,37 @@ const app = new Hono<IEnv>()
    */
 
   .get(
-    '/claim/:address/eligibility',
-    zValidator('param', v.object({ address: vAddress })),
+    '/claim/:chainId/:address/eligibility',
+    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
     async (c) => {
-      const { address } = c.req.valid('param');
-      const eligibility = await getClaimEligibility(c, address);
+      const { chainId, address } = c.req.valid('param');
+      const eligibility = await getClaimEligibility(c, chainId, address);
       return c.json(eligibility);
     }
   )
 
   .get(
-    '/claim/:address/tx',
-    zValidator('param', v.object({ address: vAddress })),
+    '/claim/:chainId/:address/tx',
+    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
     async (c) => {
-      const { address } = c.req.valid('param');
-      const tx = await createClaimTx(c, address);
+      const { chainId, address } = c.req.valid('param');
+      const tx = await createClaimTx(c, chainId, address);
       return c.json(tx);
+    }
+  )
+
+  .post(
+    '/claim/:chainId/:address/exec',
+    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
+    zValidator('json', v.object({ token: v.string() })),
+    async (c) => {
+      const { address, chainId } = c.req.valid('param');
+      const { token } = c.req.valid('json');
+      const ip = c.req.header('CF-Connecting-IP');
+      const passed = await verifyCaptcha(c, token, ip);
+      assert(passed, 'invalid catcha');
+      const signature = await execClaimTx(c, chainId, address);
+      return c.json(signature);
     }
   )
 

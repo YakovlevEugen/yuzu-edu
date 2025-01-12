@@ -10,7 +10,8 @@ contract FaucetTest is Test {
     address constant SIGNER = address(0xBBED9678e14027A48c1f294D0468bBc402E3e4ef);
     uint256 constant SIGNER_PK = 0x98b8a9c18e38fc621fd142ae6df307d52404c621743f6f6891cc8def49a77e0c;
     address constant USER = address(30001);
-    address constant HACKER = address(30002);
+    address constant USER2 = address(30002);
+    address constant HACKER = address(30003);
 
     function setUp() public {
         faucet = new Faucet(SIGNER);
@@ -36,6 +37,28 @@ contract FaucetTest is Test {
 
         vm.expectRevert();
         faucet.claim(abi.encodePacked(r, s, v));
+
+        uint256 balance = address(HACKER).balance;
+        assertEq(balance, 0 ether);
+    }
+
+    function test_ClaimTo() public {
+        vm.startPrank(SIGNER);
+        faucet.claimTo(USER2);
+
+        assertEq(address(USER2).balance, 0.1 ether);
+
+        vm.expectRevert();
+        faucet.claimTo(USER2);
+
+        assertEq(address(USER2).balance, 0.1 ether);
+    }
+
+    function test_ClaimTo_FAIL_not_a_signer() public {
+        vm.startPrank(HACKER);
+
+        vm.expectRevert();
+        faucet.claimTo(HACKER);
 
         uint256 balance = address(HACKER).balance;
         assertEq(balance, 0 ether);

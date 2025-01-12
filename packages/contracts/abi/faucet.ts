@@ -11,6 +11,10 @@ export const abi = [
     stateMutability: 'nonpayable'
   },
   {
+    type: 'receive',
+    stateMutability: 'payable'
+  },
+  {
     type: 'function',
     name: 'claim',
     inputs: [
@@ -22,6 +26,38 @@ export const abi = [
     ],
     outputs: [],
     stateMutability: 'payable'
+  },
+  {
+    type: 'function',
+    name: 'claimTo',
+    inputs: [
+      {
+        name: 'receiver',
+        type: 'address',
+        internalType: 'address'
+      }
+    ],
+    outputs: [],
+    stateMutability: 'payable'
+  },
+  {
+    type: 'function',
+    name: 'claimed',
+    inputs: [
+      {
+        name: 'receiver',
+        type: 'address',
+        internalType: 'address'
+      }
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'bool',
+        internalType: 'bool'
+      }
+    ],
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -115,6 +151,25 @@ export const abi = [
     type: 'event',
     name: 'EIP712DomainChanged',
     inputs: [],
+    anonymous: false
+  },
+  {
+    type: 'event',
+    name: 'Received',
+    inputs: [
+      {
+        name: '',
+        type: 'address',
+        indexed: false,
+        internalType: 'address'
+      },
+      {
+        name: '',
+        type: 'uint256',
+        indexed: false,
+        internalType: 'uint256'
+      }
+    ],
     anonymous: false
   },
   {

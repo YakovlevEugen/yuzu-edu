@@ -18,6 +18,6 @@ contract FaucetTestnetScript is Script {
         vm.stopBroadcast();
 
         string memory json = vm.serializeAddress("config", "address", address(faucet));
-        vm.writeJson(json, string.concat(vm.projectRoot(), "/abi/faucet.testnet.json"));
+        vm.writeJson(json, string.concat(vm.projectRoot(), "/abi/faucet.mainnet.json"));
     }
 }
