@@ -9,3 +9,9 @@ name = "yuzu-api-staging"
 routes = [
   { pattern = "yuzu-api-staging.r8edev.xyz", custom_domain = true }
 ]
+
+[env.production]
+name = "yuzu-api-production"
+routes = [
+  { pattern = "yuzu-api-production.r8edev.xyz", custom_domain = true }
+]

@@ -4,9 +4,14 @@
   "description": "",
   "main": "database.js",
   "scripts": {
-    "typegen": "supabase gen types typescript --project-id enbmgxbedhmhxcdqxrpl > database.ts"
+    "typegen": "supabase gen types typescript --project-id enbmgxbedhmhxcdqxrpl > database.ts",
+    "pull:staging": "supabase link --project-ref enbmgxbedhmhxcdqxrpl && supabase db pull",
+    "push:production": "supabase link --project-ref wmdradcnjvpwkeywpxsi && supabase db push --include-all"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "supabase": "^2.2.1"
+  }
 }

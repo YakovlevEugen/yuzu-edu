@@ -8,7 +8,7 @@
     "clean": "rm -rf .turbo .wrangler build node_modules",
     "dev": "tunnel wrangler dev --port 5172",
     "deploy:staging": "wrangler secret bulk .staging.vars.json --env staging && wrangler deploy --env staging",
-    "deploy:production": "wrangler secret bulk .production.vars.json --env staging && wrangler deploy --env production"
+    "deploy:production": "wrangler secret bulk .production.vars.json --env production && wrangler deploy --env production"
   },
   "cloudflared": {
     "name": "yuzu-api-$USER",
