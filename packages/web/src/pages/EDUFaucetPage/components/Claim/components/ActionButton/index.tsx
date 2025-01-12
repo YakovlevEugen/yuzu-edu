@@ -3,6 +3,8 @@ import { useCaptcha } from '@/components/CaptchaProvider';
 import WalletConnectFilter from '@/containers/WalletConnectFilter';
 import { cn } from '@/helpers/lib';
 import { useClaimTo } from '@/hooks/api';
+import { useChainId } from '@/hooks/use-chain-id';
+import { useEnsureChain } from '@/hooks/use-ensure-chain';
 import { useToast } from '@/hooks/use-toast';
 import type { IEligibility } from '@yuzu/api';
 import { useCallback, useMemo } from 'react';
@@ -22,9 +24,12 @@ export default function ActionButton({
   const captcha = useCaptcha();
   const { toast } = useToast();
   const claimTo = useClaimTo();
+  const ensureChain = useEnsureChain();
+  const chainId = useChainId();
 
   const claim = useCallback(async () => {
     try {
+      await ensureChain(chainId);
       const signature = await claimTo.mutateAsync({
         token: captcha.token ?? 'xxx'
       });
@@ -36,7 +41,7 @@ export default function ActionButton({
     } finally {
       refresh();
     }
-  }, [claimTo, captcha.token, refresh, toast]);
+  }, [ensureChain, chainId, claimTo, captcha.token, toast, refresh]);
 
   const state = useMemo(() => {
     if (claimTo.isPending) return 'claiming';
