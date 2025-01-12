@@ -6,7 +6,7 @@ import type { IChainId } from '@yuzu/sdk';
 import { type ITxRequest, decodeTxRequest } from '@yuzu/sdk/src/requests';
 import type { Hex } from 'viem';
 import { useAccount } from 'wagmi';
-import { useChainId } from './use-chain-id';
+import { useChainId, useParentChainId } from './use-chain-id';
 import { useReferral } from './use-referral';
 
 const client = createClient(apiUrl);
@@ -133,13 +133,14 @@ export const useCreateUnstakeTx = () => {
 export const useBridgeHistory = () => {
   const account = useAccount();
   const address = account.address as Hex;
+  const chainId = useChainId();
 
   return useInfiniteQuery({
     queryKey: ['bridge', address, 'history'],
     queryFn: ({ pageParam }) =>
-      client.bridge[':address'].history
+      client.bridge[':chainId'][':address'].history
         .$get({
-          param: { address },
+          param: { chainId, address },
           query: { page: pageParam.toString() }
         })
         .then((res) => res.json()),
@@ -152,12 +153,16 @@ export const useBridgeHistory = () => {
 export const useBridgeApproveTx = () => {
   const account = useAccount();
   const address = account.address as Hex;
+  const child = useChainId();
+  const parent = useParentChainId();
 
   return useMutation<ITxRequest, unknown, { symbol: IToken; amount: string }>({
     mutationKey: ['bridge', address, 'approve'],
     mutationFn: async (params) =>
-      client.bridge[':address'].approve[':symbol'][':amount']
-        .$get({ param: { address, ...params } })
+      client.bridge[':parent'][':child'][':address'].approve[':symbol'][
+        ':amount'
+      ]
+        .$get({ param: { parent, child, address, ...params } })
         .then((res) => res.json())
         .then(decodeTxRequest)
   });
@@ -167,13 +172,17 @@ export const useBridgeDepositTx = () => {
   const account = useAccount();
   const address = account.address as Hex;
   const ref = useReferral();
+  const child = useChainId();
+  const parent = useParentChainId();
 
   return useMutation<ITxRequest, unknown, { symbol: IToken; amount: string }>({
     mutationKey: ['bridge', address, 'deposit'],
     mutationFn: async (params) =>
-      client.bridge[':address'].deposit[':symbol'][':amount']
+      client.bridge[':parent'][':child'][':address'].deposit[':symbol'][
+        ':amount'
+      ]
         .$get({
-          param: { address, ...params },
+          param: { parent, child, address, ...params },
           query: { ref }
         })
         .then((res) => res.json())
@@ -184,12 +193,16 @@ export const useBridgeDepositTx = () => {
 export const useBridgeWithdrawTx = () => {
   const account = useAccount();
   const address = account.address as Hex;
+  const child = useChainId();
+  const parent = useParentChainId();
 
   return useMutation<ITxRequest, unknown, { symbol: IToken; amount: string }>({
     mutationKey: ['bridge', address, 'withdraw'],
     mutationFn: async (params) =>
-      client.bridge[':address'].withdraw[':symbol'][':amount']
-        .$get({ param: { address, ...params } })
+      client.bridge[':parent'][':child'][':address'].withdraw[':symbol'][
+        ':amount'
+      ]
+        .$get({ param: { parent, child, address, ...params } })
         .then((res) => res.json())
         .then(decodeTxRequest)
   });

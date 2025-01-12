@@ -1,4 +1,5 @@
 import {
+  type IChain,
   type IChainId,
   chains,
   claim,
@@ -46,18 +47,18 @@ export const vChainId = v.string().refine<IChainId>(isChainId);
  * Staking
  */
 
-export const getWEDUPoints = (c: IContext, chain: string, address: Hex) =>
+export const getWEDUPoints = (c: IContext, chain: IChain, address: Hex) =>
   c.var.db
     .from('wedu_agg_point_balances_view')
     .select('*')
     .eq('address', address)
-    .eq('chain', chain)
+    .eq('chain', chain.name)
     .maybeSingle()
     .then((res) => Number.parseFloat(res.data?.points?.toFixed(6) || '0'));
 
 export const getWEDUTransfers = async (
   c: IContext,
-  chain: string,
+  chain: IChain,
   address: Hex,
   page: number
 ) => {
@@ -69,7 +70,7 @@ export const getWEDUTransfers = async (
     .from('wedu_point_balances_view')
     .select('blockTimestamp,amount,points')
     .eq('address', address)
-    .eq('chain', chain)
+    .eq('chain', chain.name)
     .order('blockTimestamp', { ascending: false })
     .range(from, to)
     .then(
@@ -89,14 +90,14 @@ export const getWEDUTransfers = async (
 export const createBridgeApproveDepositReq = async (
   c: IContext,
   params: {
+    parent: IChainId;
+    child: IChainId;
     symbol: string;
     amount: string;
     address: Hex;
   }
 ) => {
-  const { symbol, amount, address: account } = params;
-  const parent = c.var.mainnet ? 'arbMainnet' : 'arbTestnet';
-  const child = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
+  const { symbol, amount, address, parent, child } = params;
   const parentToken = getTokenAddress(parent, symbol);
   assert(parentToken, 'invalid token on parent chain');
   return getApproveRequest({
@@ -104,47 +105,61 @@ export const createBridgeApproveDepositReq = async (
     parentToken,
     child,
     amount,
-    account
+    account: address
   });
 };
 
 export const createBridgeDepositReq = async (
   c: IContext,
   params: {
+    parent: IChainId;
+    child: IChainId;
     address: Address;
     symbol: string;
     amount: string;
     ref?: string;
   }
 ) => {
-  const { address: account, symbol, amount } = params;
-  const parent = c.var.mainnet ? 'arbMainnet' : 'arbTestnet';
-  const child = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
+  const { parent, child, address, symbol, amount } = params;
   const parentToken = getTokenAddress(parent, symbol);
   assert(parentToken, 'invalid token on parent chain');
-  return getDepositRequest({ parent, parentToken, child, account, amount });
+  return getDepositRequest({
+    parent,
+    parentToken,
+    child,
+    amount,
+    account: address
+  });
 };
 
 export const createBridgeWithdrawReq = async (
   c: IContext,
   params: {
+    parent: IChainId;
+    child: IChainId;
     address: Address;
     symbol: string;
     amount: string;
     ref?: string;
   }
 ) => {
-  const { address: account, symbol, amount, ref } = params;
-  const parent = c.var.mainnet ? 'arbMainnet' : 'arbTestnet';
-  const child = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
+  // TODO: write ref somewhere
+  const { parent, child, address, symbol, amount, ref } = params;
   const parentToken = getTokenAddress(parent, symbol);
   assert(parentToken, 'invalid token on parent chain');
-  return getWithdrawRequest({ parent, parentToken, child, account, amount });
+  return getWithdrawRequest({
+    parent,
+    parentToken,
+    child,
+    amount,
+    account: address
+  });
 };
 
 export const getBridgeTransfers = async (
   c: IContext,
   params: {
+    chainId: IChainId;
     address: Address;
     page: number;
   }
@@ -152,7 +167,11 @@ export const getBridgeTransfers = async (
   return [];
 };
 
-export const getBridgePoints = async (c: IContext, address: Address) => {
+export const getBridgePoints = async (
+  c: IContext,
+  chain: IChain,
+  address: Address
+) => {
   return '0';
 };
 
@@ -189,10 +208,15 @@ export const createClaimTx = async (
   const eligibility = await getClaimEligibility(c, chainId, address);
   assert(eligibility === 'eligible');
 
+  const signerPk =
+    chainId === 'eduMainnet'
+      ? c.env.MAINNET_SIGNER_PK
+      : c.env.TESTNET_SIGNER_PK;
+
   const txRequest = await claim({
     chainId,
     account: address,
-    signer: privateKeyToAccount(c.env.SIGNER_PK)
+    signer: privateKeyToAccount(signerPk)
   });
 
   return txRequest;
@@ -206,10 +230,15 @@ export const execClaimTx = async (
   const eligibility = await getClaimEligibility(c, chainId, address);
   assert(eligibility === 'eligible');
 
+  const signerPk =
+    chainId === 'eduMainnet'
+      ? c.env.MAINNET_SIGNER_PK
+      : c.env.TESTNET_SIGNER_PK;
+
   const signature = await claimTo({
     chainId,
     account: address,
-    signer: privateKeyToAccount(c.env.SIGNER_PK)
+    signer: privateKeyToAccount(signerPk)
   });
 
   return signature;
@@ -232,11 +261,15 @@ export const verifyCaptcha = (c: IContext, token: string, ip?: string) =>
  * Rewards
  */
 
-export const getCommunities = async (c: IContext) => {
+export const getCommunities = async (c: IContext, chainId: IChainId) => {
   return [];
 };
 
-export const getRewardsPoints = async (c: IContext, address: string) => {
+export const getRewardsPoints = async (
+  c: IContext,
+  chain: IChain,
+  address: string
+) => {
   return '0;';
 };
 

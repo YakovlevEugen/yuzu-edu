@@ -42,7 +42,11 @@ export default function Claim({ className }: Props) {
               </div>
             </>
           ) : (
-            <>Ineligible</>
+            <>
+              {eligibility.data === 'claimed'
+                ? 'Already Claimed'
+                : 'Ineligible'}
+            </>
           )}
         </WalletConnectFilter>
       </BorderBlock>

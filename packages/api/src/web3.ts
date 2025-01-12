@@ -41,8 +41,3 @@ export const getTokenBalance = async (
 
   return new Big(balance.toString()).div(10 ** decimals).toFixed(decimals);
 };
-
-export const getBlock = async (c: IContext) =>
-  getPublicClient(c.var.mainnet ? 'eduMainnet' : 'eduTestnet')
-    .getBlockNumber()
-    .then(Number);

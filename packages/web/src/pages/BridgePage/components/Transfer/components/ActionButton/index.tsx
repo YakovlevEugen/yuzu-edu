@@ -7,6 +7,7 @@ import {
   useTokenBalance
 } from '@/hooks/api';
 import { useChainId, useParentChainId } from '@/hooks/use-chain-id';
+import { useEnsureChain } from '@/hooks/use-ensure-chain';
 import { useToast } from '@/hooks/use-toast';
 import { useFormContext } from 'react-hook-form';
 import { Button } from 'ui/button';
@@ -34,9 +35,12 @@ export default function ActionButton({ className }: Props) {
 
   const parentBalance = useTokenBalance(parentChainId, symbol);
   const childBalance = useTokenBalance(chainId, symbol);
+  const ensureChain = useEnsureChain();
 
   async function deposit() {
     try {
+      await ensureChain(parentChainId);
+
       await approveTx
         .mutateAsync({ symbol, amount })
         .then(sendTransactionAsync);
@@ -57,6 +61,8 @@ export default function ActionButton({ className }: Props) {
 
   async function withdraw() {
     try {
+      await ensureChain(chainId);
+
       await withdrawTx
         .mutateAsync({ symbol, amount })
         .then(sendTransactionAsync);

@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 
 import { contractsEnv } from '@/constants/config';
-import type { IContractsEnv } from '@yuzu/api';
 import {
   type PropsWithChildren,
   createContext,
@@ -10,6 +9,8 @@ import {
   useMemo
 } from 'react';
 import { useLocalStorage } from 'react-use';
+
+export type IContractsEnv = 'mainnet' | 'testnet';
 
 const EnvContext = createContext<IContractsEnv>(contractsEnv);
 export const useEnv = () => useContext(EnvContext);

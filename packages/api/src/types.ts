@@ -7,18 +7,14 @@ export type IEnv = {
   Bindings: {
     SUPABASE_URL: string;
     SUPABASE_KEY: string;
-    CONTRACTS_ENV: IContractsEnv;
-    DOMAIN: string;
+    TESTNET_SIGNER_PK: Hex;
+    MAINNET_SIGNER_PK: Hex;
     TURNSTILE_KEY: string;
-    SIGNER_PK: Hex;
   };
   Variables: {
     db: SupabaseClient<Database>;
-    mainnet: boolean;
   };
 };
 
-export type IContractsEnv = 'mainnet' | 'testnet';
 export type IContext = Context<IEnv>;
-export type IPointsType = 'stake' | 'bridge';
 export type IEligibility = 'eligible' | 'not-eligible' | 'claimed';

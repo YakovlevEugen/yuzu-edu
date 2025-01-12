@@ -65,10 +65,12 @@ export default function ActionButton({ className }: Props) {
         return;
       }
 
-      const [txId] = await Promise.all([
-        stakeTx.mutateAsync({ amount }).then(sendTransactionAsync),
+      const [tx] = await Promise.all([
+        stakeTx.mutateAsync({ amount }),
         ensureChain(chainId)
       ]);
+
+      const txId = await sendTransactionAsync(tx);
 
       setValue('amount', '0');
 
@@ -96,10 +98,12 @@ export default function ActionButton({ className }: Props) {
     try {
       setLoading(true);
 
-      const [txId] = await Promise.all([
-        unstakeTx.mutateAsync({ amount }).then(sendTransactionAsync),
+      const [tx] = await Promise.all([
+        unstakeTx.mutateAsync({ amount }),
         ensureChain(chainId)
       ]);
+
+      const txId = await sendTransactionAsync(tx);
 
       setValue('amount', '0');
 

@@ -1,5 +1,5 @@
 import { zValidator } from '@hono/zod-validator';
-import { chains, getChain, unwrapWEDU, wrapEDU } from '@yuzu/sdk';
+import { getChain, unwrapWEDU, wrapEDU } from '@yuzu/sdk';
 import Big from 'big.js';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
@@ -23,14 +23,13 @@ import {
   vChainId,
   verifyCaptcha
 } from './helpers';
-import { database, network } from './middleware';
+import { database } from './middleware';
 import type { IEnv } from './types';
 import { getTokenBalance } from './web3';
 
 const app = new Hono<IEnv>()
   .use(cors())
   .use(database())
-  .use(network())
 
   /**
    * Common
@@ -59,7 +58,7 @@ const app = new Hono<IEnv>()
     async (c) => {
       const { chainId, address } = c.req.valid('param');
       const chain = getChain(chainId);
-      const points = await getWEDUPoints(c, chain.name, address);
+      const points = await getWEDUPoints(c, chain, address);
       return c.json(points);
     }
   )
@@ -72,7 +71,7 @@ const app = new Hono<IEnv>()
       const { chainId, address } = c.req.valid('param');
       const page = parseInt(c.req.valid('query').page);
       const chain = getChain(chainId);
-      const transfers = await getWEDUTransfers(c, chain.name, address, page);
+      const transfers = await getWEDUTransfers(c, chain, address, page);
       return c.json(transfers);
     }
   )
@@ -117,10 +116,12 @@ const app = new Hono<IEnv>()
    */
 
   .get(
-    '/bridge/:address/approve/:symbol/:amount',
+    '/bridge/:parent/:child/:address/approve/:symbol/:amount',
     zValidator(
       'param',
       v.object({
+        parent: vChainId,
+        child: vChainId,
         address: vAddress,
         symbol: v.string(),
         amount: v.string()
@@ -134,10 +135,12 @@ const app = new Hono<IEnv>()
   )
 
   .get(
-    '/bridge/:address/deposit/:symbol/:amount',
+    '/bridge/:parent/:child/:address/deposit/:symbol/:amount',
     zValidator(
       'param',
       v.object({
+        parent: vChainId,
+        child: vChainId,
         address: vAddress,
         symbol: v.string(),
         amount: v.string()
@@ -153,10 +156,12 @@ const app = new Hono<IEnv>()
   )
 
   .get(
-    '/bridge/:address/withdraw/:symbol/:amount',
+    '/bridge/:parent/:child/:address/withdraw/:symbol/:amount',
     zValidator(
       'param',
       v.object({
+        parent: vChainId,
+        child: vChainId,
         address: vAddress,
         symbol: v.string(),
         amount: v.string()
@@ -170,13 +175,13 @@ const app = new Hono<IEnv>()
   )
 
   .get(
-    '/bridge/:address/history',
-    zValidator('param', v.object({ address: vAddress })),
+    '/bridge/:chainId/:address/history',
+    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
     zValidator('query', v.object({ page: v.string() })),
     async (c) => {
-      const { address } = c.req.valid('param');
+      const { chainId, address } = c.req.valid('param');
       const page = parseInt(c.req.valid('query').page);
-      const transfers = await getBridgeTransfers(c, { address, page });
+      const transfers = await getBridgeTransfers(c, { chainId, address, page });
       return c.json(transfers);
     }
   )
@@ -224,17 +229,23 @@ const app = new Hono<IEnv>()
    * Community Rewards
    */
 
-  .get('/rewards/communities', async (c) => {
-    const communities = await getCommunities(c);
-    return c.json(communities);
-  })
+  .get(
+    '/rewards/:chainId/communities',
+    zValidator('param', v.object({ chainId: vChainId })),
+    async (c) => {
+      const { chainId } = c.req.valid('param');
+      const communities = await getCommunities(c, chainId);
+      return c.json(communities);
+    }
+  )
 
   .get(
-    '/rewards/:address',
-    zValidator('param', v.object({ address: vAddress })),
+    '/rewards/:chainId/:address',
+    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
     async (c) => {
-      const { address } = c.req.valid('param');
-      const points = await getRewardsPoints(c, address);
+      const { chainId, address } = c.req.valid('param');
+      const chain = getChain(chainId);
+      const points = await getRewardsPoints(c, chain, address);
       return c.json(points);
     }
   )
@@ -244,16 +255,15 @@ const app = new Hono<IEnv>()
    */
 
   .get(
-    '/points/:address',
-    zValidator('param', v.object({ address: vAddress })),
+    '/points/:chainId/:address',
+    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
     async (c) => {
-      const { address } = c.req.valid('param');
-      const chainId = c.var.mainnet ? 'eduMainnet' : 'eduTestnet';
+      const { chainId, address } = c.req.valid('param');
       const chain = getChain(chainId);
       const [staking, bridge, rewards, testnetActivity] = await Promise.all([
-        getWEDUPoints(c, chain.name, address),
-        getBridgePoints(c, address),
-        getRewardsPoints(c, address),
+        getWEDUPoints(c, chain, address),
+        getBridgePoints(c, chain, address),
+        getRewardsPoints(c, chain, address),
         getTestnetActivityPoints(c, address)
       ]);
       return c.json({ staking, bridge, rewards, testnetActivity });

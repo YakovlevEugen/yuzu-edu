@@ -29,11 +29,12 @@ export default function ActionButton({
         token: captcha.token ?? 'xxx'
       });
       console.log({ signature });
-      refresh();
       toast({ title: 'Successfully Claimed 0.1 EDU', variant: 'success' });
     } catch (error) {
       console.error(error);
       toast({ title: 'Failed to claim', variant: 'destructive' });
+    } finally {
+      refresh();
     }
   }, [claimTo, captcha.token, refresh, toast]);
 

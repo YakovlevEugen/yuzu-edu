@@ -12,9 +12,3 @@ export const database = () =>
     c.set('db', db);
     return next();
   });
-
-export const network = () =>
-  createMiddleware<IEnv>((c, next) => {
-    c.set('mainnet', c.env.CONTRACTS_ENV === 'mainnet');
-    return next();
-  });
