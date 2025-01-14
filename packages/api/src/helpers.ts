@@ -164,7 +164,7 @@ export const getBridgeTransfers = async (
     page: number;
   }
 ) => {
-  return [];
+  return []; // NOTE: wip
 };
 
 export const getBridgePoints = async (
@@ -172,7 +172,7 @@ export const getBridgePoints = async (
   chain: IChain,
   address: Address
 ) => {
-  return '0';
+  return '0'; // NOTE: will be assigned at the end of the season
 };
 
 /**
@@ -261,17 +261,18 @@ export const verifyCaptcha = (c: IContext, token: string, ip?: string) =>
  * Rewards
  */
 
-export const getCommunities = async (c: IContext, chainId: IChainId) => {
-  return [];
-};
+export const getCommunityRewards = async (c: IContext) =>
+  c.var.db
+    .from('community_rewards')
+    .select('*')
+    .then((res) => res.data || []);
 
-export const getRewardsPoints = async (
-  c: IContext,
-  chain: IChain,
-  address: string
-) => {
-  return '0;';
-};
+export const getCommunityAllocations = async (c: IContext, address: Address) =>
+  c.var.db
+    .from('community_allocations')
+    .select('*')
+    .eq('address', address)
+    .then((res) => res.data || []);
 
 /**
  * Testnet activity

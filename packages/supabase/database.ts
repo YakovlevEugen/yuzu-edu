@@ -9,6 +9,39 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      community_allocations: {
+        Row: {
+          address: string;
+          community: string;
+          points: number;
+        };
+        Insert: {
+          address: string;
+          community: string;
+          points?: number;
+        };
+        Update: {
+          address?: string;
+          community?: string;
+          points?: number;
+        };
+        Relationships: [];
+      };
+      community_rewards: {
+        Row: {
+          name: string;
+          points: number;
+        };
+        Insert: {
+          name: string;
+          points?: number;
+        };
+        Update: {
+          name?: string;
+          points?: number;
+        };
+        Relationships: [];
+      };
       configs: {
         Row: {
           key: string;
@@ -136,6 +169,14 @@ export type Database = {
       };
     };
     Functions: {
+      reset_community_allocations: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
+      reset_community_rewards: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
       reset_faucet_wallets: {
         Args: Record<PropertyKey, never>;
         Returns: undefined;

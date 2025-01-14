@@ -14,8 +14,8 @@ import {
   getBridgePoints,
   getBridgeTransfers,
   getClaimEligibility,
-  getCommunities,
-  getRewardsPoints,
+  getCommunityAllocations,
+  getCommunityRewards,
   getTestnetActivityPoints,
   getWEDUPoints,
   getWEDUTransfers,
@@ -234,8 +234,8 @@ const app = new Hono<IEnv>()
     zValidator('param', v.object({ chainId: vChainId })),
     async (c) => {
       const { chainId } = c.req.valid('param');
-      const communities = await getCommunities(c, chainId);
-      return c.json(communities);
+      const result = await getCommunityRewards(c);
+      return c.json(result);
     }
   )
 
@@ -244,9 +244,8 @@ const app = new Hono<IEnv>()
     zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
     async (c) => {
       const { chainId, address } = c.req.valid('param');
-      const chain = getChain(chainId);
-      const points = await getRewardsPoints(c, chain, address);
-      return c.json(points);
+      const result = await getCommunityAllocations(c, address);
+      return c.json(result);
     }
   )
 
@@ -263,7 +262,7 @@ const app = new Hono<IEnv>()
       const [staking, bridge, rewards, testnetActivity] = await Promise.all([
         getWEDUPoints(c, chain, address),
         getBridgePoints(c, chain, address),
-        getRewardsPoints(c, chain, address),
+        getCommunityAllocations(c, address),
         getTestnetActivityPoints(c, address)
       ]);
       return c.json({ staking, bridge, rewards, testnetActivity });

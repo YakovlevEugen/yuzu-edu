@@ -5,7 +5,7 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@yuzu/supabase';
 import type { Hex } from 'viem';
-import { getAddress } from 'viem';
+import { getAddress, isAddress } from 'viem';
 
 import { resolve } from 'path';
 import dotnet from 'dotenv';
@@ -34,15 +34,62 @@ export const dropTestnetPoints = () =>
     if (res.error) throw new Error(res.error.message);
   });
 
-export const updateFaucetWhitelist = (entires: [Hex, string][]) =>
+export const updateFaucetWhitelist = (entires: Hex[]) =>
   db
     .from('faucet_wallets')
-    .insert(entires.map(([address]) => ({ address: getAddress(address) })))
+    .insert(entires.map((address) => ({ address })))
+    .then((res) => {
+      if (res.error) throw new Error(res.error.message);
+    });
+
+import * as v from 'zod';
+
+export const vCommunityReward = v.object({
+  name: v.string(),
+  points: v.coerce.number()
+});
+export type ICommunityReward = v.infer<typeof vCommunityReward>;
+
+export const vCommunityAllocation = v.object({
+  address: v.string().refine(isAddress),
+  community: v.string(),
+  points: v.coerce.number()
+});
+
+export type ICommunityAllocation = v.infer<typeof vCommunityAllocation>;
+
+export const updateCommunityRewards = (entries: ICommunityReward[]) =>
+  db
+    .from('community_rewards')
+    .insert(entries)
+    .then((res) => {
+      if (res.error) throw new Error(res.error.message);
+    });
+
+export const updateCommunityAllocations = (entries: ICommunityAllocation[]) =>
+  db
+    .from('community_allocations')
+    .insert(
+      entries.map(({ address, ...rest }) => ({
+        address: getAddress(address),
+        ...rest
+      }))
+    )
     .then((res) => {
       if (res.error) throw new Error(res.error.message);
     });
 
 export const dropFaucetWhitelist = () =>
   db.rpc('reset_faucet_wallets').then((res) => {
+    if (res.error) throw new Error(res.error.message);
+  });
+
+export const dropCommunityRewards = () =>
+  db.rpc('reset_community_rewards').then((res) => {
+    if (res.error) throw new Error(res.error.message);
+  });
+
+export const dropCommunityAllocations = () =>
+  db.rpc('reset_community_allocations').then((res) => {
     if (res.error) throw new Error(res.error.message);
   });

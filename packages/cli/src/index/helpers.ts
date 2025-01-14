@@ -1,6 +1,6 @@
 import { type IChainId, getPublicClient } from '@yuzu/sdk';
 import Big from 'big.js';
-import type { Address, Hex, Transaction } from 'viem';
+import { type Address, type Hex, type Transaction, getAddress } from 'viem';
 import {
   contracts,
   getEndingBlock,
@@ -57,6 +57,7 @@ export const countWalletTxs = async (chainId: IChainId) => {
 
   const blacklist = getExcludedAddresses(chainId);
   const startingBlock = getStartingBlock(chainId);
+  const endingBlock = getEndingBlock(chainId);
   const transactions = readTransactions(chainId);
 
   const eligibleTxs = filter(
@@ -64,6 +65,7 @@ export const countWalletTxs = async (chainId: IChainId) => {
     (tx) =>
       tx.blockNumber &&
       tx.blockNumber >= startingBlock &&
+      tx.blockNumber <= endingBlock &&
       !blacklist.includes(tx.from.toLowerCase())
   );
 
@@ -86,6 +88,7 @@ export const getWalletTxs = async (chainId: IChainId, address: Address) => {
 
   const blacklist = getExcludedAddresses(chainId);
   const startingBlock = getStartingBlock(chainId);
+  const endingBlock = getEndingBlock(chainId);
   const transactions = readTransactions(chainId);
 
   const eligibleTxs = filter(
@@ -93,6 +96,7 @@ export const getWalletTxs = async (chainId: IChainId, address: Address) => {
     (tx) =>
       tx.blockNumber &&
       tx.blockNumber >= startingBlock &&
+      tx.blockNumber <= endingBlock &&
       !blacklist.includes(tx.from.toLowerCase())
   );
 
@@ -142,9 +146,45 @@ export const getTestnetActivityPoints = async () => {
           .add(points.get(sender) || 0)
           .toFixed(2)
       );
-
-    if (parseInt((tx.blockNumber as bigint).toString()) > 10140782) break;
   }
 
   return Array.from(points.entries());
+};
+
+export const getTestnetWallets = async () => {
+  const wallets = new Set<Hex>();
+
+  const blacklist = getExcludedAddresses('eduTestnet');
+  const startingBlock = getStartingBlock('eduTestnet');
+  const endingBlock = getEndingBlock('eduTestnet');
+  const transactions = readTransactions('eduTestnet');
+
+  const eligibleTxs = filter(
+    transactions,
+    (tx) =>
+      tx.blockNumber &&
+      tx.blockNumber >= startingBlock &&
+      tx.blockNumber <= endingBlock &&
+      !blacklist.includes(tx.from.toLowerCase())
+  );
+
+  for await (const tx of eligibleTxs) {
+    const sender = tx.from;
+    if (sender) wallets.add(getAddress(sender));
+  }
+
+  return Array.from(wallets);
+};
+
+export const fromCSV = <T>(text: string, schema: Zod.Schema<T>) => {
+  const [headerRow, ...lines] = text.split('\n');
+
+  const cols = headerRow.split(',').map((str) => str.trim());
+
+  const rows = lines
+    .map((line) => line.split(',').map((str) => str.trim()))
+    .map((values) => Object.fromEntries(cols.map((c, i) => [c, values[i]])))
+    .map((row) => schema.parse(row));
+
+  return rows;
 };
