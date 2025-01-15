@@ -200,15 +200,16 @@ const app = new Hono<IEnv>()
     }
   )
 
-  .get(
-    '/claim/:chainId/:address/tx',
-    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
-    async (c) => {
-      const { chainId, address } = c.req.valid('param');
-      const tx = await createClaimTx(c, chainId, address);
-      return c.json(tx);
-    }
-  )
+  // NOTE: this path we would take to let users pay for gas themselves
+  // .get(
+  //   '/claim/:chainId/:address/tx',
+  //   zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
+  //   async (c) => {
+  //     const { chainId, address } = c.req.valid('param');
+  //     const tx = await createClaimTx(c, chainId, address);
+  //     return c.json(tx);
+  //   }
+  // )
 
   .post(
     '/claim/:chainId/:address/exec',
