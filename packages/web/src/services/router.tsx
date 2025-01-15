@@ -17,7 +17,7 @@ export default function AppRouter() {
         <Route path="/" element={<Navigate to={ROUTES.stake} replace />} />
         <Route path={ROUTES.dashboard} index element={<DashboardPage />} />
         <Route path={ROUTES.stake} element={<StakePage />} />
-        <Route path={ROUTES.land} element={<EDULandPage />} />
+        <Route path={ROUTES.community} element={<EDULandPage />} />
         <Route path={ROUTES.faucet} element={<EDUFaucetPage />} />
         <Route path={ROUTES.bridge} element={<BridgePage />} />
       </Route>

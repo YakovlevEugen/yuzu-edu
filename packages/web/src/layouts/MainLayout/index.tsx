@@ -17,7 +17,7 @@ export default function MainLayout({ className }: Props) {
   const pageBackground = useMemo(() => {
     let backgroundClass = 'bg-center bg-cover bg-no-repeat ';
 
-    if (pathname === ROUTES.land) {
+    if (pathname === ROUTES.community) {
       backgroundClass += 'md:bg-top bg-edu-land-background';
     } else if (pathname === ROUTES.faucet) {
       backgroundClass += 'bg-edu-faucet-background';

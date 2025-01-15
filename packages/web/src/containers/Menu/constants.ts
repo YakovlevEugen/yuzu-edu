@@ -14,8 +14,8 @@ export const MENU = [
     title: 'EDU Faucet'
   },
   {
-    to: ROUTES.land,
-    title: 'EDU Land'
+    to: ROUTES.community,
+    title: 'Community'
   },
   {
     to: ROUTES.bridge,

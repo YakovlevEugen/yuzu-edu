@@ -3,6 +3,6 @@ export const ROUTES = {
   dashboard: '/dashboard',
   stake: '/stake',
   faucet: '/edu-faucet',
-  land: '/edu-land',
+  community: '/community-rewards',
   bridge: '/bridge'
 };
