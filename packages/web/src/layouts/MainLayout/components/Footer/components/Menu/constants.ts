@@ -1,3 +1,5 @@
+import { OPEN_CAMPUS_URL } from '@/constants/routes';
+import { createOpenCampusSubdomainLink } from '@/helpers/url';
 import type { Menu } from './types';
 
 export const MENU: Menu[] = [
@@ -6,15 +8,15 @@ export const MENU: Menu[] = [
     children: [
       {
         label: 'OC ID',
-        link: 'https://id.opencampus.xyz/'
+        link: createOpenCampusSubdomainLink('id')
       },
       {
         label: 'OC-X',
-        link: 'https://ocx.opencampus.xyz/'
+        link: createOpenCampusSubdomainLink('ocx')
       },
       {
         label: 'Publisher NFT',
-        link: 'https://mint.opencampus.xyz/'
+        link: createOpenCampusSubdomainLink('mint')
       }
     ]
   },
@@ -23,7 +25,7 @@ export const MENU: Menu[] = [
     children: [
       {
         label: 'Whitepaper',
-        link: 'https://userdocs.opencampus.xyz/'
+        link: createOpenCampusSubdomainLink('userdocs')
       },
       {
         label: 'CoinMarketCap',
@@ -40,11 +42,11 @@ export const MENU: Menu[] = [
     children: [
       {
         label: 'OC Partners',
-        link: 'https://opencampus.xyz/partners'
+        link: `${OPEN_CAMPUS_URL}partners`
       },
       {
         label: 'OC 100',
-        link: 'https://100.opencampus.xyz/'
+        link: createOpenCampusSubdomainLink('100')
       },
       {
         label: 'Media Kit',

@@ -1,6 +1,7 @@
 import SvgIcon from '@/components/SvgIcon';
 import Menu from './components/Menu';
 
+import { OPEN_CAMPUS_URL } from '@/constants/routes';
 import { cn } from '@/helpers/lib';
 import Socials from '@/layouts/MainLayout/components/Footer/components/Socials';
 
@@ -19,7 +20,7 @@ export default function Footer({ className }: Props) {
       <div className="mx-auto max-w-[1200px]">
         <div className="flex gap-x-10 lg:gap-x-[120px]">
           <div>
-            <a href="https://opencampus.xyz/" target="_blank" rel="noreferrer">
+            <a href={OPEN_CAMPUS_URL} target="_blank" rel="noreferrer">
               <SvgIcon className="h-[31px] w-[157px]" name="logo-open-campus" />
             </a>
           </div>

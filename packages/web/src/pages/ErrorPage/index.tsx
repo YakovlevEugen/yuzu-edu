@@ -34,7 +34,7 @@ export default function ErrorPage({ status }: Props) {
         <nav>
           <Link
             className="text-orange underline hover:no-underline"
-            to={ROUTES.dashboard}
+            to={ROUTES.home}
           >
             Home
           </Link>
