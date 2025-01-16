@@ -3,12 +3,13 @@ import { useAccount } from 'wagmi';
 
 import BackgroundBlock from '@/components/BackgroundBlock';
 import { Button } from 'ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from 'ui/popover';
+import WalletConnectFilter from '../WalletConnectFilter';
 
 import { ROUTES } from '@/constants/routes';
 import { cn } from '@/helpers/lib';
 import { copyToClipboard } from '@/helpers/text';
 import { useToast } from '@/hooks/use-toast';
-import WalletConnectFilter from '../WalletConnectFilter';
 
 interface Props {
   className?: string;
@@ -33,7 +34,17 @@ export default function ReferralBlock({ className }: Props) {
   return (
     <BackgroundBlock className={classRoot}>
       <div className="font-semibold">Invite your friends to EDUChain</div>
-      {/* <div className="mt-2 break-words text-sm text-green">{referralLink}</div> */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <div className="mt-2 cursor-pointer inline-block text-orange">
+            Learn more
+          </div>
+        </PopoverTrigger>
+        <PopoverContent>
+          You'll earn 10% of your friends' TVL points. Rewards are credited at
+          season's end
+        </PopoverContent>
+      </Popover>
       <div className="mt-4">
         <WalletConnectFilter label="Connect Wallet to get Referral Link">
           <Button className="w-full" onClick={copyReferralLink}>
@@ -41,6 +52,11 @@ export default function ReferralBlock({ className }: Props) {
           </Button>
         </WalletConnectFilter>
       </div>
+      {Boolean(account.address) && (
+        <div className="mt-4 break-words text-sm text-green">
+          {referralLink}
+        </div>
+      )}
     </BackgroundBlock>
   );
 }
