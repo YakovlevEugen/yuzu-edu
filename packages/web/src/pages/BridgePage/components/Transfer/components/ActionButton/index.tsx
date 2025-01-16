@@ -1,4 +1,9 @@
+import { useFormContext } from 'react-hook-form';
+import { useAccount, useSendTransaction } from 'wagmi';
+
 import WalletConnect from '@/containers/WalletConnect';
+import { Button } from 'ui/button';
+
 import { cn } from '@/helpers/lib';
 import {
   useBridgeApproveTx,
@@ -9,9 +14,6 @@ import {
 import { useChainId, useParentChainId } from '@/hooks/use-chain-id';
 import { useEnsureChain } from '@/hooks/use-ensure-chain';
 import { useToast } from '@/hooks/use-toast';
-import { useFormContext } from 'react-hook-form';
-import { Button } from 'ui/button';
-import { useAccount, useSendTransaction } from 'wagmi';
 import type { FormSchema } from '../..';
 
 interface Props {

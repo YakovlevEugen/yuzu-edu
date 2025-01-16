@@ -36,7 +36,7 @@ export default function ReferralBlock({ className }: Props) {
       <div className="font-semibold">Invite your friends to EDUChain</div>
       <Popover>
         <PopoverTrigger asChild>
-          <div className="mt-2 cursor-pointer inline-block text-orange">
+          <div className="mt-2 inline-block cursor-pointer text-orange">
             Learn more
           </div>
         </PopoverTrigger>
