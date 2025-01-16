@@ -7,6 +7,7 @@ import {Faucet} from "../src/Faucet.sol";
 contract FaucetTest is Test {
     Faucet public faucet;
 
+    address constant DEPLOYER = address(10001);
     address constant SIGNER = address(0xBBED9678e14027A48c1f294D0468bBc402E3e4ef);
     uint256 constant SIGNER_PK = 0x98b8a9c18e38fc621fd142ae6df307d52404c621743f6f6891cc8def49a77e0c;
     address constant USER = address(30001);
@@ -14,8 +15,11 @@ contract FaucetTest is Test {
     address constant HACKER = address(30003);
 
     function setUp() public {
+        vm.deal(address(DEPLOYER), 1 ether);
+        vm.startPrank(DEPLOYER);
         faucet = new Faucet(SIGNER);
         vm.deal(address(faucet), 1 ether);
+        vm.stopPrank();
     }
 
     function test_Claim() public {
@@ -62,5 +66,15 @@ contract FaucetTest is Test {
 
         uint256 balance = address(HACKER).balance;
         assertEq(balance, 0 ether);
+    }
+
+    function test_withdrawBalance() public {
+        vm.startPrank(DEPLOYER);
+
+        assertEq(address(DEPLOYER).balance, 1 ether);
+        faucet.withdraw(address(faucet).balance);
+        assertEq(address(DEPLOYER).balance, 2 ether);
+        faucet.withdraw(address(faucet).balance);
+        assertEq(address(DEPLOYER).balance, 2 ether);
     }
 }
