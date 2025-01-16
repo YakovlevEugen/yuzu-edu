@@ -82,7 +82,7 @@ const app = new Hono<IEnv>()
     zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
     async (c) => {
       const { value } = c.req.valid('query');
-      const estimate = new Big(value || 0).mul(24).toNumber();
+      const estimate = new Big(value || 0).mul(0.05).mul(24).toNumber();
       return c.json(estimate);
     }
   )

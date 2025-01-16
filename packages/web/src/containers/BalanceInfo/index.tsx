@@ -24,6 +24,7 @@ export default function BalanceInfo({ className }: { className?: string }) {
         new Big(Date.now())
           .minus(since)
           .div(86400000)
+          .mul(0.05)
           .mul(weduBalance.data)
           .add(points.data)
           .toNumber()
