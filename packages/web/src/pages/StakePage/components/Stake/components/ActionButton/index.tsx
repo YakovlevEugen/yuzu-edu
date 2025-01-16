@@ -1,3 +1,9 @@
+import Big from 'big.js';
+import posthog from 'posthog-js';
+import { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { useAccount, useSendTransaction } from 'wagmi';
+
 import WalletConnect from '@/containers/WalletConnect';
 import { isNumberish } from '@/helpers/common';
 import { cn } from '@/helpers/lib';
@@ -10,11 +16,7 @@ import {
 import { useChainId } from '@/hooks/use-chain-id';
 import { useEnsureChain } from '@/hooks/use-ensure-chain';
 import { useToast } from '@/hooks/use-toast';
-import Big from 'big.js';
-import { useState } from 'react';
-import { useFormContext } from 'react-hook-form';
 import { Button } from 'ui/button';
-import { useAccount, useSendTransaction } from 'wagmi';
 import type { FormSchema } from '../..';
 
 interface Props {
@@ -24,7 +26,7 @@ interface Props {
 const STAKE_FEE = 0.0001;
 
 export default function ActionButton({ className }: Props) {
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const { watch, setValue } = useFormContext<FormSchema>();
 
   const { sendTransactionAsync } = useSendTransaction();
@@ -79,8 +81,8 @@ export default function ActionButton({ className }: Props) {
       stakingPoints.refetch();
 
       console.log('View Tx in explorer', txId);
-
       toast({ title: 'EDU Successfully Staked', variant: 'success' });
+      posthog?.capture(`${address} staked - ${amount}`);
     } catch (error: unknown) {
       const { message } = error as { message: string };
       if (message.includes('User rejected the request.')) {
@@ -117,6 +119,7 @@ export default function ActionButton({ className }: Props) {
         title: 'EDU Successfully Unstaked',
         variant: 'success'
       });
+      posthog?.capture(`${address} unstaked - ${amount}`);
     } catch (error: unknown) {
       const { message } = error as { message: string };
       if (message.includes('User rejected the request.')) {

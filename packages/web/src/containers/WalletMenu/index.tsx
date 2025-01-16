@@ -1,3 +1,4 @@
+import posthog from 'posthog-js';
 import { useAccount, useDisconnect } from 'wagmi';
 
 import SvgIcon from '@/components/SvgIcon';
@@ -14,7 +15,12 @@ import { replaceCenterWithEllipsis } from '@/helpers/text';
 
 export default function WalletMenu() {
   const { address } = useAccount();
-  const { disconnect } = useDisconnect();
+  const { disconnect } = useDisconnect({
+    onSuccess(data) {
+      console.log('Wallet disconnected:', data);
+      posthog?.capture('Wallet disconnected:' + data);
+    }
+  });
 
   const shortenWalletNumber = address
     ? replaceCenterWithEllipsis(address, 5)

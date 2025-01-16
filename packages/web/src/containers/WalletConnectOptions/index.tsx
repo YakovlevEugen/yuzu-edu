@@ -1,3 +1,4 @@
+import posthog from 'posthog-js';
 import { useConnect } from 'wagmi';
 
 import { Button } from 'ui/button';
@@ -9,7 +10,15 @@ interface Props {
 }
 
 export default function WalletConnectOptions({ className }: Props) {
-  const { connectors, connect } = useConnect();
+  const { connectors, connect } = useConnect({
+    onSuccess(data) {
+      console.log('Connected to wallet:', data);
+      posthog?.capture(`Connect to ${data}`);
+    },
+    onError(error) {
+      console.error('Error connecting to wallet:', error);
+    }
+  });
 
   const classRoot = cn('flex flex-col gap-y-3', className);
 
