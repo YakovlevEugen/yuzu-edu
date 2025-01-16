@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
+import Helmet from 'react-helmet';
 import Footer from './components/Footer';
 import Header from './components/Header';
 
 import { ROUTES } from '@/constants/routes';
+import { MENU } from '@/containers/Menu/constants';
 import { cn } from '@/helpers/lib';
 
 interface Props {
@@ -29,9 +31,14 @@ export default function MainLayout({ className }: Props) {
   }, [pathname]);
 
   const classRoot = cn('flex flex-col min-h-screen', className);
+  const pageTitle = MENU.find(({ to }) => to === pathname)?.title;
 
   return (
     <div className={classRoot}>
+      <Helmet>
+        <title>Yuzu - Edu Chain{pageTitle ? ` - ${pageTitle}` : ''}</title>
+      </Helmet>
+
       <div
         className={cn({ [`${pageBackground}`]: pageBackground }, 'flex-[1]')}
       >
