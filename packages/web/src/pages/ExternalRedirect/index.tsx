@@ -9,9 +9,9 @@ export default function ExternalRedirect({ path }: Props) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (['claim', 'dashboard', 'rental'].includes(path)) {
-      window.location.href = createEDUChainSubdomainLink('dashboard');
+      window.location.replace(createEDUChainSubdomainLink('dashboard'));
     } else {
-      window.location.href = path;
+      window.location.replace(path);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
