@@ -6,6 +6,7 @@ import {
   claimTo,
   getApproveRequest,
   getDepositRequest,
+  getDeposits,
   getTokenAddress,
   getWithdrawRequest,
   hasClaimed
@@ -156,6 +157,20 @@ export const createBridgeWithdrawReq = async (
     account: address
   });
 };
+
+export const getBridgeTest = async (
+  c: IContext,
+  params: {
+    chainId: IChainId;
+    address: Address;
+    page: number;
+  }
+) =>
+  getDeposits({
+    parent: params.chainId === 'eduMainnet' ? 'arbMainnet' : 'arbTestnet',
+    child: params.chainId,
+    address: params.address
+  });
 
 export const getBridgeTransfers = async (
   c: IContext,

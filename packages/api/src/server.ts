@@ -11,6 +11,7 @@ import {
   createBridgeWithdrawReq,
   execClaimTx,
   getBridgePoints,
+  getBridgeTest,
   getBridgeTransfers,
   getClaimEligibility,
   getCommunityAllocations,
@@ -182,6 +183,18 @@ const app = new Hono<IEnv>()
       const { chainId, address } = c.req.valid('param');
       const page = parseInt(c.req.valid('query').page);
       const transfers = await getBridgeTransfers(c, { chainId, address, page });
+      return c.json(transfers);
+    }
+  )
+
+  .get(
+    '/bridge/:chainId/:address/test',
+    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
+    zValidator('query', v.object({ page: v.optional(v.string()) })),
+    async (c) => {
+      const { chainId, address } = c.req.valid('param');
+      const page = parseInt(c.req.valid('query').page || '0');
+      const transfers = await getBridgeTest(c, { chainId, address, page });
       return c.json(transfers);
     }
   )
