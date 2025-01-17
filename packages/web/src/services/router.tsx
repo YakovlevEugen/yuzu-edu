@@ -10,8 +10,12 @@ import ExternalRedirect from '@/pages/ExternalRedirect';
 import StakePage from '@/pages/StakePage';
 
 import { ROUTES } from '@/constants/routes';
+import { usePageTracking, useWalletTracking } from '@/hooks/posthog';
 
 export default function AppRouter() {
+  usePageTracking();
+  useWalletTracking();
+
   return (
     <Routes>
       <Route element={<MainLayout />}>

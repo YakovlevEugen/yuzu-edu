@@ -11,6 +11,7 @@ import {
   useBridgeWithdrawTx,
   useTokenBalance
 } from '@/hooks/api';
+import { useAnalytics } from '@/hooks/posthog';
 import { useChainId, useParentChainId } from '@/hooks/use-chain-id';
 import { useEnsureChain } from '@/hooks/use-ensure-chain';
 import { useToast } from '@/hooks/use-toast';
@@ -21,8 +22,9 @@ interface Props {
 }
 
 export default function ActionButton({ className }: Props) {
+  const { track } = useAnalytics();
   const { toast } = useToast();
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const form = useFormContext<FormSchema>();
   const { sendTransactionAsync } = useSendTransaction();
 
@@ -41,6 +43,8 @@ export default function ActionButton({ className }: Props) {
 
   async function deposit() {
     try {
+      track('deposit_started', { chainId });
+
       await ensureChain(parentChainId);
 
       await approveTx
@@ -55,14 +59,17 @@ export default function ActionButton({ className }: Props) {
       childBalance.refetch();
 
       toast({ title: 'Success Deposit', variant: 'success' });
+      track('deposit_success', { address, amount, chainId });
     } catch (error) {
       toast({ title: 'Deposit Failed', variant: 'destructive' });
+      track('deposit_failure', { message: error.message, isError: true });
       console.error(error);
     }
   }
 
   async function withdraw() {
     try {
+      track('withdraw_started', { chainId });
       await ensureChain(chainId);
 
       await withdrawTx
@@ -73,8 +80,10 @@ export default function ActionButton({ className }: Props) {
       childBalance.refetch();
 
       toast({ title: 'Success Withdraw', variant: 'success' });
+      track('withdraw_success', { address, amount, chainId });
     } catch (error) {
       toast({ title: 'Withdraw Failed', variant: 'destructive' });
+      track('withdraw_failure', { message: error.message, isError: true });
       console.error(error);
     }
   }

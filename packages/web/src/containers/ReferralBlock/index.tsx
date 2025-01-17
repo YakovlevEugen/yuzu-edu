@@ -1,4 +1,3 @@
-import posthog from 'posthog-js';
 import { useAccount } from 'wagmi';
 
 import BackgroundBlock from '@/components/BackgroundBlock';
@@ -9,6 +8,7 @@ import WalletConnectFilter from '../WalletConnectFilter';
 import { ROUTES } from '@/constants/routes';
 import { cn } from '@/helpers/lib';
 import { copyToClipboard } from '@/helpers/text';
+import { useAnalytics } from '@/hooks/posthog';
 import { useToast } from '@/hooks/use-toast';
 
 interface Props {
@@ -16,6 +16,7 @@ interface Props {
 }
 
 export default function ReferralBlock({ className }: Props) {
+  const { track } = useAnalytics();
   const { toast } = useToast();
   const account = useAccount();
   const classRoot = cn('text-center', className);
@@ -25,7 +26,7 @@ export default function ReferralBlock({ className }: Props) {
     try {
       await copyToClipboard(referralLink);
       toast({ title: 'Link Successfully Copied', variant: 'success' });
-      posthog?.capture(`Link Successfully Copied - ${referralLink}`);
+      track('referral_link_copied', { address: account.address });
     } catch (error) {
       console.log(error);
     }

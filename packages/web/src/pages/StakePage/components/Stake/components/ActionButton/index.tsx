@@ -1,10 +1,11 @@
 import Big from 'big.js';
-import posthog from 'posthog-js';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useAccount, useSendTransaction } from 'wagmi';
 
 import WalletConnect from '@/containers/WalletConnect';
+import { Button } from 'ui/button';
+
 import { isNumberish } from '@/helpers/common';
 import { cn } from '@/helpers/lib';
 import {
@@ -13,10 +14,10 @@ import {
   useStakingPoints,
   useTokenBalance
 } from '@/hooks/api';
+import { useAnalytics } from '@/hooks/posthog';
 import { useChainId } from '@/hooks/use-chain-id';
 import { useEnsureChain } from '@/hooks/use-ensure-chain';
 import { useToast } from '@/hooks/use-toast';
-import { Button } from 'ui/button';
 import type { FormSchema } from '../..';
 
 interface Props {
@@ -27,6 +28,7 @@ const STAKE_FEE = 0.0001;
 
 export default function ActionButton({ className }: Props) {
   const { address, isConnected } = useAccount();
+  const { track } = useAnalytics();
   const { watch, setValue } = useFormContext<FormSchema>();
 
   const { sendTransactionAsync } = useSendTransaction();
@@ -49,6 +51,7 @@ export default function ActionButton({ className }: Props) {
 
   async function stake() {
     try {
+      track('stake_edu_started', { address });
       setLoading(true);
 
       if (new Big(eduBalance.data).lt(amount)) {
@@ -82,9 +85,11 @@ export default function ActionButton({ className }: Props) {
 
       console.log('View Tx in explorer', txId);
       toast({ title: 'EDU Successfully Staked', variant: 'success' });
-      posthog?.capture(`${address} staked - ${amount}`);
+      track('stake_edu_success', { address, amount });
     } catch (error: unknown) {
       const { message } = error as { message: string };
+
+      track('stake_edu_failure', { message, isError: true });
       if (message.includes('User rejected the request.')) {
         toast({ title: 'User cancelled', variant: 'default' });
       } else {
@@ -98,6 +103,7 @@ export default function ActionButton({ className }: Props) {
 
   async function unstake() {
     try {
+      track('unstake_edu_started', { address });
       setLoading(true);
 
       const [tx] = await Promise.all([
@@ -119,9 +125,11 @@ export default function ActionButton({ className }: Props) {
         title: 'EDU Successfully Unstaked',
         variant: 'success'
       });
-      posthog?.capture(`${address} unstaked - ${amount}`);
+      track('unstake_edu_success', { address, amount });
     } catch (error: unknown) {
       const { message } = error as { message: string };
+
+      track('unstake_edu_failure', { message, isError: true });
       if (message.includes('User rejected the request.')) {
         toast({ title: 'User cancelled', variant: 'default' });
       } else {
