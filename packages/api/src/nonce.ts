@@ -42,10 +42,10 @@ export const Nonces = generateHonoObject<IEnv, Schema, '/nonces'>(
     let [testnetNonce, mainnetNonce] = await Promise.all([
       storage
         .get<number>('testnetNonce')
-        .then((val) => val ?? getSignerNonce(ctx as IContext, 'eduTestnet')),
+        .then((val) => Math.max(val || 0, testnetTxCount)),
       storage
         .get<number>('mainnetNonce')
-        .then((val) => val ?? getSignerNonce(ctx as IContext, 'eduMainnet'))
+        .then((val) => Math.max(val || 0, mainnetTxCount))
     ]);
 
     app

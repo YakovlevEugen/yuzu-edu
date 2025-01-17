@@ -23,7 +23,7 @@ import {
   verifyCaptcha
 } from './helpers';
 import { database } from './middleware';
-import { getCurrentNonces, getNextNonce } from './nonce';
+import { getCurrentNonces } from './nonce';
 import type { IEnv } from './types';
 import { getTokenBalance } from './web3';
 

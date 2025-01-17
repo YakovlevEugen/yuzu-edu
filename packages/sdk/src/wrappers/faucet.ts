@@ -55,9 +55,9 @@ export const claimTo = async (params: {
   chainId: IChainId;
   account: Address;
   signer: PrivateKeyAccount;
-  nonce: number;
+  // nonce: number;
 }): Promise<Hex> => {
-  const { chainId, account, signer, nonce } = params;
+  const { chainId, account, signer } = params;
   const contract = getFaucetContract(chainId);
   const wallet = getWalletClient(chainId, signer);
 
@@ -68,8 +68,8 @@ export const claimTo = async (params: {
       functionName: 'claimTo',
       abi: contract.abi,
       args: [account]
-    }),
-    nonce
+    })
+    // nonce
   });
 
   return signature;

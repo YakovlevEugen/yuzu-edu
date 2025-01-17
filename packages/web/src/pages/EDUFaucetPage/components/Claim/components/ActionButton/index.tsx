@@ -43,12 +43,16 @@ export default function ActionButton({
       track('claim_edu_success', { chainId, signature });
     } catch (error) {
       toast({ title: 'Failed to claim', variant: 'destructive' });
-      track('claim_edu_failure', { message: error.message, isError: true });
+      track('claim_edu_failure', {
+        message: (error as { message: string }).message,
+        isError: true
+      });
       console.error(error);
     } finally {
       refresh();
+      captcha.reset();
     }
-  }, [ensureChain, chainId, claimTo, captcha.token, toast, track, refresh]);
+  }, [track, chainId, ensureChain, claimTo, captcha, toast, refresh]);
 
   const state = useMemo(() => {
     if (claimTo.isPending) return 'claiming';
