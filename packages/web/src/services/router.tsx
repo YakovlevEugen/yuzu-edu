@@ -29,7 +29,13 @@ export default function AppRouter() {
         <Route path={ROUTES.faucet} element={<EDUFaucetPage />} />
         {/*<Route path={ROUTES.dashboard} index element={<DashboardPage />} />*/}
         {/*<Route path={ROUTES.community} element={<EDULandPage />} />*/}
-        {/* <Route path={ROUTES.bridge} element={<BridgePage />} /> */}
+        <Route
+          path={ROUTES.bridge}
+          index
+          element={
+            <ExternalRedirect path="https://bridge.arbitrum.io/?destinationChain=edu-chain&sourceChain=arbitrum-one" />
+          }
+        />
         <Route
           path={ROUTES.claim}
           index

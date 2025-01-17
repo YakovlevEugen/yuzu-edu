@@ -1,4 +1,3 @@
-import { ROUTES } from '@/constants/routes';
 import { createEDUChainSubdomainLink } from '@/helpers/url';
 import { useEffect } from 'react';
 
@@ -12,7 +11,7 @@ export default function ExternalRedirect({ path }: Props) {
     if (['claim', 'dashboard', 'rental'].includes(path)) {
       window.location.href = createEDUChainSubdomainLink('dashboard');
     } else {
-      window.location.href = ROUTES.notFound;
+      window.location.href = path;
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
