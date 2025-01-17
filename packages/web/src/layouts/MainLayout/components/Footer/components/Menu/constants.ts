@@ -58,8 +58,12 @@ export const MENU: Menu[] = [
     title: 'LEGAL',
     children: [
       {
-        label: 'Disclaimer',
-        link: 'https://animocabrands-portfolio.notion.site/EDU-Chain-Testnet-Disclaimer-10c5a6eae96380018bf0ef6788d98432'
+        label: 'Terms of service',
+        link: `${window.location.origin}/toc`
+      },
+      {
+        label: 'Privacy Policy',
+        link: `${window.location.origin}/privacy`
       }
     ]
   }
