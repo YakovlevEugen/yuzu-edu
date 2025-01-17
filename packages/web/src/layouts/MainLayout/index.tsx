@@ -7,7 +7,13 @@ import Header from './components/Header';
 
 import { ROUTES } from '@/constants/routes';
 import { MENU } from '@/containers/Menu/constants';
+import WalletConnectFilter from '@/containers/WalletConnectFilter';
 import { cn } from '@/helpers/lib';
+import { copyToClipboard } from '@/helpers/text';
+import { useAnalytics } from '@/hooks/posthog';
+import { toast } from '@/hooks/use-toast';
+import { Button } from 'ui/button';
+import { useAccount } from 'wagmi';
 
 interface Props {
   className?: string;
@@ -39,6 +45,8 @@ export default function MainLayout({ className }: Props) {
         <title>Yuzu - Edu Chain{pageTitle ? ` - ${pageTitle}` : ''}</title>
       </Helmet>
 
+      <Ribbon />
+
       <div
         className={cn({ [`${pageBackground}`]: pageBackground }, 'flex-[1]')}
       >
@@ -55,3 +63,31 @@ export default function MainLayout({ className }: Props) {
     </div>
   );
 }
+
+const Ribbon = () => {
+  const account = useAccount();
+  const referralLink = `${location.origin}?ref=${account.address?.toLowerCase()}`;
+  const { track } = useAnalytics();
+
+  const copyReferralLink = async () => {
+    try {
+      await copyToClipboard(referralLink);
+      toast({ title: 'Link Successfully Copied', variant: 'success' });
+      track('referral_link_copied', { address: account.address });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <div className="w-full bg-black p-2 text-center text-white">
+      <span className="px-2">
+        Share referral link and earn extra Yuzu Points!
+      </span>
+
+      <WalletConnectFilter triggerProps={{ size: 'sm' }}>
+        <Button onClick={copyReferralLink}>Copy Link</Button>
+      </WalletConnectFilter>
+    </div>
+  );
+};

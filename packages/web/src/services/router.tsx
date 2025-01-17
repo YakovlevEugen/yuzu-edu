@@ -23,11 +23,12 @@ export default function AppRouter() {
           path={ROUTES.home}
           element={<Navigate to={ROUTES.stake} replace />}
         />
+
         <Route path={ROUTES.stake} element={<StakePage />} />
+        <Route path={ROUTES.faucet} element={<EDUFaucetPage />} />
         {/*<Route path={ROUTES.dashboard} index element={<DashboardPage />} />*/}
         {/*<Route path={ROUTES.community} element={<EDULandPage />} />*/}
-        <Route path={ROUTES.faucet} element={<EDUFaucetPage />} />
-        <Route path={ROUTES.bridge} element={<BridgePage />} />
+        {/* <Route path={ROUTES.bridge} element={<BridgePage />} /> */}
         <Route
           path={ROUTES.claim}
           index

@@ -66,7 +66,11 @@ export function useWalletTracking() {
   useAccountEffect({
     onConnect: ({ address, chainId }) => {
       signIn(address, { address, chainId });
-      track('wallet_connected', { address, chainId, referral });
+      track('wallet_connected', {
+        address,
+        chainId,
+        $set_once: { referral } as never
+      });
     },
     onDisconnect: () => {
       track('wallet_disconnected');
