@@ -21,6 +21,7 @@ import {
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import * as v from 'zod';
+import { getNextNonce } from './nonce';
 import type { IContext, IEligibility } from './types';
 
 /**
@@ -235,10 +236,13 @@ export const execClaimTx = async (
       ? c.env.MAINNET_SIGNER_PK
       : c.env.TESTNET_SIGNER_PK;
 
+  const nonce = await getNextNonce(c, chainId);
+
   const signature = await claimTo({
     chainId,
     account: address,
-    signer: privateKeyToAccount(signerPk)
+    signer: privateKeyToAccount(signerPk),
+    nonce
   });
 
   return signature;

@@ -23,6 +23,7 @@
     "@yuzu/supabase": "workspace:*",
     "big.js": "^6.2.2",
     "hono": "^4.6.11",
+    "hono-do": "^2.0.0",
     "viem": "^2.22.2",
     "wrangler": "^3.99.0",
     "zod": "^3.23.8"

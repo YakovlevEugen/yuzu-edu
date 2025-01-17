@@ -10,6 +10,7 @@ export type IEnv = {
     TESTNET_SIGNER_PK: Hex;
     MAINNET_SIGNER_PK: Hex;
     TURNSTILE_KEY: string;
+    NONCES: DurableObjectNamespace;
   };
   Variables: {
     db: SupabaseClient<Database>;

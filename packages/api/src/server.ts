@@ -1,5 +1,5 @@
 import { zValidator } from '@hono/zod-validator';
-import { getChain, unwrapWEDU, wrapEDU } from '@yuzu/sdk';
+import { type IChainId, getChain, unwrapWEDU, wrapEDU } from '@yuzu/sdk';
 import Big from 'big.js';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
@@ -9,7 +9,6 @@ import {
   createBridgeApproveDepositReq,
   createBridgeDepositReq,
   createBridgeWithdrawReq,
-  createClaimTx,
   execClaimTx,
   getBridgePoints,
   getBridgeTransfers,
@@ -24,6 +23,7 @@ import {
   verifyCaptcha
 } from './helpers';
 import { database } from './middleware';
+import { getCurrentNonces, getNextNonce } from './nonce';
 import type { IEnv } from './types';
 import { getTokenBalance } from './web3';
 
@@ -268,7 +268,17 @@ const app = new Hono<IEnv>()
       ]);
       return c.json({ staking, bridge, rewards, testnetActivity });
     }
-  );
+  )
+
+  /**
+   * Debug Signer Nonces
+   */
+
+  .get('/nonces', async (c) => {
+    const nonces = await getCurrentNonces(c);
+    return c.json(nonces);
+  });
 
 export default app;
 export type IApp = typeof app;
+export { Nonces } from './nonce';

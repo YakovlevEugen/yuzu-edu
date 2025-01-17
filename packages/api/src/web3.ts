@@ -7,6 +7,7 @@ import {
 } from '@yuzu/sdk';
 import Big from 'big.js';
 import type { Hex } from 'viem';
+import { privateKeyToAddress } from 'viem/accounts';
 import { assert } from './helpers';
 import type { IContext } from './types';
 
@@ -41,3 +42,19 @@ export const getTokenBalance = async (
 
   return new Big(balance.toString()).div(10 ** decimals).toFixed(decimals);
 };
+
+export const getSignerAddress = (c: IContext, chainId: IChainId) => {
+  switch (chainId) {
+    case 'eduMainnet':
+      return privateKeyToAddress(c.env.MAINNET_SIGNER_PK);
+    case 'eduTestnet':
+      return privateKeyToAddress(c.env.TESTNET_SIGNER_PK);
+    default:
+      throw new Error('unsupported signer chain');
+  }
+};
+
+export const getSignerNonce = (c: IContext, chainId: IChainId) =>
+  getPublicClient(chainId).getTransactionCount({
+    address: getSignerAddress(c, chainId)
+  });
