@@ -15,7 +15,7 @@ select
     epoch from (
       coalesce("untilBlockTimestamp"::timestamp, now()) - 
       "blockTimestamp"::timestamp)
-    ) / 3600) * (balance * 0.05 / 1e18) as points
+    ) / 3600) * (balance * 0.05 / 24 / 1e18) as points
 from wedu_balances_changes_view
 order by chain, address, "rowNumber";
 
