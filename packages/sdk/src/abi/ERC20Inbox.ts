@@ -1,137 +1,59 @@
 export const abi = [
   {
     inputs: [
-      {
-        internalType: 'uint256',
-        name: '_maxDataSize',
-        type: 'uint256'
-      }
+      { internalType: 'uint256', name: '_maxDataSize', type: 'uint256' }
     ],
     stateMutability: 'nonpayable',
     type: 'constructor'
   },
   {
     inputs: [
-      {
-        internalType: 'uint256',
-        name: 'dataLength',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'maxDataLength',
-        type: 'uint256'
-      }
+      { internalType: 'uint256', name: 'dataLength', type: 'uint256' },
+      { internalType: 'uint256', name: 'maxDataLength', type: 'uint256' }
     ],
     name: 'DataTooLarge',
     type: 'error'
   },
-  {
-    inputs: [],
-    name: 'GasLimitTooLarge',
-    type: 'error'
-  },
+  { inputs: [], name: 'GasLimitTooLarge', type: 'error' },
   {
     inputs: [
-      {
-        internalType: 'uint256',
-        name: 'expected',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'actual',
-        type: 'uint256'
-      }
+      { internalType: 'uint256', name: 'expected', type: 'uint256' },
+      { internalType: 'uint256', name: 'actual', type: 'uint256' }
     ],
     name: 'InsufficientSubmissionCost',
     type: 'error'
   },
   {
     inputs: [
-      {
-        internalType: 'uint256',
-        name: 'expected',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'actual',
-        type: 'uint256'
-      }
+      { internalType: 'uint256', name: 'expected', type: 'uint256' },
+      { internalType: 'uint256', name: 'actual', type: 'uint256' }
     ],
     name: 'InsufficientValue',
     type: 'error'
   },
+  { inputs: [], name: 'L1Forked', type: 'error' },
   {
-    inputs: [],
-    name: 'L1Forked',
-    type: 'error'
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'origin',
-        type: 'address'
-      }
-    ],
+    inputs: [{ internalType: 'address', name: 'origin', type: 'address' }],
     name: 'NotAllowedOrigin',
     type: 'error'
   },
-  {
-    inputs: [],
-    name: 'NotOrigin',
-    type: 'error'
-  },
+  { inputs: [], name: 'NotOrigin', type: 'error' },
   {
     inputs: [
-      {
-        internalType: 'address',
-        name: 'sender',
-        type: 'address'
-      },
-      {
-        internalType: 'address',
-        name: 'rollup',
-        type: 'address'
-      },
-      {
-        internalType: 'address',
-        name: 'owner',
-        type: 'address'
-      }
+      { internalType: 'address', name: 'sender', type: 'address' },
+      { internalType: 'address', name: 'rollup', type: 'address' },
+      { internalType: 'address', name: 'owner', type: 'address' }
     ],
     name: 'NotRollupOrOwner',
     type: 'error'
   },
   {
     inputs: [
-      {
-        internalType: 'address',
-        name: 'from',
-        type: 'address'
-      },
-      {
-        internalType: 'address',
-        name: 'to',
-        type: 'address'
-      },
-      {
-        internalType: 'uint256',
-        name: 'l2CallValue',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'deposit',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'maxSubmissionCost',
-        type: 'uint256'
-      },
+      { internalType: 'address', name: 'from', type: 'address' },
+      { internalType: 'address', name: 'to', type: 'address' },
+      { internalType: 'uint256', name: 'l2CallValue', type: 'uint256' },
+      { internalType: 'uint256', name: 'deposit', type: 'uint256' },
+      { internalType: 'uint256', name: 'maxSubmissionCost', type: 'uint256' },
       {
         internalType: 'address',
         name: 'excessFeeRefundAddress',
@@ -142,21 +64,9 @@ export const abi = [
         name: 'callValueRefundAddress',
         type: 'address'
       },
-      {
-        internalType: 'uint256',
-        name: 'gasLimit',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'maxFeePerGas',
-        type: 'uint256'
-      },
-      {
-        internalType: 'bytes',
-        name: 'data',
-        type: 'bytes'
-      }
+      { internalType: 'uint256', name: 'gasLimit', type: 'uint256' },
+      { internalType: 'uint256', name: 'maxFeePerGas', type: 'uint256' },
+      { internalType: 'bytes', name: 'data', type: 'bytes' }
     ],
     name: 'RetryableData',
     type: 'error'
@@ -164,18 +74,8 @@ export const abi = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'user',
-        type: 'address'
-      },
-      {
-        indexed: false,
-        internalType: 'bool',
-        name: 'val',
-        type: 'bool'
-      }
+      { indexed: true, internalType: 'address', name: 'user', type: 'address' },
+      { indexed: false, internalType: 'bool', name: 'val', type: 'bool' }
     ],
     name: 'AllowListAddressSet',
     type: 'event'
@@ -183,12 +83,7 @@ export const abi = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: false,
-        internalType: 'bool',
-        name: 'isEnabled',
-        type: 'bool'
-      }
+      { indexed: false, internalType: 'bool', name: 'isEnabled', type: 'bool' }
     ],
     name: 'AllowListEnabledUpdated',
     type: 'event'
@@ -202,12 +97,7 @@ export const abi = [
         name: 'messageNum',
         type: 'uint256'
       },
-      {
-        indexed: false,
-        internalType: 'bytes',
-        name: 'data',
-        type: 'bytes'
-      }
+      { indexed: false, internalType: 'bytes', name: 'data', type: 'bytes' }
     ],
     name: 'InboxMessageDelivered',
     type: 'event'
@@ -254,70 +144,32 @@ export const abi = [
   {
     inputs: [],
     name: 'allowListEnabled',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
     inputs: [],
     name: 'bridge',
-    outputs: [
-      {
-        internalType: 'contract IBridge',
-        name: '',
-        type: 'address'
-      }
-    ],
+    outputs: [{ internalType: 'contract IBridge', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
     inputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
+      { internalType: 'uint256', name: '', type: 'uint256' },
+      { internalType: 'uint256', name: '', type: 'uint256' }
     ],
     name: 'calculateRetryableSubmissionFee',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'pure',
     type: 'function'
   },
   {
     inputs: [
-      {
-        internalType: 'address',
-        name: 'to',
-        type: 'address'
-      },
-      {
-        internalType: 'uint256',
-        name: 'l2CallValue',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'maxSubmissionCost',
-        type: 'uint256'
-      },
+      { internalType: 'address', name: 'to', type: 'address' },
+      { internalType: 'uint256', name: 'l2CallValue', type: 'uint256' },
+      { internalType: 'uint256', name: 'maxSubmissionCost', type: 'uint256' },
       {
         internalType: 'address',
         name: 'excessFeeRefundAddress',
@@ -328,77 +180,33 @@ export const abi = [
         name: 'callValueRefundAddress',
         type: 'address'
       },
-      {
-        internalType: 'uint256',
-        name: 'gasLimit',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'maxFeePerGas',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'tokenTotalFeeAmount',
-        type: 'uint256'
-      },
-      {
-        internalType: 'bytes',
-        name: 'data',
-        type: 'bytes'
-      }
+      { internalType: 'uint256', name: 'gasLimit', type: 'uint256' },
+      { internalType: 'uint256', name: 'maxFeePerGas', type: 'uint256' },
+      { internalType: 'uint256', name: 'tokenTotalFeeAmount', type: 'uint256' },
+      { internalType: 'bytes', name: 'data', type: 'bytes' }
     ],
     name: 'createRetryableTicket',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256'
-      }
-    ],
+    inputs: [{ internalType: 'uint256', name: 'amount', type: 'uint256' }],
     name: 'depositERC20',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
     inputs: [],
     name: 'getProxyAdmin',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address'
-      }
-    ],
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
     inputs: [
-      {
-        internalType: 'contract IBridge',
-        name: '_bridge',
-        type: 'address'
-      },
+      { internalType: 'contract IBridge', name: '_bridge', type: 'address' },
       {
         internalType: 'contract ISequencerInbox',
         name: '_sequencerInbox',
@@ -411,34 +219,16 @@ export const abi = [
     type: 'function'
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address'
-      }
-    ],
+    inputs: [{ internalType: 'address', name: '', type: 'address' }],
     name: 'isAllowed',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
     inputs: [],
     name: 'maxDataSize',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
   },
@@ -452,134 +242,48 @@ export const abi = [
   {
     inputs: [],
     name: 'paused',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
     inputs: [
-      {
-        internalType: 'uint256',
-        name: 'gasLimit',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'maxFeePerGas',
-        type: 'uint256'
-      },
-      {
-        internalType: 'address',
-        name: 'to',
-        type: 'address'
-      },
-      {
-        internalType: 'uint256',
-        name: 'value',
-        type: 'uint256'
-      },
-      {
-        internalType: 'bytes',
-        name: 'data',
-        type: 'bytes'
-      }
+      { internalType: 'uint256', name: 'gasLimit', type: 'uint256' },
+      { internalType: 'uint256', name: 'maxFeePerGas', type: 'uint256' },
+      { internalType: 'address', name: 'to', type: 'address' },
+      { internalType: 'uint256', name: 'value', type: 'uint256' },
+      { internalType: 'bytes', name: 'data', type: 'bytes' }
     ],
     name: 'sendContractTransaction',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
-    inputs: [
-      {
-        internalType: 'bytes',
-        name: 'messageData',
-        type: 'bytes'
-      }
-    ],
+    inputs: [{ internalType: 'bytes', name: 'messageData', type: 'bytes' }],
     name: 'sendL2Message',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
-    inputs: [
-      {
-        internalType: 'bytes',
-        name: 'messageData',
-        type: 'bytes'
-      }
-    ],
+    inputs: [{ internalType: 'bytes', name: 'messageData', type: 'bytes' }],
     name: 'sendL2MessageFromOrigin',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
     inputs: [
-      {
-        internalType: 'uint256',
-        name: 'gasLimit',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'maxFeePerGas',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'nonce',
-        type: 'uint256'
-      },
-      {
-        internalType: 'address',
-        name: 'to',
-        type: 'address'
-      },
-      {
-        internalType: 'uint256',
-        name: 'value',
-        type: 'uint256'
-      },
-      {
-        internalType: 'bytes',
-        name: 'data',
-        type: 'bytes'
-      }
+      { internalType: 'uint256', name: 'gasLimit', type: 'uint256' },
+      { internalType: 'uint256', name: 'maxFeePerGas', type: 'uint256' },
+      { internalType: 'uint256', name: 'nonce', type: 'uint256' },
+      { internalType: 'address', name: 'to', type: 'address' },
+      { internalType: 'uint256', name: 'value', type: 'uint256' },
+      { internalType: 'bytes', name: 'data', type: 'bytes' }
     ],
     name: 'sendUnsignedTransaction',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'nonpayable',
     type: 'function'
   },
@@ -587,27 +291,15 @@ export const abi = [
     inputs: [],
     name: 'sequencerInbox',
     outputs: [
-      {
-        internalType: 'contract ISequencerInbox',
-        name: '',
-        type: 'address'
-      }
+      { internalType: 'contract ISequencerInbox', name: '', type: 'address' }
     ],
     stateMutability: 'view',
     type: 'function'
   },
   {
     inputs: [
-      {
-        internalType: 'address[]',
-        name: 'user',
-        type: 'address[]'
-      },
-      {
-        internalType: 'bool[]',
-        name: 'val',
-        type: 'bool[]'
-      }
+      { internalType: 'address[]', name: 'user', type: 'address[]' },
+      { internalType: 'bool[]', name: 'val', type: 'bool[]' }
     ],
     name: 'setAllowList',
     outputs: [],
@@ -615,13 +307,7 @@ export const abi = [
     type: 'function'
   },
   {
-    inputs: [
-      {
-        internalType: 'bool',
-        name: '_allowListEnabled',
-        type: 'bool'
-      }
-    ],
+    inputs: [{ internalType: 'bool', name: '_allowListEnabled', type: 'bool' }],
     name: 'setAllowListEnabled',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -636,21 +322,9 @@ export const abi = [
   },
   {
     inputs: [
-      {
-        internalType: 'address',
-        name: 'to',
-        type: 'address'
-      },
-      {
-        internalType: 'uint256',
-        name: 'l2CallValue',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'maxSubmissionCost',
-        type: 'uint256'
-      },
+      { internalType: 'address', name: 'to', type: 'address' },
+      { internalType: 'uint256', name: 'l2CallValue', type: 'uint256' },
+      { internalType: 'uint256', name: 'maxSubmissionCost', type: 'uint256' },
       {
         internalType: 'address',
         name: 'excessFeeRefundAddress',
@@ -661,35 +335,13 @@ export const abi = [
         name: 'callValueRefundAddress',
         type: 'address'
       },
-      {
-        internalType: 'uint256',
-        name: 'gasLimit',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'maxFeePerGas',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'tokenTotalFeeAmount',
-        type: 'uint256'
-      },
-      {
-        internalType: 'bytes',
-        name: 'data',
-        type: 'bytes'
-      }
+      { internalType: 'uint256', name: 'gasLimit', type: 'uint256' },
+      { internalType: 'uint256', name: 'maxFeePerGas', type: 'uint256' },
+      { internalType: 'uint256', name: 'tokenTotalFeeAmount', type: 'uint256' },
+      { internalType: 'bytes', name: 'data', type: 'bytes' }
     ],
     name: 'unsafeCreateRetryableTicket',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'nonpayable',
     type: 'function'
   }

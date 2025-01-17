@@ -125,3 +125,24 @@ export const getTokenAddress = (
   const contracts = chain.contracts as Record<string, { address: Hex }>;
   return contracts[symbol.trim().toLowerCase()]?.address;
 };
+
+export const getSupportedDepositTokens = (chain: IChain) => {
+  switch (chain) {
+    case arbMainnet:
+      return [
+        arbMainnet.contracts.edu.address,
+        arbMainnet.contracts.usdc.address,
+        arbMainnet.contracts.usdt.address,
+        arbMainnet.contracts.weth.address
+      ];
+    case arbTestnet:
+      return [
+        arbTestnet.contracts.edu.address,
+        arbTestnet.contracts.usdc.address,
+        arbTestnet.contracts.usdt.address,
+        arbTestnet.contracts.weth.address
+      ];
+    default:
+      throw new Error('unsupported deposit chain');
+  }
+};
