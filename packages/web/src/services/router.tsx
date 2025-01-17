@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import MainLayout from '@/layouts/MainLayout';
-import BridgePage from '@/pages/BridgePage';
+// import BridgePage from '@/pages/BridgePage';
 // import DashboardPage from '@/pages/DashboardPage';
 import EDUFaucetPage from '@/pages/EDUFaucetPage';
 // import EDULandPage from '@/pages/EDULandPage';
@@ -11,6 +11,7 @@ import StakePage from '@/pages/StakePage';
 
 import { ROUTES } from '@/constants/routes';
 import { usePageTracking, useWalletTracking } from '@/hooks/posthog';
+import { Terms } from '@/pages/Terms';
 
 export default function AppRouter() {
   usePageTracking();
@@ -44,6 +45,8 @@ export default function AppRouter() {
           index
           element={<ExternalRedirect path="rental" />}
         />
+
+        <Route path={'/toc'} element={<Terms />} />
       </Route>
       <Route path="*" element={<ErrorPage status={404} />} />
     </Routes>

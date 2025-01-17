@@ -60,11 +60,11 @@ export const MENU: Menu[] = [
       {
         label: 'Terms of service',
         link: `${window.location.origin}/toc`
-      },
-      {
-        label: 'Privacy Policy',
-        link: `${window.location.origin}/privacy`
       }
+      // {
+      //   label: 'Privacy Policy',
+      //   link: `${window.location.origin}/privacy`
+      // }
     ]
   }
 ];
