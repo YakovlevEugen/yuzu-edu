@@ -1,0 +1,67 @@
+name: Deploy API to Production
+
+on:
+  push:
+    branches: [production]
+    paths:
+      - ".github/workflows/deploy-api-production.yml"
+      - "packages/api"
+      - "packages/contracts"
+      - "packages/sdk"
+
+jobs:
+  deploy-api-production:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./packages/api
+
+    environment:
+      name: production
+      url: https://yuzu-api-production.r8edev.xyz
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v4
+        id: pnpm-install
+        with:
+          run_install: false
+
+      - name: Get PNPM Store Directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup PNPM Cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Configure PNPM
+        run: pnpm config set auto-install-peers true
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Setup Env
+        env:
+          VARS: "${{ secrets.PRODUCTION_VARS }}"
+        run: echo $VARS > .production.vars.json
+
+      - name: Deploy
+        run: pnpm run deploy:production
+        env:
+          CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}"
