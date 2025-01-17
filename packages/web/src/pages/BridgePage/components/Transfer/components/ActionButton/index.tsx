@@ -62,7 +62,10 @@ export default function ActionButton({ className }: Props) {
       track('deposit_success', { address, amount, chainId });
     } catch (error) {
       toast({ title: 'Deposit Failed', variant: 'destructive' });
-      track('deposit_failure', { message: error.message, isError: true });
+      track('deposit_failure', {
+        message: (error as { message: string }).message,
+        isError: true
+      });
       console.error(error);
     }
   }
@@ -83,7 +86,10 @@ export default function ActionButton({ className }: Props) {
       track('withdraw_success', { address, amount, chainId });
     } catch (error) {
       toast({ title: 'Withdraw Failed', variant: 'destructive' });
-      track('withdraw_failure', { message: error.message, isError: true });
+      track('withdraw_failure', {
+        message: (error as { message: string }).message,
+        isError: true
+      });
       console.error(error);
     }
   }
