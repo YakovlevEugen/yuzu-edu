@@ -108,7 +108,7 @@ export const runScheduledJobs = async (c: IContext) =>
 // };
 
 const indexEduChainBlocks = async (c: IContext) => {
-  for (const chain of [eduTestnet, eduMainnet]) {
+  for (const chain of [eduMainnet]) {
     console.log(`Indexing ${chain.name}`);
 
     const [from, to] = await Promise.all([
@@ -121,7 +121,6 @@ const indexEduChainBlocks = async (c: IContext) => {
     for (const { fromBlock, toBlock } of blockRanges) {
       await indexWEDULogs(c, { chain, fromBlock, toBlock });
       await setLastIndexedBlock(c, chain.name, toBlock);
-      break;
     }
   }
 };
