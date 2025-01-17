@@ -1,18 +1,20 @@
-import BorderBlock from '@/components/BorderBlock';
-import CurrencyInput from '@/components/CurrencyInput';
-import InfoItem from '@/components/InfoItem';
-import TransformCurrency from '@/components/TransformCurrency';
-import { isNumberish } from '@/helpers/common';
-import { cn } from '@/helpers/lib';
-import { useStakingEstimate, useTokenBalance } from '@/hooks/api';
-import { useChainId } from '@/hooks/use-chain-id';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Big from 'big.js';
 import { useMemo } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
+
+import BorderBlock from '@/components/BorderBlock';
+import CurrencyInput from '@/components/CurrencyInput';
+import InfoItem from '@/components/InfoItem';
+import TransformCurrency from '@/components/TransformCurrency';
 import ActionButton from './components/ActionButton';
 import StakeTabs, { type IStakeTabs } from './components/StakeTabs';
+
+import { isNumberish } from '@/helpers/common';
+import { cn } from '@/helpers/lib';
+import { useStakingEstimate, useTokenBalance } from '@/hooks/api';
+import { useChainId } from '@/hooks/use-chain-id';
 import { DEFAULT_ACTIVE_TAB, TABS } from './components/StakeTabs/constants';
 
 export const FormSchema = z.object({
@@ -50,8 +52,10 @@ export default function Stake({ className }: Props) {
     [activeTabId]
   );
 
-  const activeTabBalance = new Big(
-    isActiveTabStake ? eduBalance.data : weduBalance.data
+  const activeTabBalance = useMemo(
+    () =>
+      new Big(isActiveTabStake ? eduBalance.data : weduBalance.data).toFixed(3),
+    [eduBalance.data, isActiveTabStake, weduBalance.data]
   );
 
   const tabs = useMemo<IStakeTabs[]>(() => {
@@ -108,14 +112,12 @@ export default function Stake({ className }: Props) {
                 value={
                   <button
                     type="button"
-                    onClick={() =>
-                      setValue('amount', activeTabBalance.toString())
-                    }
+                    onClick={() => setValue('amount', activeTabBalance)}
                     className="hover:brightness-75 active:brightness-125"
                   >
                     <span>MAX </span>
                     <span className="text-foreground">
-                      {activeTabBalance.toFixed(3)}{' '}
+                      {Number.parseFloat(activeTabBalance).toLocaleString()}{' '}
                       {isActiveTabStake ? 'EDU' : 'WEDU'}
                     </span>
                   </button>

@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Big } from 'big.js';
 import { useMemo } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -46,8 +47,11 @@ export default function Transfer({ className }: { className?: string }) {
   const childBalance = useTokenBalance(chainId, token);
 
   const sourceBalance = useMemo(
-    () => (intent === 'deposit' ? parentBalance : childBalance),
-    [childBalance, intent, parentBalance]
+    () =>
+      new Big(
+        intent === 'deposit' ? parentBalance.data : childBalance.data
+      ).toFixed(3),
+    [childBalance.data, intent, parentBalance.data]
   );
 
   const targetBalance = useMemo(
@@ -81,7 +85,7 @@ export default function Transfer({ className }: { className?: string }) {
             <button
               type="button"
               className="block w-full"
-              onClick={() => setValue('amount', sourceBalance.data)}
+              onClick={() => setValue('amount', sourceBalance)}
             >
               <InfoItem
                 className="mt-4"
@@ -90,7 +94,7 @@ export default function Transfer({ className }: { className?: string }) {
                   <>
                     <span>MAX </span>
                     <span className="text-foreground">
-                      {Number.parseFloat(sourceBalance.data).toLocaleString()}{' '}
+                      {Number.parseFloat(sourceBalance).toLocaleString()}{' '}
                       {tokens[token]}
                     </span>
                   </>

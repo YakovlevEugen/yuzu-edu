@@ -30,7 +30,9 @@ const CurrencyInput = forwardRef<HTMLInputElement, Props>(
           {...otherProps}
         />
 
-        <CurrencyComponent />
+        <div className="ml-3">
+          <CurrencyComponent />
+        </div>
       </div>
     );
   }
