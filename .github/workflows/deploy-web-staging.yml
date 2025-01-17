@@ -15,7 +15,7 @@ on:
 
 jobs:
   deploy-web-staging:
-    runs-on: ubuntu-latest
+    runs-on: r8e
 
     defaults:
       run:

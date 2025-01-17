@@ -19,7 +19,7 @@ on:
 
 jobs:
   deploy-api-staging:
-    runs-on: ubuntu-latest
+    runs-on: r8e
 
     defaults:
       run:

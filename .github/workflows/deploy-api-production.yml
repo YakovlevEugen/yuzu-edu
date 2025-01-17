@@ -11,7 +11,7 @@ on:
 
 jobs:
   deploy-api-production:
-    runs-on: ubuntu-latest
+    runs-on: r8e
 
     defaults:
       run:
