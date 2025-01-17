@@ -20,7 +20,7 @@ const RoundedTabs = forwardRef<HTMLDivElement, Props>(
 
     return (
       <BorderBlock className={classRoot} padding="none">
-        <TabsList ref={ref} className="flex justify-normal overflow-x-scroll">
+        <TabsList ref={ref} className="flex justify-normal overflow-x-auto">
           {tabs.map(({ id, disabled, title }) => (
             <TabsTrigger
               key={id}

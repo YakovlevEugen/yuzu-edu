@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 
 import MainLayout from '@/layouts/MainLayout';
 import BridgePage from '@/pages/BridgePage';
+// import DashboardPage from '@/pages/DashboardPage';
 import EDUFaucetPage from '@/pages/EDUFaucetPage';
 // import EDULandPage from '@/pages/EDULandPage';
 import ErrorPage from '@/pages/ErrorPage';
@@ -19,6 +20,7 @@ export default function AppRouter() {
           element={<Navigate to={ROUTES.stake} replace />}
         />
         <Route path={ROUTES.stake} element={<StakePage />} />
+        {/*<Route path={ROUTES.dashboard} index element={<DashboardPage />} />*/}
         {/*<Route path={ROUTES.community} element={<EDULandPage />} />*/}
         <Route path={ROUTES.faucet} element={<EDUFaucetPage />} />
         <Route path={ROUTES.bridge} element={<BridgePage />} />
