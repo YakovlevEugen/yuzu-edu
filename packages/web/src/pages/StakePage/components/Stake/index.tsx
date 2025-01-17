@@ -54,7 +54,10 @@ export default function Stake({ className }: Props) {
 
   const activeTabBalance = useMemo(
     () =>
-      new Big(isActiveTabStake ? eduBalance.data : weduBalance.data).toFixed(3),
+      new Big(isActiveTabStake ? eduBalance.data : weduBalance.data).toFixed(
+        3,
+        0
+      ),
     [eduBalance.data, isActiveTabStake, weduBalance.data]
   );
 
@@ -117,7 +120,7 @@ export default function Stake({ className }: Props) {
                   >
                     <span>MAX </span>
                     <span className="text-foreground">
-                      {Number.parseFloat(activeTabBalance).toLocaleString()}{' '}
+                      {new Big(activeTabBalance).toFixed(3)}{' '}
                       {isActiveTabStake ? 'EDU' : 'WEDU'}
                     </span>
                   </button>
