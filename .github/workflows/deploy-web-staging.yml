@@ -64,6 +64,10 @@ jobs:
         run: pnpm build
         env:
           VITE_API_URL: https://yuzu-api-staging.r8edev.xyz
+          VITE_CONTRACTS_ENV: mainnet
+          VITE_TURSTILE_SITEKEY: 0x4AAAAAAA2Snv_UI3_hMWx9
+          VITE_APP_PUBLIC_POSTHOG_KEY: phc_RqR1UiObCu0GaFL2Rs2VOBZwTjneg3fr0Fuz4yVQgbl
+          VITE_APP_PUBLIC_POSTHOG_HOST: https://us.i.posthog.com
 
       - name: Deploy
         run: pnpm run deploy:staging
