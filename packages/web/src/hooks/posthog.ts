@@ -69,7 +69,7 @@ export function useWalletTracking() {
       track('wallet_connected', {
         address,
         chainId,
-        $set_once: { referral } as never
+        referral
       });
     },
     onDisconnect: () => {
