@@ -42,6 +42,14 @@ export const updateFaucetWhitelist = (entires: Hex[]) =>
       if (res.error) throw new Error(res.error.message);
     });
 
+export const upsertFaucetWhitelist = (entries: IAddressRow[]) =>
+  db
+    .from('faucet_wallets')
+    .upsert(entries, { onConflict: 'address', ignoreDuplicates: true })
+    .then((res) => {
+      if (res.error) throw new Error(res.error.message);
+    });
+
 import * as v from 'zod';
 
 export const vCommunityReward = v.object({
@@ -49,6 +57,12 @@ export const vCommunityReward = v.object({
   points: v.coerce.number()
 });
 export type ICommunityReward = v.infer<typeof vCommunityReward>;
+
+export const vAddressRow = v.object({
+  address: v.string().refine(isAddress)
+});
+
+export type IAddressRow = v.infer<typeof vAddressRow>;
 
 export const vCommunityAllocation = v.object({
   address: v.string().refine(isAddress),

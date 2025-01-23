@@ -9,6 +9,7 @@ import { type Address, isAddress } from 'viem';
 import { context } from '../context';
 import { getTestnetParticipantPoints } from './config';
 import {
+  type IAddressRow,
   type ICommunityAllocation,
   dropCommunityAllocations,
   dropCommunityRewards,
@@ -18,6 +19,8 @@ import {
   updateCommunityAllocations,
   updateCommunityRewards,
   updateFaucetWhitelist,
+  upsertFaucetWhitelist,
+  vAddressRow,
   vCommunityAllocation,
   vCommunityReward
 } from './database';
@@ -94,6 +97,22 @@ program
     for (const chunk of rangeToChunks(0, list.length, 200)) {
       const page = list.slice(chunk.at(0), chunk.at(-1));
       await updateFaucetWhitelist(page);
+    }
+  });
+
+program
+  //
+  .command('upsert-testnet-wallets')
+  .argument('<file>', 'path to csv with additional testnet wallet')
+  .action(async (path) => {
+    const wallets = fromCSV(
+      fs.readFileSync(resolve(process.cwd(), path), 'utf-8'),
+      vAddressRow
+    );
+
+    for (const chunk of rangeToChunks(0, wallets.length, 200)) {
+      const page = wallets.slice(chunk.at(0), chunk.at(-1)) as IAddressRow[];
+      await upsertFaucetWhitelist(page);
     }
   });
 
