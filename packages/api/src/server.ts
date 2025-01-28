@@ -1,5 +1,5 @@
 import { zValidator } from '@hono/zod-validator';
-import { type IChainId, getChain, unwrapWEDU, wrapEDU } from '@yuzu/sdk';
+import { getChain, unwrapWEDU, wrapEDU } from '@yuzu/sdk';
 import Big from 'big.js';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';

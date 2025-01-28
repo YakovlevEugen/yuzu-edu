@@ -11,6 +11,7 @@ import StakePage from '@/pages/StakePage';
 
 import { ROUTES } from '@/constants/routes';
 import { usePageTracking, useWalletTracking } from '@/hooks/posthog';
+import BridgePage from '@/pages/BridgePage';
 import { Terms } from '@/pages/Terms';
 
 export default function AppRouter() {
@@ -33,7 +34,8 @@ export default function AppRouter() {
           path={ROUTES.bridge}
           index
           element={
-            <ExternalRedirect path="https://bridge.arbitrum.io/?destinationChain=edu-chain&sourceChain=arbitrum-one" />
+            <BridgePage />
+            // <ExternalRedirect path="https://bridge.arbitrum.io/?destinationChain=edu-chain&sourceChain=arbitrum-one" />
           }
         />
         <Route
