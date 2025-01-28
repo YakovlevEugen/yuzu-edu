@@ -50,7 +50,7 @@ export default function Transfer({ className }: { className?: string }) {
     () =>
       new Big(
         intent === 'deposit' ? parentBalance.data : childBalance.data
-      ).toFixed(3),
+      ).toFixed(3, 0),
     [childBalance.data, intent, parentBalance.data]
   );
 
@@ -159,7 +159,7 @@ export default function Transfer({ className }: { className?: string }) {
                 <InfoItem
                   className="mt-3"
                   title="Transfer time"
-                  value={intent === 'deposit' ? '~15 sec' : '~15 min'}
+                  value={intent === 'deposit' ? '~15 min' : '~6 days'}
                   variant="white"
                 />
 
@@ -167,12 +167,14 @@ export default function Transfer({ className }: { className?: string }) {
                   className="mt-3"
                   title="Estimated fees"
                   value={
-                    <TransformCurrency
-                      className="font-medium"
-                      currency="EDU"
-                      from="0.1"
-                    />
+                    '~0.01EDU'
+                    // <TransformCurrency
+                    //   className="font-medium"
+                    //   currency="EDU"
+                    //   from="0.01"
+                    // />
                   }
+                  variant={'white'}
                 />
               </div>
             )}

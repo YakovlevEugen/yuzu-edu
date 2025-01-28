@@ -120,7 +120,7 @@ export default function Stake({ className }: Props) {
                   >
                     <span>MAX </span>
                     <span className="text-foreground">
-                      {new Big(activeTabBalance).toFixed(3)}{' '}
+                      {new Big(activeTabBalance).toFixed(3, 0)}{' '}
                       {isActiveTabStake ? 'EDU' : 'WEDU'}
                     </span>
                   </button>

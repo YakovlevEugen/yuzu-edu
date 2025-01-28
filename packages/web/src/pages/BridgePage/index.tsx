@@ -1,6 +1,6 @@
-import BorderBlock from '@/components/BorderBlock';
-import TableRewardsHistory from '@/pages/BridgePage/components/TableRewardsHistory';
-import Earn from './components/Earn';
+// import BorderBlock from '@/components/BorderBlock';
+// import TableRewardsHistory from '@/pages/BridgePage/components/TableRewardsHistory';
+// import Earn from './components/Earn';
 import Transfer from './components/Transfer';
 
 export default function BridgePage() {
@@ -11,27 +11,27 @@ export default function BridgePage() {
       </div>
 
       <div className="flex flex-col gap-x-6 md:flex-row">
-        <div className="flex-[1]">
+        {/* <div className="flex-[1]">
           <img
             className="relative z-[1] mx-auto h-[170px] md:h-[230px]"
             src="/images/capybara-exchanger.svg"
             alt="Capybara Exchanger"
           />
           <Earn />
-        </div>
+        </div> */}
 
         <div className="mt-6 flex-[1] md:mt-0">
           <Transfer />
         </div>
       </div>
 
-      <BorderBlock
+      {/* <BorderBlock
         className="mt-6 !px-4 !py-6 shadow-none md:mt-10"
         padding="none"
       >
         <div className="ml-2 font-semibold">Reward History</div>
         <TableRewardsHistory className="mt-4" />
-      </BorderBlock>
+      </BorderBlock> */}
     </div>
   );
 }
