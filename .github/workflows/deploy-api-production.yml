@@ -5,9 +5,9 @@ on:
     branches: [production]
     paths:
       - ".github/workflows/deploy-api-production.yml"
-      - "packages/api"
-      - "packages/contracts"
-      - "packages/sdk"
+      - "packages/api/**"
+      - "packages/contracts/**"
+      - "packages/sdk/**"
 
 jobs:
   deploy-api-production:

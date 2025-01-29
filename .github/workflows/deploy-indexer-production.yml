@@ -5,9 +5,9 @@ on:
     branches: [production]
     paths:
       - ".github/workflows/deploy-indexer-production.yml"
-      - "packages/contracts"
-      - "packages/indexer"
-      - "packages/sdk"
+      - "packages/contracts/**"
+      - "packages/indexer/**"
+      - "packages/sdk/**"
 
   
 jobs:

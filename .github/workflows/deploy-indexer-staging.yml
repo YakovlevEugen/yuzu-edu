@@ -5,9 +5,9 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/deploy-indexer-staging.yml"
-      - "packages/contracts"
-      - "packages/indexer"
-      - "packages/sdk"
+      - "packages/contracts/**"
+      - "packages/indexer/**"
+      - "packages/sdk/**"
 
   pull_request:
     branches: [main]

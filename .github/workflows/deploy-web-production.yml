@@ -5,7 +5,7 @@ on:
     branches: [production]
     paths:
       - ".github/workflows/deploy-web-production.yml"
-      - "packages/web"
+      - "packages/web/**"
 
 jobs:
   deploy-web-production:

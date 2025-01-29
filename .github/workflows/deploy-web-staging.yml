@@ -5,13 +5,13 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/deploy-web-staging.yml"
-      - "packages/web"
+      - "packages/web/**"
 
   pull_request:
     branches: [main]
     paths:
       - ".github/workflows/deploy-web-staging.yml"
-      - "packages/web"
+      - "packages/web/**"
 
 jobs:
   deploy-web-staging:

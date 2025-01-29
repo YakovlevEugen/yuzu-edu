@@ -5,17 +5,17 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/deploy-api-staging.yml"
-      - "packages/api"
-      - "packages/contracts"
-      - "packages/sdk"
+      - "packages/api/**"
+      - "packages/contracts/**"
+      - "packages/sdk/**"
 
   pull_request:
     branches: [main]
     paths:
       - ".github/workflows/deploy-api-staging.yml"
-      - "packages/api"
-      - "packages/contracts"
-      - "packages/sdk"
+      - "packages/api/**"
+      - "packages/contracts/**"
+      - "packages/sdk/**"
 
 jobs:
   deploy-api-staging:
