@@ -13,10 +13,10 @@ export const MENU = [
     to: ROUTES.faucet,
     title: 'EDU Faucet'
   },
-  // {
-  //   to: ROUTES.community,
-  //   title: 'Community'
-  // },
+  {
+    to: ROUTES.community,
+    title: 'Community'
+  },
   {
     to: ROUTES.bridge,
     title: 'Bridge'

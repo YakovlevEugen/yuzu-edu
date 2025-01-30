@@ -13,7 +13,13 @@ import {
 
 import { cn } from '@/helpers/lib';
 // import { useBridgeHistory } from '@/hooks/api'
-import type { ICommunityCampaign } from '@/types/wallet';
+
+interface ICommunityCampaign {
+  community: string;
+  points: string;
+  pointsDistributed?: string;
+  type: string;
+}
 
 interface Props {
   className?: string;

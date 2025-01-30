@@ -14,12 +14,13 @@ export interface IBridgeReward {
   timestamp: string;
 }
 
-export interface ICommunityCampaign {
+export interface ICommunityCampaignItem {
   community: string;
   points: string;
-  pointsDistributed?: string;
-  type: string;
+  type?: string;
+  wallet: string;
 }
+export type TCommunityCampaignItemKeys = keyof ICommunityCampaignItem;
 
 export interface IDAppCard {
   avatarUrl?: string;

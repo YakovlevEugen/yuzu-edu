@@ -1,18 +1,17 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import MainLayout from '@/layouts/MainLayout';
-// import BridgePage from '@/pages/BridgePage';
 // import DashboardPage from '@/pages/DashboardPage';
+import MainLayout from '@/layouts/MainLayout';
+import BridgePage from '@/pages/BridgePage';
+import CommunityPartnershipPage from '@/pages/CommunityPartnershipPage';
 import EDUFaucetPage from '@/pages/EDUFaucetPage';
-// import EDULandPage from '@/pages/EDULandPage';
 import ErrorPage from '@/pages/ErrorPage';
 import ExternalRedirect from '@/pages/ExternalRedirect';
 import StakePage from '@/pages/StakePage';
+import { Terms } from '@/pages/Terms';
 
 import { ROUTES } from '@/constants/routes';
 import { usePageTracking, useWalletTracking } from '@/hooks/posthog';
-import BridgePage from '@/pages/BridgePage';
-import { Terms } from '@/pages/Terms';
 
 export default function AppRouter() {
   usePageTracking();
@@ -29,7 +28,7 @@ export default function AppRouter() {
         <Route path={ROUTES.stake} element={<StakePage />} />
         <Route path={ROUTES.faucet} element={<EDUFaucetPage />} />
         {/*<Route path={ROUTES.dashboard} index element={<DashboardPage />} />*/}
-        {/*<Route path={ROUTES.community} element={<EDULandPage />} />*/}
+        <Route path={ROUTES.community} element={<CommunityPartnershipPage />} />
         <Route
           path={ROUTES.bridge}
           index
