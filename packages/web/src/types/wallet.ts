@@ -20,6 +20,7 @@ export interface ICommunityCampaignItem {
   type?: string;
   wallet: string;
 }
+export type ICommunityCampaignItems = ICommunityCampaignItem[];
 export type TCommunityCampaignItemKeys = keyof ICommunityCampaignItem;
 
 export interface IDAppCard {

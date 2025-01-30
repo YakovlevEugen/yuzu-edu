@@ -272,6 +272,24 @@ export const useCommunityRewards = () => {
   });
 };
 
+export const useCommunityRewardsHistory = () => {
+  const { address } = useAccount();
+
+  return useInfiniteQuery({
+    queryKey: ['rewards', 'list', address],
+    queryFn: ({ pageParam }) =>
+      client.rewards[':address'].history
+        .$get({
+          param: { address: address as string },
+          query: { page: pageParam.toString() }
+        })
+        .then((res) => res.json()),
+    getNextPageParam: (pages) => pages.length,
+    initialPageParam: 0,
+    enabled: Boolean(address)
+  });
+};
+
 // export const usePointBalance = () => {
 //   const { address } = useAccount();
 

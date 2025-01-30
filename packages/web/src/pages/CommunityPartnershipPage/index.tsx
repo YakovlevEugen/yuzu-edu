@@ -4,11 +4,13 @@ import { useMemo } from 'react';
 import Balance from '@/components/Balance';
 import BorderBlock from '@/components/BorderBlock';
 import CommunityBalance from './components/CommunityBalance';
-// import TableRewardHistory from './components/TableRewardHistory';
+import TableRewardsHistory from './components/TableRewardsHistory';
 
 import WalletConnectFilter from '@/containers/WalletConnectFilter';
 import { cn } from '@/helpers/lib';
 import { useCommunityAllocations, useCommunityRewards } from '@/hooks/api';
+// import { ICommunityCampaignItem, TCommunityCampaignItemKeys, ICommunityCampaignItems } from '@/types/wallet'
+// import rewardsHistoryCsv from './community-campaigns.csv?raw';
 
 interface Props {
   className?: string;
@@ -17,25 +19,23 @@ interface Props {
 export default function CommunityPartnership({ className }: Props) {
   // const { address } = useAccount();
 
-  const classRoot = cn('pb-10', className);
-
-  // const rewardsHistory = useMemo<ICommunityCampaignItem[]>(() => {
+  // const rewardsHistory = useMemo<ICommunityCampaignItems>(() => {
   //   const [headersRow, ...rows] = rewardsHistoryCsv
   //     .trim()
   //     .split('\n')
   //     .map((row) => row.trim());
-
+  //
   //   const headers: TCommunityCampaignItemKeys[] = headersRow
   //     .split(',')
   //     .map((h) => h.trim().toLowerCase() as TCommunityCampaignItemKeys);
-
+  //
   //   return rows.map((row) => {
   //     const values = row.split(',').map((v) => v.trim());
   //     return headers.reduce((obj, header, index) => {
   //       obj[header] = values[index] || '';
   //       return obj;
   //     }, {} as ICommunityCampaignItem);
-  //   }) as ICommunityCampaignItem[];
+  //   }) as ICommunityCampaignItems;
   // }, []);
 
   // const rewardsByCommunity = useMemo(
@@ -67,6 +67,9 @@ export default function CommunityPartnership({ className }: Props) {
 
   const rewards = useCommunityRewards();
   const communities = useCommunityAllocations();
+
+  const classRoot = cn('pb-10', className);
+
   const userRewardsSum = useMemo(() => rewards.data?.total || 0, [rewards]);
 
   return (
@@ -89,7 +92,7 @@ export default function CommunityPartnership({ className }: Props) {
             <span className="text-orange">Yuzu</span> earned from community
             partnerships
           </div>
-          <WalletConnectFilter triggerClass="mx-auto my-4">
+          <WalletConnectFilter triggerClass="!block mx-auto mt-5">
             <Balance className="mt-5 justify-center" value={userRewardsSum} />
           </WalletConnectFilter>
         </BorderBlock>
@@ -105,10 +108,10 @@ export default function CommunityPartnership({ className }: Props) {
           ))}
         </div>
 
-        {/*<BorderBlock className="mt-5 w-full">*/}
-        {/*  <h3 className="mb-5 ml-2 font-semibold">Reward History</h3>*/}
-        {/*  <TableRewardHistory />*/}
-        {/*</BorderBlock>*/}
+        <BorderBlock className="mt-5 w-full">
+          <h3 className="mb-5 ml-2 font-semibold">Rewards History</h3>
+          <TableRewardsHistory />
+        </BorderBlock>
       </div>
     </div>
   );
