@@ -1,70 +1,73 @@
 import { useMemo } from 'react';
-import { useAccount } from 'wagmi';
+// import { useAccount } from 'wagmi';
 
 import Balance from '@/components/Balance';
 import BorderBlock from '@/components/BorderBlock';
 import CommunityBalance from './components/CommunityBalance';
 // import TableRewardHistory from './components/TableRewardHistory';
 
+import WalletConnectFilter from '@/containers/WalletConnectFilter';
 import { cn } from '@/helpers/lib';
-import type {
-  ICommunityCampaignItem,
-  TCommunityCampaignItemKeys
-} from '@/types/wallet';
-import rewardsHistoryCsv from './community-campaigns.csv?raw';
+import { useCommunityAllocations, useCommunityRewards } from '@/hooks/api';
 
 interface Props {
   className?: string;
 }
 
 export default function CommunityPartnership({ className }: Props) {
-  const { address } = useAccount();
+  // const { address } = useAccount();
 
   const classRoot = cn('pb-10', className);
 
-  const rewardsHistory = useMemo<ICommunityCampaignItem[]>(() => {
-    const [headersRow, ...rows] = rewardsHistoryCsv
-      .split('\n')
-      .map((row) => row.trim());
-    const headers: TCommunityCampaignItemKeys[] = headersRow
-      .split(',')
-      .map((h) => h.trim().toLowerCase() as TCommunityCampaignItemKeys);
+  // const rewardsHistory = useMemo<ICommunityCampaignItem[]>(() => {
+  //   const [headersRow, ...rows] = rewardsHistoryCsv
+  //     .trim()
+  //     .split('\n')
+  //     .map((row) => row.trim());
 
-    return rows.map((row) => {
-      const values = row.split(',').map((v) => v.trim());
-      return headers.reduce((obj, header, index) => {
-        obj[header] = values[index] || '';
-        return obj;
-      }, {} as ICommunityCampaignItem);
-    }) as ICommunityCampaignItem[];
-  }, []);
+  //   const headers: TCommunityCampaignItemKeys[] = headersRow
+  //     .split(',')
+  //     .map((h) => h.trim().toLowerCase() as TCommunityCampaignItemKeys);
 
-  const rewardsByCommunity = useMemo(
-    () =>
-      rewardsHistory.reduce(
-        (acc, { community, points }) => {
-          if (acc?.[community]) {
-            acc[community] += Number(points);
-          } else {
-            acc[community] = Number(points);
-          }
+  //   return rows.map((row) => {
+  //     const values = row.split(',').map((v) => v.trim());
+  //     return headers.reduce((obj, header, index) => {
+  //       obj[header] = values[index] || '';
+  //       return obj;
+  //     }, {} as ICommunityCampaignItem);
+  //   }) as ICommunityCampaignItem[];
+  // }, []);
 
-          return acc;
-        },
-        {} as Record<string, number>
-      ),
-    [rewardsHistory]
-  );
+  // const rewardsByCommunity = useMemo(
+  //   () =>
+  //     rewardsHistory.reduce(
+  //       (acc, { community, points }) => {
+  //         if (acc?.[community]) {
+  //           acc[community] += Number(points);
+  //         } else {
+  //           acc[community] = Number(points);
+  //         }
 
-  const userRewardsSum = useMemo(
-    () =>
-      rewardsHistory.reduce(
-        (acc, { wallet, points }) =>
-          wallet === address ? acc + Number(points) : acc,
-        0
-      ),
-    [address, rewardsHistory]
-  );
+  //         return acc;
+  //       },
+  //       {} as Record<string, number>
+  //     ),
+  //   [rewardsHistory]
+  // );
+
+  // const userRewardsSum = useMemo(
+  //   () =>
+  //     rewardsHistory.reduce(
+  //       (acc, { wallet, points }) =>
+  //         wallet === address ? acc + Number(points) : acc,
+  //       0
+  //     ),
+  //   [address, rewardsHistory]
+  // );
+
+  const rewards = useCommunityRewards();
+  const communities = useCommunityAllocations();
+  const userRewardsSum = useMemo(() => rewards.data?.total || 0, [rewards]);
 
   return (
     <div className={classRoot}>
@@ -86,16 +89,18 @@ export default function CommunityPartnership({ className }: Props) {
             <span className="text-orange">Yuzu</span> earned from community
             partnerships
           </div>
-          <Balance className="mt-5 justify-center" value={userRewardsSum} />
+          <WalletConnectFilter triggerClass="mx-auto my-4">
+            <Balance className="mt-5 justify-center" value={userRewardsSum} />
+          </WalletConnectFilter>
         </BorderBlock>
 
         <div className="mt-[55px] flex w-full columns-3 flex-wrap gap-x-2 gap-y-3">
-          {Object.entries(rewardsByCommunity).map(([title, balance]) => (
+          {communities.data.map(({ name, points }) => (
             <CommunityBalance
-              key={title}
+              key={name}
               className="flex-[1_0_calc(33.333%-8px)]"
-              balance={balance}
-              title={title}
+              balance={points}
+              title={name}
             />
           ))}
         </div>

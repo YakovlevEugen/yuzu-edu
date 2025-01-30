@@ -179,12 +179,24 @@ export const getTestnetWallets = async () => {
 export const fromCSV = <T>(text: string, schema: Zod.Schema<T>) => {
   const [headerRow, ...lines] = text.split('\n');
 
-  const cols = headerRow.split(',').map((str) => str.trim());
+  const cols = headerRow
+    .split(',')
+    .map((str) => str.trim())
+    .filter(Boolean);
 
   const rows = lines
-    .map((line) => line.split(',').map((str) => str.trim()))
+    .map((line) =>
+      line
+        .split(',')
+        .map((str) => str.trim())
+        .filter(Boolean)
+    )
     .map((values) => Object.fromEntries(cols.map((c, i) => [c, values[i]])))
-    .map((row) => schema.parse(row));
+    .map((row, index) => {
+      const result = schema.safeParse(row);
+      if (result.success) return result.data;
+      throw new Error(`failed to parse row:${index}, ${result.error.message}`);
+    });
 
   return rows;
 };

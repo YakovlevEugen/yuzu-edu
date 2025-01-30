@@ -243,21 +243,16 @@ const app = new Hono<IEnv>()
    * Community Rewards
    */
 
-  .get(
-    '/rewards/:chainId/communities',
-    zValidator('param', v.object({ chainId: vChainId })),
-    async (c) => {
-      const { chainId } = c.req.valid('param');
-      const result = await getCommunityRewards(c);
-      return c.json(result);
-    }
-  )
+  .get('/rewards/communities', async (c) => {
+    const result = await getCommunityRewards(c);
+    return c.json(result);
+  })
 
   .get(
-    '/rewards/:chainId/:address',
-    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
+    '/rewards/:address',
+    zValidator('param', v.object({ address: vAddress })),
     async (c) => {
-      const { chainId, address } = c.req.valid('param');
+      const { address } = c.req.valid('param');
       const result = await getCommunityAllocations(c, address);
       return c.json(result);
     }

@@ -83,14 +83,18 @@ export const updateCommunityRewards = (entries: ICommunityReward[]) =>
 export const updateCommunityAllocations = (entries: ICommunityAllocation[]) =>
   db
     .from('community_allocations')
-    .insert(
+    .upsert(
       entries.map(({ address, ...rest }) => ({
         address: getAddress(address),
         ...rest
-      }))
+      })),
+      { onConflict: 'address,community', ignoreDuplicates: true }
     )
     .then((res) => {
-      if (res.error) throw new Error(res.error.message);
+      if (res.error) {
+        console.log(res.error);
+        throw new Error(res.error.message);
+      }
     });
 
 export const dropFaucetWhitelist = () =>

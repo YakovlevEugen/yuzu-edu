@@ -281,16 +281,34 @@ export const verifyCaptcha = (c: IContext, token: string, ip?: string) =>
 
 export const getCommunityRewards = async (c: IContext) =>
   c.var.db
-    .from('community_rewards')
+    .from('community_allocations')
     .select('*')
-    .then((res) => res.data || []);
+    .limit(3000)
+    .then((res) => {
+      const out: Record<string, number> = {};
+
+      res.data?.forEach((row) => {
+        out[row.community] = out[row.community] || 0;
+        out[row.community] += row.points;
+      });
+
+      return Object.entries(out).map(([name, points]) => ({ name, points }));
+    });
 
 export const getCommunityAllocations = async (c: IContext, address: Address) =>
   c.var.db
     .from('community_allocations')
     .select('*')
     .eq('address', address)
-    .then((res) => res.data || []);
+    .then((res) => {
+      let total = 0;
+
+      res.data?.forEach((row) => {
+        total += row.points;
+      });
+
+      return { total, history: res.data };
+    });
 
 /**
  * Testnet activity

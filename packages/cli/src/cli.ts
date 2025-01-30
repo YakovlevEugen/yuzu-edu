@@ -6,7 +6,7 @@ dotnet.config({ path: resolve(__dirname, '..', '.env') });
 import { program } from '@commander-js/extra-typings';
 import { type IChainId, chains } from '@yuzu/sdk';
 import { mkdirpSync } from 'mkdirp';
-import { assign, context } from './context';
+import { type IEnv, assign, context } from './context';
 import { getStoragePath } from './index/persistence';
 
 /**
@@ -16,12 +16,18 @@ import { getStoragePath } from './index/persistence';
 program
   .option('-v, --verbose', 'verbosity level')
   .option('-c, --chain <chainId>', 'chain id', 'eduTestnet')
+  .option('-e, --env <environment>', 'project env', 'staging')
   .hook('preSubcommand', (cmd) => {
-    const { verbose = false, chain = 'eduTestnet' } = cmd.opts();
+    const {
+      verbose = false,
+      chain = 'eduTestnet',
+      env = 'staging'
+    } = cmd.opts();
     assign({
       verbose,
       chainId: chain as IChainId,
-      chain: chains[chain as IChainId]
+      chain: chains[chain as IChainId],
+      env: env as IEnv
     });
     mkdirpSync(getStoragePath(context.chainId));
   });

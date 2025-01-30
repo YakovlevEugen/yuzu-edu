@@ -244,6 +244,34 @@ export const useClaimEligilibity = () => {
   });
 };
 
+/**
+ * Community Rewards & Allocations
+ */
+
+export const useCommunityAllocations = () => {
+  return useQuery({
+    queryKey: ['rewards', 'communities'],
+    queryFn: () => client.rewards.communities.$get().then((res) => res.json()),
+    initialData: []
+  });
+};
+
+export const useCommunityRewards = () => {
+  const { address } = useAccount();
+
+  return useQuery({
+    queryKey: ['rewards', address],
+    queryFn: () =>
+      client.rewards[':address']
+        .$get({
+          param: { address: address as string }
+        })
+        .then((res) => res.json()),
+    enabled: Boolean(address),
+    initialData: { total: 0, history: [] }
+  });
+};
+
 // export const usePointBalance = () => {
 //   const { address } = useAccount();
 
