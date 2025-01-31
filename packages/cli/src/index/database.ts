@@ -72,23 +72,14 @@ export const vCommunityAllocation = v.object({
 
 export type ICommunityAllocation = v.infer<typeof vCommunityAllocation>;
 
-export const updateCommunityRewards = (entries: ICommunityReward[]) =>
-  db
-    .from('community_rewards')
-    .insert(entries)
-    .then((res) => {
-      if (res.error) throw new Error(res.error.message);
-    });
-
 export const updateCommunityAllocations = (entries: ICommunityAllocation[]) =>
   db
-    .from('community_allocations')
-    .upsert(
+    .from('community_rewards_history')
+    .insert(
       entries.map(({ address, ...rest }) => ({
         address: getAddress(address),
         ...rest
-      })),
-      { onConflict: 'address,community', ignoreDuplicates: true }
+      }))
     )
     .then((res) => {
       if (res.error) {

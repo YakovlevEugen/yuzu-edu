@@ -5,7 +5,7 @@
 import fs from 'fs';
 import { resolve } from 'path';
 import { program } from '@commander-js/extra-typings';
-import { type Address, isAddress } from 'viem';
+import { type Address, getAddress, isAddress } from 'viem';
 import { context } from '../context';
 import { getTestnetParticipantPoints } from './config';
 import {
@@ -17,7 +17,6 @@ import {
   dropTestnetPoints,
   insertTestnetPoints,
   updateCommunityAllocations,
-  updateCommunityRewards,
   updateFaucetWhitelist,
   upsertFaucetWhitelist,
   vAddressRow,
@@ -118,33 +117,23 @@ program
 
 program
   //
-  .command('ingest-community-rewards')
-  .argument('<file>', 'path to csv file with community rewards')
-  .action(async (path) => {
-    await dropCommunityRewards();
-
-    const rewards = fromCSV(
-      fs.readFileSync(resolve(process.cwd(), path), 'utf-8'),
-      vCommunityReward
-    );
-
-    for (const chunk of rangeToChunks(0, rewards.length, 200)) {
-      const page = rewards.slice(chunk.at(0), chunk.at(-1));
-      await updateCommunityRewards(page);
-    }
-  });
-
-program
-  //
   .command('ingest-community-allocations')
   .argument('<file>', 'path to csv file with community allocations')
   .action(async (path) => {
-    await dropCommunityAllocations();
+    // await dropCommunityAllocations();
 
-    const allocations = fromCSV(
+    let allocations = fromCSV(
       fs.readFileSync(resolve(process.cwd(), path), 'utf-8'),
       vCommunityAllocation
     ) as ICommunityAllocation[];
+
+    const seen = new Set();
+    allocations = allocations.filter(({ address, community }) => {
+      const key = `${getAddress(address)}-${community}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
 
     for (const chunk of rangeToChunks(0, allocations.length, 200)) {
       const page = allocations.slice(chunk.at(0), chunk.at(-1));
