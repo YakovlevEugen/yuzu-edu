@@ -245,30 +245,28 @@ export const useClaimEligilibity = () => {
 };
 
 /**
- * Community Rewards & Allocations
+ * Community Rewards
  */
 
-export const useCommunityAllocations = () => {
+export const useCommunityRewards = () => {
   return useQuery({
     queryKey: ['rewards', 'communities'],
-    queryFn: () => client.rewards.communities.$get().then((res) => res.json()),
+    queryFn: () => client.rewards.$get().then((res) => res.json()),
     initialData: []
   });
 };
 
-export const useCommunityRewards = () => {
+export const useCommunityRewardsByAddress = () => {
   const { address } = useAccount();
 
   return useQuery({
     queryKey: ['rewards', address],
     queryFn: () =>
       client.rewards[':address']
-        .$get({
-          param: { address: address as string }
-        })
+        .$get({ param: { address: address as string } })
         .then((res) => res.json()),
     enabled: Boolean(address),
-    initialData: { total: 0, history: [] }
+    initialData: 0
   });
 };
 
@@ -286,6 +284,7 @@ export const useCommunityRewardsHistory = () => {
         .then((res) => res.json()),
     getNextPageParam: (pages) => pages.length,
     initialPageParam: 0,
+    initialData: { pageParams: [0], pages: [] },
     enabled: Boolean(address)
   });
 };

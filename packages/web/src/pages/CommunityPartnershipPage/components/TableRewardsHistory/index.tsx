@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { Button } from 'ui/button';
 import {
   Table,
   TableBody,
@@ -11,29 +10,23 @@ import {
   TableRow
 } from 'ui/table';
 
-import { formatBigNumber } from '@/helpers/format';
 import { cn } from '@/helpers/lib';
 import { useCommunityRewardsHistory } from '@/hooks/api';
-import type { ICommunityCampaignItems } from '@/types/wallet';
+import { Button } from 'ui/button';
 
 interface Props {
   className?: string;
 }
 
 export default function TableRewardsHistory({ className }: Props) {
-  const rewardsHistoryQuery = useCommunityRewardsHistory();
+  const query = useCommunityRewardsHistory();
 
   const classRoot = cn('', className);
 
-  const rewardsHistory = useMemo<ICommunityCampaignItems>(
-    () =>
-      (rewardsHistoryQuery.data?.pages.flat() as ICommunityCampaignItems)?.map(
-        (item) => ({
-          ...item,
-          points: formatBigNumber(item.points)
-        })
-      ) || [],
-    [rewardsHistoryQuery]
+  const history = useMemo(() => query.data?.pages.flat() || [], [query]);
+  const hasNextPage = useMemo(
+    () => (query.data.pages.at(-1) || []).length > 0,
+    [query]
   );
 
   return (
@@ -42,42 +35,36 @@ export default function TableRewardsHistory({ className }: Props) {
         <TableRow>
           <TableHead>Community</TableHead>
           <TableHead>Type</TableHead>
+          <TableHead>Date</TableHead>
           <TableHead className="text-right">You Earned</TableHead>
         </TableRow>
       </TableHeader>
 
-      {rewardsHistory?.length > 0 && (
+      {history.length > 0 && (
         <TableBody>
-          {rewardsHistory.map(
-            ({ community, points, type = 'Testnet farming' }, index) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: don't have uniq id and indexes won't change
-              <TableRow key={index}>
-                <TableCell>{community}</TableCell>
-                <TableCell>{type}</TableCell>
-                <TableCell className="text-right">{points} Yuzu</TableCell>
-              </TableRow>
-            )
-          )}
+          {history.map(({ community, points, createdAt }) => (
+            <TableRow key={`${community}-${createdAt}`}>
+              <TableCell className="capitalize">{community}</TableCell>
+              <TableCell className="capitalize">awarded</TableCell>
+              <TableCell className="capitalize">
+                {new Date(createdAt).toLocaleDateString()}
+              </TableCell>
+              <TableCell className="text-right">
+                {points.toLocaleString()} Yuzu
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       )}
 
       <TableFooter>
         <TableRow>
-          <TableCell
-            className="text-center"
-            colSpan={
-              (rewardsHistory?.[0] && Object.keys(rewardsHistory[0])?.length) ??
-              3
-            }
-          >
-            {rewardsHistory?.length > 0 ? (
+          <TableCell className="text-center" colSpan={4}>
+            {hasNextPage ? (
               <Button
                 variant="link"
-                onClick={() => rewardsHistoryQuery.fetchNextPage()}
-                disabled={
-                  !rewardsHistoryQuery.hasNextPage ||
-                  rewardsHistoryQuery.isFetching
-                }
+                onClick={() => query.fetchNextPage()}
+                disabled={!query.hasNextPage || query.isFetching}
               >
                 Load More
               </Button>

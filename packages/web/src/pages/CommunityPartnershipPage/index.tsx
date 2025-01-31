@@ -1,76 +1,31 @@
-import { useMemo } from 'react';
-// import { useAccount } from 'wagmi';
-
 import Balance from '@/components/Balance';
 import BorderBlock from '@/components/BorderBlock';
-import CommunityBalance from './components/CommunityBalance';
-import TableRewardsHistory from './components/TableRewardsHistory';
-
 import WalletConnectFilter from '@/containers/WalletConnectFilter';
 import { cn } from '@/helpers/lib';
-import { useCommunityAllocations, useCommunityRewards } from '@/hooks/api';
-// import { ICommunityCampaignItem, TCommunityCampaignItemKeys, ICommunityCampaignItems } from '@/types/wallet'
-// import rewardsHistoryCsv from './community-campaigns.csv?raw';
+import {
+  useCommunityRewards,
+  useCommunityRewardsByAddress,
+  useCommunityRewardsHistory
+} from '@/hooks/api';
+import { useMemo } from 'react';
+import CommunityBalance from './components/CommunityBalance';
+import TableRewardsHistory from './components/TableRewardsHistory';
 
 interface Props {
   className?: string;
 }
 
 export default function CommunityPartnership({ className }: Props) {
-  // const { address } = useAccount();
-
-  // const rewardsHistory = useMemo<ICommunityCampaignItems>(() => {
-  //   const [headersRow, ...rows] = rewardsHistoryCsv
-  //     .trim()
-  //     .split('\n')
-  //     .map((row) => row.trim());
-  //
-  //   const headers: TCommunityCampaignItemKeys[] = headersRow
-  //     .split(',')
-  //     .map((h) => h.trim().toLowerCase() as TCommunityCampaignItemKeys);
-  //
-  //   return rows.map((row) => {
-  //     const values = row.split(',').map((v) => v.trim());
-  //     return headers.reduce((obj, header, index) => {
-  //       obj[header] = values[index] || '';
-  //       return obj;
-  //     }, {} as ICommunityCampaignItem);
-  //   }) as ICommunityCampaignItems;
-  // }, []);
-
-  // const rewardsByCommunity = useMemo(
-  //   () =>
-  //     rewardsHistory.reduce(
-  //       (acc, { community, points }) => {
-  //         if (acc?.[community]) {
-  //           acc[community] += Number(points);
-  //         } else {
-  //           acc[community] = Number(points);
-  //         }
-
-  //         return acc;
-  //       },
-  //       {} as Record<string, number>
-  //     ),
-  //   [rewardsHistory]
-  // );
-
-  // const userRewardsSum = useMemo(
-  //   () =>
-  //     rewardsHistory.reduce(
-  //       (acc, { wallet, points }) =>
-  //         wallet === address ? acc + Number(points) : acc,
-  //       0
-  //     ),
-  //   [address, rewardsHistory]
-  // );
-
-  const rewards = useCommunityRewards();
-  const communities = useCommunityAllocations();
+  const allRewards = useCommunityRewards();
+  const myRewards = useCommunityRewardsByAddress();
+  const history = useCommunityRewardsHistory();
 
   const classRoot = cn('pb-10', className);
 
-  const userRewardsSum = useMemo(() => rewards.data?.total || 0, [rewards]);
+  const numHistoryEntries = useMemo(
+    () => history.data.pages.flat().length,
+    [history]
+  );
 
   return (
     <div className={classRoot}>
@@ -93,25 +48,29 @@ export default function CommunityPartnership({ className }: Props) {
             partnerships
           </div>
           <WalletConnectFilter triggerClass="!block mx-auto mt-5">
-            <Balance className="mt-5 justify-center" value={userRewardsSum} />
+            <Balance className="mt-5 justify-center" value={myRewards.data} />
           </WalletConnectFilter>
         </BorderBlock>
 
+        {numHistoryEntries > 0 ? (
+          <BorderBlock className="mt-5 w-full">
+            <h3 className="mb-5 ml-2 font-semibold">Rewards History</h3>
+            <TableRewardsHistory />
+          </BorderBlock>
+        ) : (
+          <></>
+        )}
+
         <div className="mt-[55px] flex w-full columns-3 flex-wrap gap-x-2 gap-y-3">
-          {communities.data.map(({ name, points }) => (
+          {allRewards.data.map(({ community, total }) => (
             <CommunityBalance
-              key={name}
+              key={community}
               className="flex-[1_0_calc(33.333%-8px)]"
-              balance={points}
-              title={name}
+              balance={total}
+              title={community}
             />
           ))}
         </div>
-
-        <BorderBlock className="mt-5 w-full">
-          <h3 className="mb-5 ml-2 font-semibold">Rewards History</h3>
-          <TableRewardsHistory />
-        </BorderBlock>
       </div>
     </div>
   );

@@ -14,8 +14,9 @@ import {
   getBridgeTest,
   getBridgeTransfers,
   getClaimEligibility,
-  getCommunityAllocations,
   getCommunityRewards,
+  getCommunityRewardsByAddress,
+  getCommunityRewardsHistory,
   getTestnetActivityPoints,
   getWEDUPoints,
   getWEDUTransfers,
@@ -24,7 +25,6 @@ import {
   verifyCaptcha
 } from './helpers';
 import { database } from './middleware';
-import { getCurrentNonces } from './nonce';
 import type { IEnv } from './types';
 import { getTokenBalance } from './web3';
 
@@ -243,7 +243,7 @@ const app = new Hono<IEnv>()
    * Community Rewards
    */
 
-  .get('/rewards/communities', async (c) => {
+  .get('/rewards', async (c) => {
     const result = await getCommunityRewards(c);
     return c.json(result);
   })
@@ -253,7 +253,19 @@ const app = new Hono<IEnv>()
     zValidator('param', v.object({ address: vAddress })),
     async (c) => {
       const { address } = c.req.valid('param');
-      const result = await getCommunityAllocations(c, address);
+      const result = await getCommunityRewardsByAddress(c, address);
+      return c.json(result);
+    }
+  )
+
+  .get(
+    '/rewards/:address/history',
+    zValidator('query', v.object({ page: v.string() })),
+    zValidator('param', v.object({ address: vAddress })),
+    async (c) => {
+      const { address } = c.req.valid('param');
+      const page = parseInt(c.req.valid('query').page);
+      const result = await getCommunityRewardsHistory(c, address, page);
       return c.json(result);
     }
   )
@@ -271,22 +283,12 @@ const app = new Hono<IEnv>()
       const [staking, bridge, rewards, testnetActivity] = await Promise.all([
         getWEDUPoints(c, chain, address),
         getBridgePoints(c, chain, address),
-        getCommunityAllocations(c, address),
+        getCommunityRewardsByAddress(c, address),
         getTestnetActivityPoints(c, address)
       ]);
       return c.json({ staking, bridge, rewards, testnetActivity });
     }
-  )
-
-  /**
-   * Debug Signer Nonces
-   */
-
-  .get('/nonces', async (c) => {
-    const nonces = await getCurrentNonces(c);
-    return c.json(nonces);
-  });
+  );
 
 export default app;
 export type IApp = typeof app;
-export { Nonces } from './nonce';

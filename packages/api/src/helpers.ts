@@ -22,7 +22,6 @@ import {
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import * as v from 'zod';
-import { getNextNonce } from './nonce';
 import type { IContext, IEligibility } from './types';
 
 /**
@@ -251,8 +250,6 @@ export const execClaimTx = async (
       ? c.env.MAINNET_SIGNER_PK
       : c.env.TESTNET_SIGNER_PK;
 
-  // const nonce = await getNextNonce(c, chainId);
-
   const signature = await claimTo({
     chainId,
     account: address,
@@ -276,39 +273,43 @@ export const verifyCaptcha = (c: IContext, token: string, ip?: string) =>
     .then((res) => res.success);
 
 /**
- * Rewards
+ * Community Rewards
  */
+
+export const getCommunityRewardsHistory = async (
+  c: IContext,
+  address: Address,
+  page: number
+) => {
+  const limit = 5;
+  const from = page * limit;
+  const to = (page + 1) * limit - 1;
+
+  return c.var.db
+    .from('community_rewards_history')
+    .select('*')
+    .eq('address', address)
+    .order('createdAt', { ascending: false })
+    .range(from, to)
+    .then((res) => res.data || []);
+};
 
 export const getCommunityRewards = async (c: IContext) =>
   c.var.db
-    .from('community_allocations')
+    .from('community_rewards_by_community')
     .select('*')
-    .limit(3000)
-    .then((res) => {
-      const out: Record<string, number> = {};
+    .then((res) => (res.data as { community: string; total: number }[]) || []);
 
-      res.data?.forEach((row) => {
-        out[row.community] = out[row.community] || 0;
-        out[row.community] += row.points;
-      });
-
-      return Object.entries(out).map(([name, points]) => ({ name, points }));
-    });
-
-export const getCommunityAllocations = async (c: IContext, address: Address) =>
+export const getCommunityRewardsByAddress = async (
+  c: IContext,
+  address: Address
+) =>
   c.var.db
-    .from('community_allocations')
-    .select('*')
+    .from('community_rewards_by_address')
+    .select('total')
     .eq('address', address)
-    .then((res) => {
-      let total = 0;
-
-      res.data?.forEach((row) => {
-        total += row.points;
-      });
-
-      return { total, history: res.data };
-    });
+    .maybeSingle()
+    .then((res) => res.data?.total || 0);
 
 /**
  * Testnet activity

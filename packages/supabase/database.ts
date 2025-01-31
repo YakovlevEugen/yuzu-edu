@@ -9,35 +9,23 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      community_allocations: {
+      community_rewards_history: {
         Row: {
           address: string;
           community: string;
+          createdAt: string;
           points: number;
         };
         Insert: {
           address: string;
           community: string;
+          createdAt?: string;
           points?: number;
         };
         Update: {
           address?: string;
           community?: string;
-          points?: number;
-        };
-        Relationships: [];
-      };
-      community_rewards: {
-        Row: {
-          name: string;
-          points: number;
-        };
-        Insert: {
-          name: string;
-          points?: number;
-        };
-        Update: {
-          name?: string;
+          createdAt?: string;
           points?: number;
         };
         Relationships: [];
@@ -125,6 +113,20 @@ export type Database = {
       };
     };
     Views: {
+      community_rewards_by_address: {
+        Row: {
+          address: string | null;
+          total: number | null;
+        };
+        Relationships: [];
+      };
+      community_rewards_by_community: {
+        Row: {
+          community: string | null;
+          total: number | null;
+        };
+        Relationships: [];
+      };
       wedu_agg_point_balances_view: {
         Row: {
           address: string | null;
