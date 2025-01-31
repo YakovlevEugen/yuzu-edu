@@ -292,3 +292,4 @@ const app = new Hono<IEnv>()
 
 export default app;
 export type IApp = typeof app;
+export class Nonces {}
