@@ -15,8 +15,8 @@ export default function Menu({ className }: Props) {
 
   return (
     <div className={classRoot}>
-      {MENU.map(({ to, title }) => (
-        <MenuLink key={to} to={to}>
+      {MENU.map(({ external, to, title }) => (
+        <MenuLink key={to} external={external} to={to}>
           {title}
         </MenuLink>
       ))}

@@ -1,24 +1,26 @@
 import { ROUTES } from '@/constants/routes';
+import { createEDUChainSubdomainLink } from '@/helpers/url';
 
 export const MENU = [
-  // {
-  //   to: ROUTES.dashboard,
-  //   title: 'Dashboard'
-  // },
   {
-    to: ROUTES.stake,
-    title: 'Stake'
+    title: 'Stake',
+    to: ROUTES.stake
   },
   {
-    to: ROUTES.faucet,
-    title: 'EDU Faucet'
+    title: 'EDU Faucet',
+    to: ROUTES.faucet
   },
   {
-    to: ROUTES.community,
-    title: 'Community'
+    title: 'Community',
+    to: ROUTES.community
   },
   {
-    to: ROUTES.bridge,
-    title: 'Bridge'
+    title: 'Bridge',
+    to: ROUTES.bridge
+  },
+  {
+    title: 'Dashboard',
+    to: createEDUChainSubdomainLink('dashboard'),
+    external: true
   }
 ];
