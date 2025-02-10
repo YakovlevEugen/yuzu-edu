@@ -34,7 +34,7 @@ export const getDappAllocationPoints = async () => {
 
     if (!dapp) continue;
 
-    const amount = new Big(tx.value.toString()).div(1e18).toFixed(18, 0);
+    const amount = new Big(1).toFixed(18, 0);
     const dappShare = new Big(amount).mul(dapp.boost || 1).mul(0.1);
     const existingDappPoints = new Big(dappPoints.get(dapp.name) || 0);
     dappPoints.set(dapp.name, existingDappPoints.add(dappShare).toFixed(6));
