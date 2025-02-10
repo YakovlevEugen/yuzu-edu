@@ -8,11 +8,10 @@ import { program } from '@commander-js/extra-typings';
 import { type Address, getAddress, isAddress } from 'viem';
 import { context } from '../context';
 import { getTestnetParticipantPoints } from './config';
+import { getDappAllocationPoints } from './dapps';
 import {
   type IAddressRow,
   type ICommunityAllocation,
-  dropCommunityAllocations,
-  dropCommunityRewards,
   dropFaucetWhitelist,
   dropTestnetPoints,
   insertTestnetPoints,
@@ -20,8 +19,7 @@ import {
   updateFaucetWhitelist,
   upsertFaucetWhitelist,
   vAddressRow,
-  vCommunityAllocation,
-  vCommunityReward
+  vCommunityAllocation
 } from './database';
 import {
   countWalletTxs,
@@ -139,4 +137,19 @@ program
       const page = allocations.slice(chunk.at(0), chunk.at(-1));
       await updateCommunityAllocations(page);
     }
+  });
+
+program
+  //
+  .command('get-testnet-dapps-allocations')
+  .action(async () => {
+    const result = await getDappAllocationPoints();
+    const filename = `${process.cwd()}/dapps-points-${new Date().toISOString()}.csv`;
+
+    const lines = Array.from(result.entries())
+      .sort((a, b) => (a[1] > b[1] ? -1 : a[1] < b[1] ? 1 : 0))
+      .map((pair) => pair.join(','));
+
+    fs.writeFileSync(filename, lines.join('\n'));
+    console.log(`Written ${filename}.`);
   });
