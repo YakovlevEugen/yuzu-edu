@@ -47,7 +47,8 @@ export const useStakingPoints = () => {
         .$get({ param: { chainId, address } })
         .then((res) => res.json()),
     enabled: Boolean(address),
-    initialData: 0
+    initialData: 0,
+    refetchInterval: 10_000
   });
 };
 

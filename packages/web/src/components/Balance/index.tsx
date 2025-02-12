@@ -6,7 +6,7 @@ interface Props {
   classAmount?: string;
   className?: string;
   currency?: string;
-  value: number | string;
+  value?: number | string;
   withCoin?: boolean;
 }
 
