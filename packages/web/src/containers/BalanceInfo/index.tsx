@@ -32,9 +32,5 @@ export default function BalanceInfo({ className }: { className?: string }) {
     }, [points, weduBalance, since])
   );
 
-  return (
-    <Balance className={cn(className)} value={points.data} currency="Yuzu" />
-  );
+  return <Balance className={cn(className)} value={value} currency="Yuzu" />;
 }
-
-// Backend: wedu_agg_point_balances_view -> (wallet, points).

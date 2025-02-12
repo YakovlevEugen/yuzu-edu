@@ -119,7 +119,7 @@ const indexEduChainBlocks = async (c: IContext) => {
       getPublicClient(toChainId(chain)).getBlockNumber()
     ]);
 
-    const blockRanges = toChunks({ from, to, chunkSize: 1000 });
+    const blockRanges = toChunks({ from, to, chunkSize: 100 });
 
     for (const { fromBlock, toBlock } of blockRanges) {
       await indexWEDULogs(c, { chain, fromBlock, toBlock });
@@ -211,6 +211,6 @@ const indexWEDULogs = async (
   }
 
   for (const batch of toBatches(out, 100)) {
-    await upsertWEDUBalance(c, out);
+    await upsertWEDUBalance(c, batch);
   }
 };
