@@ -61,6 +61,19 @@ export const setLastIndexedBlock = (
 ) =>
   setConfigValue(c, { key: 'lastIndexedBlock', scope, value: Number(value) });
 
+export const toBatches = <T>(arr: T[], size: number) => {
+  const out: T[][] = [];
+
+  for (let i = 0; i < arr.length; i += size) {
+    const start = i;
+    const end = Math.min(i + size, arr.length);
+
+    out.push(arr.slice(start, end));
+  }
+
+  return out;
+};
+
 export const toChunks = (params: {
   from: number | bigint;
   to: number | bigint;
@@ -81,7 +94,7 @@ export const toChunks = (params: {
   return out;
 };
 
-export const upsertWEDUBalance = (
+export const getUpsertWEDUBalanceOp = (
   c: IContext,
   params: {
     chain: IChain;
@@ -90,26 +103,29 @@ export const upsertWEDUBalance = (
     amount: bigint;
     timestamp: string;
   }
+) => ({
+  // @ts-ignore
+  chain: params.chain.name,
+  transactionHash: params.log.transactionHash,
+  transactionIndex: params.log.transactionIndex,
+  logIndex: params.log.logIndex,
+  address: params.address,
+  amount: params.amount.toString(),
+  blockNumber: params.log.blockNumber,
+  blockTimestamp: params.timestamp
+});
+
+export const upsertWEDUBalance = (
+  c: IContext,
+  ops: Partial<Record<string, unknown>>[]
 ) =>
   c.var.db
     .from('wedu_balance_changes')
-    .upsert(
-      {
-        // @ts-ignore
-        chain: params.chain.name,
-        transactionHash: params.log.transactionHash,
-        transactionIndex: params.log.transactionIndex,
-        logIndex: params.log.logIndex,
-        address: params.address,
-        amount: params.amount.toString(),
-        blockNumber: params.log.blockNumber,
-        blockTimestamp: params.timestamp
-      },
-      {
-        onConflict: 'chain,transactionHash,transactionIndex,logIndex,address',
-        ignoreDuplicates: false
-      }
-    )
+    // @ts-expect-error
+    .upsert(ops, {
+      onConflict: 'chain,transactionHash,transactionIndex,logIndex,address',
+      ignoreDuplicates: false
+    })
     .then((res) => {
       if (res.error) throw new Error(res.error.message);
     });

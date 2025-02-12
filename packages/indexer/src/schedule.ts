@@ -4,6 +4,7 @@
 
 import {
   type IChain,
+  type IChainId,
   arbMainnet,
   eduMainnet,
   eduTestnet,
@@ -16,7 +17,9 @@ import {
 import {
   createContext,
   getLastIndexedBlock,
+  getUpsertWEDUBalanceOp,
   setLastIndexedBlock,
+  toBatches,
   toChunks,
   upsertWEDUBalance
 } from './helpers';
@@ -116,13 +119,27 @@ const indexEduChainBlocks = async (c: IContext) => {
       getPublicClient(toChainId(chain)).getBlockNumber()
     ]);
 
-    const blockRanges = toChunks({ from, to, chunkSize: 10000 });
+    const blockRanges = toChunks({ from, to, chunkSize: 1000 });
 
     for (const { fromBlock, toBlock } of blockRanges) {
       await indexWEDULogs(c, { chain, fromBlock, toBlock });
       await setLastIndexedBlock(c, chain.name, toBlock);
     }
   }
+};
+
+const getBlockTimestamp = (chainId: IChainId) => {
+  const cache = new Map<bigint, string>();
+  return async (blockNumber: bigint) => {
+    if (cache.has(blockNumber)) return cache.get(blockNumber) as string;
+
+    const timestamp = await getPublicClient(chainId)
+      .getBlock({ blockNumber })
+      .then((block) => new Date(Number(block.timestamp) * 1000).toISOString());
+
+    cache.set(blockNumber, timestamp);
+    return timestamp;
+  };
 };
 
 const indexWEDULogs = async (
@@ -136,53 +153,64 @@ const indexWEDULogs = async (
   const { chain, fromBlock, toBlock } = params;
 
   const chainId = toChainId(chain);
-  const client = getPublicClient(chainId);
 
   const logs = await getWEDULogs({ chainId, fromBlock, toBlock });
   console.log(`Got: ${logs.length} logs from ${fromBlock} to ${toBlock}`);
 
+  const getTimestamp = getBlockTimestamp(chainId);
+
+  const out: Partial<object>[] = [];
+
   for (const log of logs.filter((l) => !l.removed)) {
-    const timestamp = await client
-      .getBlock({ blockNumber: log.blockNumber })
-      .then((block) => new Date(Number(block.timestamp) * 1000).toISOString());
+    const timestamp = await getTimestamp(log.blockNumber);
 
     switch (log.eventName) {
       case 'Deposit':
-        await upsertWEDUBalance(c, {
-          chain,
-          log,
-          address: log.args.dst,
-          amount: log.args.wad,
-          timestamp
-        });
-        break;
-      case 'Transfer':
-        await Promise.all([
-          upsertWEDUBalance(c, {
+        out.push(
+          getUpsertWEDUBalanceOp(c, {
             chain,
             log,
             address: log.args.dst,
             amount: log.args.wad,
             timestamp
-          }),
-          upsertWEDUBalance(c, {
+          })
+        );
+        break;
+      case 'Transfer':
+        out.push(
+          getUpsertWEDUBalanceOp(c, {
+            chain,
+            log,
+            address: log.args.dst,
+            amount: log.args.wad,
+            timestamp
+          })
+        );
+        out.push(
+          getUpsertWEDUBalanceOp(c, {
             chain,
             log,
             address: log.args.src,
             amount: -log.args.wad,
             timestamp
           })
-        ]);
+        );
         break;
       case 'Withdrawal':
-        await upsertWEDUBalance(c, {
-          chain,
-          log,
-          address: log.args.src,
-          amount: -log.args.wad,
-          timestamp
-        });
+        out.push(
+          getUpsertWEDUBalanceOp(c, {
+            chain,
+            log,
+            address: log.args.src,
+            amount: -log.args.wad,
+            timestamp
+          })
+        );
         break;
     }
+  }
+
+  for (const batch of toBatches(out, 100)) {
+    await upsertWEDUBalance(c, out);
   }
 };
