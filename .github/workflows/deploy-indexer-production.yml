@@ -66,3 +66,13 @@ jobs:
         run: pnpm run deploy:production
         env:
           CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}"
+
+      - name: Terminate Old Workflow
+        run: pnpm run terminate:production || true
+        env:
+          CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}"
+
+      - name: Start New Workflow
+        run: pnpm run crank:production
+        env:
+          CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}"
