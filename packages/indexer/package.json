@@ -6,17 +6,25 @@
   "scripts": {
     "build": "tsc -b && wrangler deploy --dry-run --outdir=build",
     "clean": "rm -rf .turbo .wrangler build node_modules",
-    "dev": "wrangler dev --test-scheduled --port 8686",
+    "dev": "wrangler dev --port 8686",
+    "crank": "wrangler workflows trigger schedule",
+    "terminate": "wrangler workflows instances terminate schedule latest",
     "deploy:staging": "wrangler secret bulk .staging.vars.json --env staging && wrangler deploy --env staging",
-    "deploy:production": "wrangler secret bulk .production.vars.json --env production && wrangler deploy --env production"
+    "deploy:production": "wrangler secret bulk .production.vars.json --env production && wrangler deploy --env production",
+    "crank:staging": "wrangler workflows trigger schedule-staging --env staging",
+    "crank:production": "wrangler workflows trigger schedule-prod --env production",
+    "terminate:staging": "wrangler workflows instances terminate schedule-staging latest --env staging",
+    "terminate:production": "wrangler workflows instances terminate schedule-prod latest --env production"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
     "@yuzu/sdk": "workspace:*",
     "@yuzu/supabase": "workspace:*",
+    "cloudflare": "^4.1.0",
+    "dotenv": "^16.4.5",
     "hono": "^4.6.1",
     "viem": "2.x",
-    "wrangler": "^3.99.0"
+    "wrangler": "^3.109.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240919.0",

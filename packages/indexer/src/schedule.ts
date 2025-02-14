@@ -124,6 +124,7 @@ const indexEduChainBlocks = async (c: IContext) => {
     for (const { fromBlock, toBlock } of blockRanges) {
       await indexWEDULogs(c, { chain, fromBlock, toBlock });
       await setLastIndexedBlock(c, chain.name, toBlock);
+      return; // limit single cycle to 100 blocks
     }
   }
 };
@@ -161,53 +162,59 @@ const indexWEDULogs = async (
 
   const out: Partial<object>[] = [];
 
-  for (const log of logs.filter((l) => !l.removed)) {
-    const timestamp = await getTimestamp(log.blockNumber);
+  const filteredLogs = logs.filter((l) => !l.removed);
+  for (const batch of toBatches(filteredLogs, 10)) {
+    await Promise.all(
+      batch.map(async (log) => {
+        const timestamp = await getTimestamp(log.blockNumber);
+        console.log(log.blockNumber, timestamp);
 
-    switch (log.eventName) {
-      case 'Deposit':
-        out.push(
-          getUpsertWEDUBalanceOp(c, {
-            chain,
-            log,
-            address: log.args.dst,
-            amount: log.args.wad,
-            timestamp
-          })
-        );
-        break;
-      case 'Transfer':
-        out.push(
-          getUpsertWEDUBalanceOp(c, {
-            chain,
-            log,
-            address: log.args.dst,
-            amount: log.args.wad,
-            timestamp
-          })
-        );
-        out.push(
-          getUpsertWEDUBalanceOp(c, {
-            chain,
-            log,
-            address: log.args.src,
-            amount: -log.args.wad,
-            timestamp
-          })
-        );
-        break;
-      case 'Withdrawal':
-        out.push(
-          getUpsertWEDUBalanceOp(c, {
-            chain,
-            log,
-            address: log.args.src,
-            amount: -log.args.wad,
-            timestamp
-          })
-        );
-        break;
-    }
+        switch (log.eventName) {
+          case 'Deposit':
+            out.push(
+              getUpsertWEDUBalanceOp(c, {
+                chain,
+                log,
+                address: log.args.dst,
+                amount: log.args.wad,
+                timestamp
+              })
+            );
+            break;
+          case 'Transfer':
+            out.push(
+              getUpsertWEDUBalanceOp(c, {
+                chain,
+                log,
+                address: log.args.dst,
+                amount: log.args.wad,
+                timestamp
+              })
+            );
+            out.push(
+              getUpsertWEDUBalanceOp(c, {
+                chain,
+                log,
+                address: log.args.src,
+                amount: -log.args.wad,
+                timestamp
+              })
+            );
+            break;
+          case 'Withdrawal':
+            out.push(
+              getUpsertWEDUBalanceOp(c, {
+                chain,
+                log,
+                address: log.args.src,
+                amount: -log.args.wad,
+                timestamp
+              })
+            );
+            break;
+        }
+      })
+    );
   }
 
   for (const batch of toBatches(out, 100)) {

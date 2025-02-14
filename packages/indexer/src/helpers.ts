@@ -1,3 +1,4 @@
+import type { WorkflowEvent } from 'cloudflare:workers';
 import { SupabaseClient } from '@supabase/supabase-js';
 import type { IChain } from '@yuzu/sdk';
 import type { Json } from '@yuzu/supabase';
@@ -8,8 +9,8 @@ import type { IContext, IEnv } from './types';
   return this.toString();
 };
 
-export const createContext = (
-  event: ScheduledEvent,
+export const createContext = <T>(
+  event: ScheduledEvent | WorkflowEvent<T>,
   env: IEnv,
   executionCtx: ExecutionContext
 ): IContext =>
