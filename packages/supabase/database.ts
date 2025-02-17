@@ -169,6 +169,16 @@ export type Database = {
         };
         Relationships: [];
       };
+      weth_point_reservations: {
+        Row: {
+          address: string | null;
+          chain: string | null;
+          points: number | null;
+          reason: string | null;
+          timestamp: string | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       reset_community_allocations: {
