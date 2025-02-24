@@ -22,5 +22,9 @@ export const MENU = [
     title: 'Dashboard',
     to: createEDUChainSubdomainLink('dashboard'),
     external: true
+  },
+  {
+    title: 'Spotlight Apps',
+    to: ROUTES.spotlightApps
   }
 ];

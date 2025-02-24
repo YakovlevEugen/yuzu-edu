@@ -31,6 +31,8 @@ export default function MainLayout({ className }: Props) {
       backgroundClass += 'bg-edu-faucet-background';
     } else if (pathname === ROUTES.bridge) {
       backgroundClass += 'bg-bridge-background';
+    } else if (pathname === ROUTES.spotlightApps) {
+      backgroundClass += 'bg-spotlight-apps-background';
     }
 
     return backgroundClass;

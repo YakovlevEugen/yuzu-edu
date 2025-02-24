@@ -7,6 +7,7 @@ import CommunityPartnershipPage from '@/pages/CommunityPartnershipPage';
 import EDUFaucetPage from '@/pages/EDUFaucetPage';
 import ErrorPage from '@/pages/ErrorPage';
 import ExternalRedirect from '@/pages/ExternalRedirect';
+import SpotlightApps from '@/pages/SpotlightApps';
 import StakePage from '@/pages/StakePage';
 import { Terms } from '@/pages/Terms';
 
@@ -37,6 +38,7 @@ export default function AppRouter() {
             // <ExternalRedirect path="https://bridge.arbitrum.io/?destinationChain=edu-chain&sourceChain=arbitrum-one" />
           }
         />
+        <Route path={ROUTES.spotlightApps} element={<SpotlightApps />} />
         <Route
           path={ROUTES.claim}
           index

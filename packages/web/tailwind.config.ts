@@ -9,7 +9,8 @@ export default {
       backgroundImage: {
         'edu-land-background': `url('/images/edu-land-background.svg')`,
         'edu-faucet-background': `url('/images/edu-faucet-background.svg')`,
-        'bridge-background': `url('/images/bridge-background.svg')`
+        'bridge-background': `url('/images/bridge-background.svg')`,
+        'spotlight-apps-background': `url('/images/spotlight-apps-background.svg')`
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -78,6 +79,10 @@ export default {
         'border-box': '24px 40px',
         '5px': '5px',
         '10px': '10px'
+      },
+      flex: {
+        'col-2': '0 1 calc(50% - 8px)',
+        'col-3': '0 1 calc(33.33% - 8px)'
       }
     }
   },

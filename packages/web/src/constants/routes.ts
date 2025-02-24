@@ -7,6 +7,7 @@ export const ROUTES = {
   claim: '/claim',
   dashboard: '/dashboard',
   rental: '/rental',
+  spotlightApps: '/spotlight-apps',
   notFound: '/404'
 };
 
