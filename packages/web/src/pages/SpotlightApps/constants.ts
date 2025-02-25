@@ -13,7 +13,7 @@ export const apps: TAppCards = [
     logoUrl: '/images/spotlight-apps/edu-fun.jpg',
     name: 'edu.fun',
     description:
-      'The launchpad to tokenize university spirits & educational ideas - a place to bond and give back to your education with every trade.',
+      'edu.fun is a university community token launchpad that empowers students and alumni to tokenize school spirit and decentralize scholarship and entrepreneurial funding access.',
     tokenAmount: '26706232',
     url: 'https://www.edu.fun/'
   },
