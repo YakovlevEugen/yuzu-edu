@@ -10,12 +10,12 @@ export const apps: TAppCards = [
     url: 'https://www.sailfish.finance/'
   },
   {
-    logoUrl: '/images/spotlight-apps/thrustpad.jpg',
-    name: 'ThrustPad',
+    logoUrl: '/images/spotlight-apps/edu-fun.jpg',
+    name: 'edu.fun',
     description:
-      'ThrustPad is an innovative Initial Liquidity Offering (ILO) platform seamlessly built on the Educhain blockchain. Designed to empower projects and investors alike with comprehensive suite of tools and services on their fundraising journey.',
+      'The launchpad to tokenize university spirits & educational ideas - a place to bond and give back to your education with every trade.',
     tokenAmount: '26706232',
-    url: 'https://www.thrustpad.finance/'
+    url: 'https://www.edu.fun/'
   },
   {
     logoUrl: '/images/spotlight-apps/pody-network.jpg',
@@ -50,11 +50,11 @@ export const apps: TAppCards = [
     url: 'https://opentaskai.com/'
   },
   {
-    logoUrl: '/images/spotlight-apps/edu-fun.jpg',
-    name: 'edu.fun',
+    logoUrl: '/images/spotlight-apps/thrustpad.jpg',
+    name: 'ThrustPad',
     description:
-      'The launchpad to tokenize university spirits & educational ideas - a place to bond and give back to your education with every trade.',
+      'ThrustPad is an innovative Initial Liquidity Offering (ILO) platform seamlessly built on the Educhain blockchain. Designed to empower projects and investors alike with comprehensive suite of tools and services on their fundraising journey.',
     tokenAmount: '26706232',
-    url: 'https://www.edu.fun/'
+    url: 'https://www.thrustpad.finance/'
   }
 ];
