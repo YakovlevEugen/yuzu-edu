@@ -14,7 +14,7 @@ export const apps: TAppCards = [
     name: 'edu.fun',
     description:
       'edu.fun is a university community token launchpad that empowers students and alumni to tokenize school spirit and decentralize scholarship and entrepreneurial funding access.',
-    tokenAmount: '26706232',
+    tokenAmount: '1000000',
     url: 'https://www.edu.fun/'
   },
   {
@@ -22,7 +22,7 @@ export const apps: TAppCards = [
     name: 'Pody Network',
     description:
       'Pody Network is a decentralized platform built for virtual classrooms, offering interactive environments for education. Users engage in real-time learning while earning rewards for active participation.',
-    tokenAmount: '26706232',
+    tokenAmount: '1000000',
     url: 'https://pody.network/'
   },
   {
@@ -38,7 +38,7 @@ export const apps: TAppCards = [
     name: 'Grasp Academy',
     description:
       'Grasp is the premier educational content platform where educators and creators can share their work and earn on EDU Chain. Powered by Open Campus, the Grasp web3 platform integrates EduFi, enabling users to learn, earn, and be rewarded for academic excellence.',
-    tokenAmount: '26706232',
+    tokenAmount: '12017804',
     url: 'https://grasp.academy/'
   },
   {
@@ -46,7 +46,7 @@ export const apps: TAppCards = [
     name: 'OpenTaskAI',
     description:
       'OpenTaskAI is an AI talent platform that connects freelancers in AI-related skills and global business needs.',
-    tokenAmount: '26706232',
+    tokenAmount: '20029674',
     url: 'https://opentaskai.com/'
   },
   {
@@ -54,7 +54,7 @@ export const apps: TAppCards = [
     name: 'ThrustPad',
     description:
       'ThrustPad is an innovative Initial Liquidity Offering (ILO) platform seamlessly built on the Educhain blockchain. Designed to empower projects and investors alike with comprehensive suite of tools and services on their fundraising journey.',
-    tokenAmount: '26706232',
+    tokenAmount: '16023739',
     url: 'https://www.thrustpad.finance/'
   }
 ];
