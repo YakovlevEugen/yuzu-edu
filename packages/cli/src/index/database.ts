@@ -102,3 +102,21 @@ export const dropCommunityAllocations = () =>
   db.rpc('reset_community_allocations').then((res) => {
     if (res.error) throw new Error(res.error.message);
   });
+
+export const getYuzuPointsPage = async (page: number) => {
+  const limit = 100;
+  const from = page * limit;
+  const to = (page + 1) * limit - 1;
+
+  console.log(from, to);
+
+  return db
+    .from('yuzu_snapshot')
+    .select('*')
+    .range(from, to)
+    .then((res) => {
+      console.log(res);
+      if (res.error) throw new Error(res.error.message);
+      return res.data || [];
+    });
+};

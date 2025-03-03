@@ -7,6 +7,7 @@ import {
   getExcludedAddresses,
   getStartingBlock
 } from './config';
+import { getYuzuPointsPage } from './database';
 import {
   filter,
   getLastIndexedBlock,
@@ -199,4 +200,30 @@ export const fromCSV = <T>(text: string, schema: Zod.Schema<T>) => {
     });
 
   return rows;
+};
+
+export const getPointsSnapshot = async () => {
+  let result: {
+    address: string | null;
+    chain: string | null;
+    points: number | null;
+    timestamp: string | null;
+  }[] = [];
+
+  const out: {
+    address: string | null;
+    chain: string | null;
+    points: number | null;
+    timestamp: string | null;
+  }[] = [];
+
+  let page = 0;
+
+  do {
+    result = await getYuzuPointsPage(page);
+    result.forEach((item) => out.push(item));
+    page++;
+  } while (result.length);
+
+  return out;
 };

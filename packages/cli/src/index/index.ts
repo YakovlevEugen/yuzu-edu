@@ -14,6 +14,7 @@ import {
   type ICommunityAllocation,
   dropFaucetWhitelist,
   dropTestnetPoints,
+  getYuzuPointsPage,
   insertTestnetPoints,
   updateCommunityAllocations,
   updateFaucetWhitelist,
@@ -24,6 +25,7 @@ import {
 import {
   countWalletTxs,
   fromCSV,
+  getPointsSnapshot,
   getTestnetActivityPoints,
   getTestnetWallets,
   indexTransactions

@@ -179,6 +179,15 @@ export type Database = {
         };
         Relationships: [];
       };
+      yuzu_snapshot: {
+        Row: {
+          address: string | null;
+          chain: string | null;
+          points: number | null;
+          timestamp: string | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       reset_community_allocations: {
