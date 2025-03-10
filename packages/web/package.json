@@ -38,6 +38,7 @@
     "@tanstack/react-query": "^5.60.5",
     "@types/big.js": "^6.2.2",
     "@yuzu/api": "workspace:*",
+    "@yuzu/tunnel": "workspace:*",
     "@yuzu/sdk": "workspace:*",
     "big.js": "^6.2.2",
     "camelcase-keys": "^9.1.3",

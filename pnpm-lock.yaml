@@ -38,6 +38,9 @@ importers:
       '@yuzu/supabase':
         specifier: workspace:*
         version: link:../supabase
+      '@yuzu/tunnel':
+        specifier: workspace:*
+        version: link:../tunnel
       big.js:
         specifier: ^6.2.2
         version: 6.2.2
@@ -249,6 +252,9 @@ importers:
       '@yuzu/sdk':
         specifier: workspace:*
         version: link:../sdk
+      '@yuzu/tunnel':
+        specifier: workspace:*
+        version: link:../tunnel
       big.js:
         specifier: ^6.2.2
         version: 6.2.2

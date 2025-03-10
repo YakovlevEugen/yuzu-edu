@@ -20,6 +20,7 @@
     "@supabase/supabase-js": "^2.46.1",
     "@types/big.js": "^6.2.2",
     "@yuzu/sdk": "workspace:*",
+    "@yuzu/tunnel": "workspace:*",
     "@yuzu/supabase": "workspace:*",
     "big.js": "^6.2.2",
     "hono": "^4.6.11",
