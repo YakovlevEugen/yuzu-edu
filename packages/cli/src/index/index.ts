@@ -29,6 +29,7 @@ import {
   indexTransactions
 } from './helpers';
 import { rangeToChunks } from './persistence';
+import { formatPostHogReferrals } from './posthog/format';
 
 program
   //
@@ -153,3 +154,8 @@ program
     fs.writeFileSync(filename, lines.join('\n'));
     console.log(`Written ${filename}.`);
   });
+
+program.command('format-posthog-referrals').action(async () => {
+  const outputPath = formatPostHogReferrals();
+  console.log(`Referral data written to ${outputPath}`);
+});
