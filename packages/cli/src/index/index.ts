@@ -8,6 +8,10 @@ import { program } from '@commander-js/extra-typings';
 import { type Address, formatEther, getAddress, isAddress } from 'viem';
 import { context } from '../context';
 import { getTokenHolders } from '../tvl-calculation/api';
+import {
+  getTokenHoldersGenerator,
+  processTokenHolders
+} from '../tvl-calculation/api';
 import { getTestnetParticipantPoints } from './config';
 import { getDappAllocationPoints } from './dapps';
 import {
@@ -194,4 +198,20 @@ program
   .action(async () => {
     const outputPath = formatPostHogReferrals();
     console.log(`Referral data written to ${outputPath}`);
+  });
+
+program
+  //
+  .command('format-posthog-referrals')
+  .action(async () => {
+    const outputPath = formatPostHogReferrals();
+    console.log(`Referral data written to ${outputPath}`);
+  });
+
+program
+  .command('generate-tvl-report')
+  .option('-o, --output <path>', 'Output file path', './tvl-report.csv')
+  .action(async (options) => {
+    await processTokenHolders(options.output);
+    console.log(`TVL report generated at: ${options.output}`);
   });

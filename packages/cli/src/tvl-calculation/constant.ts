@@ -14,9 +14,9 @@ export const whitelistedTokens = [
     value: 1
   },
   {
-    address: '0x526E8a66E357FFeaEeEc6d7Be1E5eA44a788dd1d',
-    name: 'BLEND TOKEN',
-    symbol: 'BLEND',
+    address: '0x6DA420effe1a1Fb154aEE5b152aF3DCD88d106B0',
+    name: 'Chratify fund token',
+    symbol: 'CFT',
     decimals: 18,
     value: 0.1
   },
