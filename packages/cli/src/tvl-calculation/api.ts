@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { blockscoutApiUrl, whitelistedTokens } from './constant';
-
+import { formatEther } from 'viem';
 // Define interfaces for the API response
 interface AddressInfo {
   ens_domain_name: string | null;
@@ -40,6 +40,46 @@ interface TokenHolder {
 
 interface TokenHoldersResponse {
   items: TokenHolder[];
+  next_page_params?: {
+    address_hash: string;
+    items_count: number;
+    value: number;
+  } | null;
+}
+
+export async function* getTokenHoldersGenerator() {
+  let nextPageParams: any = null;
+  let pageCount = 1;
+  
+  do {
+    const url = `${blockscoutApiUrl}/tokens/${whitelistedTokens[0]}/holders`;
+    const response = await axios.get(url, {
+      headers: {
+        accept: 'application/json'
+      },
+      params: nextPageParams
+    });
+    
+    const holders: TokenHoldersResponse = response.data;
+    
+    console.log(`Fetching page ${pageCount}, got ${holders.items.length} holders`);
+    
+    // Process and yield each holder
+    for (const item of holders.items) {
+      const formattedValue = formatEther(BigInt(item.value));
+      
+      yield {
+        address: item.address.hash,
+        token: `${item.token.name} (${item.token.symbol})`,
+        value: formattedValue,
+        rawValue: item.value
+      };
+    }
+    
+    nextPageParams = holders.next_page_params;
+    pageCount++;
+    
+  } while (nextPageParams);
 }
 
 export const getTokenHolders = async (): Promise<TokenHoldersResponse> => {
@@ -52,11 +92,19 @@ export const getTokenHolders = async (): Promise<TokenHoldersResponse> => {
     }
   );
   
-  // Return formatted data to avoid [Object] in console output
   const holders = response.data;
   
   // Log the data in a readable format
-
-  // Return the actual data
+  holders.items.forEach((item: TokenHolder) => {
+    const decimals = parseInt(item.token.decimals);
+    const formattedValue = formatEther(BigInt(item.value));
+    
+    // console.log(`Address: ${item.address.hash}`);
+    // console.log(`Token: ${item.token.name} (${item.token.symbol})`);
+    // console.log(`Value: ${formattedValue} ${item.token.symbol}`);
+    console.log(`Next page params: ${JSON.stringify(holders.next_page_params)}`);
+    console.log('-------------------');
+  });
+  
   return holders;
 };

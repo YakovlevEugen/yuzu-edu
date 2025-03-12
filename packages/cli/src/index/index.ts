@@ -15,7 +15,6 @@ import {
   type ICommunityAllocation,
   dropFaucetWhitelist,
   dropTestnetPoints,
-  getYuzuPointsPage,
   insertTestnetPoints,
   updateCommunityAllocations,
   updateFaucetWhitelist,
