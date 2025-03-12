@@ -187,3 +187,11 @@ program
       console.log('-------------------');
     });
   });
+
+program
+  //
+  .command('format-posthog-referrals')
+  .action(async () => {
+    const outputPath = formatPostHogReferrals();
+    console.log(`Referral data written to ${outputPath}`);
+  });
