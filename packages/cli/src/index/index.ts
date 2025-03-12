@@ -5,8 +5,9 @@
 import fs from 'fs';
 import { resolve } from 'path';
 import { program } from '@commander-js/extra-typings';
-import { type Address, getAddress, isAddress } from 'viem';
+import { type Address, formatEther, getAddress, isAddress } from 'viem';
 import { context } from '../context';
+import { getTokenHolders } from '../tvl-calculation/api';
 import { getTestnetParticipantPoints } from './config';
 import { getDappAllocationPoints } from './dapps';
 import {
@@ -157,7 +158,33 @@ program
     console.log(`Written ${filename}.`);
   });
 
-program.command('format-posthog-referrals').action(async () => {
-  const outputPath = formatPostHogReferrals();
-  console.log(`Referral data written to ${outputPath}`);
-});
+program
+  //
+  .command('get-yuzu-points-snapshot')
+  .action(async () => {
+    const result = await getPointsSnapshot();
+    const filename = `${process.cwd()}/yuzu-points-snapshot-${new Date().toISOString()}.csv`;
+
+    const cols = ['chain', 'address', 'points', 'timestamp'];
+
+    const rows = result
+      .map((row) => cols.map((c) => row[c as keyof typeof row]).join(','))
+      .join('\n');
+
+    const csv = cols.join(',').concat('\n').concat(rows);
+    fs.writeFileSync(filename, csv);
+    console.log(`Written ${filename}.`);
+  });
+
+program
+  //
+  .command('get-token-holders')
+  .action(async () => {
+    const holdersData = await getTokenHolders();
+    holdersData.items.forEach((item) => {
+      console.log(`Address: ${item.address.hash}`);
+      console.log(`Token: ${item.token.name} (${item.token.symbol})`);
+      console.log(`Value: ${formatEther(BigInt(item.value))}`);
+      console.log('-------------------');
+    });
+  });

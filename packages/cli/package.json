@@ -16,6 +16,7 @@
     "@types/cli-progress": "^3.11.6",
     "@yuzu/sdk": "workspace:*",
     "@yuzu/supabase": "workspace:*",
+    "axios": "^1.8.3",
     "big.js": "^6.2.2",
     "bs58": "^6.0.0",
     "cli-progress": "^3.12.0",
