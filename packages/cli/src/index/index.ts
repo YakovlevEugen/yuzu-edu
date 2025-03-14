@@ -37,6 +37,7 @@ import {
 import { rangeToChunks } from './persistence';
 import { formatPostHogReferrals } from './posthog/format';
 import { ingestLPHoldersData } from './lp-tokens/ingestLPHoldersData';
+import { calculatePositionValue } from './lp-tokens/calculatePositionValue';
 
 program
   //
@@ -227,3 +228,28 @@ program
  });
 
   
+
+ // Add this after your other program commands
+program
+.command('calculate-position-value')
+.option('-t, --tick <number>', 'Current tick of the pool (optional)')
+.action(async (options) => {
+  const position = {
+    nonce: "0",
+    operator: "0x0000000000000000000000000000000000000000",
+      token0: "0x7277Cc818e3F3FfBb169c6Da9CC77Fc2d2a34895",
+    token1: "0x836d275563bAb5E93Fd6Ca62a95dB7065Da94342",
+   tickLower: -520,
+    tickUpper: 481,
+   liquidity: "1086463",
+   feeGrowthInside0LastX128: "1298558996844238622592518225018",
+   feeGrowthInside1LastX128: "1691730229288158245191144902665",
+    tokensOwed0: "0",
+   tokensOwed1: "0"
+   };
+  
+
+  const currentTick = options.tick ? parseInt(options.tick) : undefined;
+  const usdValue = calculatePositionValue(position, currentTick);
+  console.log(`Position USD value: $${usdValue.toFixed(2)}`);
+});
