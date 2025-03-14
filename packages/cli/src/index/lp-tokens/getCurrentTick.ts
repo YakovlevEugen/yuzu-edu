@@ -47,6 +47,7 @@ export async function getCurrentTick(contractAddressPool: string) {
     });
 
     if(Object.keys(camelotPairs).includes(contractAddressPool)) {
+        //FUnction to get the current tick for camelot is globalstate
     const data = await publicClient.readContract({
         address: contractAddressPool as `0x${string}`,
         abi: abi,
@@ -57,6 +58,7 @@ export async function getCurrentTick(contractAddressPool: string) {
         console.log("Tick: ", tick)
         return tick;
     } else if(Object.keys(sailfishPairs).includes(contractAddressPool)) {
+        //Function to get the current tick for sailfish is slot0
         const data = await publicClient.readContract({
             address: contractAddressPool as `0x${string}`,
             abi: abi,
