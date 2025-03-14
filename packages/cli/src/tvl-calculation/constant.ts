@@ -84,8 +84,34 @@ export const whitelistedLPs = [
     symbol: 'Camelot LP NFT',
     type: 'LP',
   },
-  {
-    
-  }
 ];
+
+export const sailfishPairs = {
+  //USDC - WEDU
+  "0x80680b0670a330a99509b68b1273f93864d4ecf4": {
+    token0: '0x836d275563bAb5E93Fd6Ca62a95dB7065Da94342',
+    token1: '0xd02E8c38a8E3db71f8b2ae30B8186d7874934e12'
+  },
+  //USDC - USDT
+  "0x27c337795022a22324188b857af777d4599560bf": {
+    token0: '0x7277Cc818e3F3FfBb169c6Da9CC77Fc2d2a34895',
+    token1: '0x836d275563bAb5E93Fd6Ca62a95dB7065Da94342'
+  },
+  // USDC - ESD
+  "0x4e4a88422287a04c9Dc76f78c11f85Fa8D06B099": {
+    token0: "0x836d275563bAb5E93Fd6Ca62a95dB7065Da94342",
+    token1: "0xd282dE0c2bd41556c887f319A5C19fF441dCdf90"
+  },
+  // EDU - ESD 
+  "0x6bd73d7ca72174511cfaf98b7dcf84781cd0df8a": {
+    token0: "0xd02E8c38a8E3db71f8b2ae30B8186d7874934e12",
+    token1: "0xd282dE0c2bd41556c887f319A5C19fF441dCdf90"
+  },
+  // USDT - USDC
+  "0x8A9F14D4c22018921c58557505369F6E4069Ad87": {
+    token0: "0x7277Cc818e3F3FfBb169c6Da9CC77Fc2d2a34895",
+    token1: "0x836d275563bAb5E93Fd6Ca62a95dB7065Da94342"
+  }
+}
+
 export const blockscoutApiUrl = 'https://educhain.blockscout.com/api/v2';
