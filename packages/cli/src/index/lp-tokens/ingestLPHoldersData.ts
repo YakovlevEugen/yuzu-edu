@@ -101,6 +101,8 @@ export const ingestLPHoldersData = async (
 
         // Process each token instance
         for (const item of instances.items) {
+          if (item.owner.hash === '0x0000000000000000000000000000000000000000') continue;
+
           holderData.push({
             address: item.owner.hash,
             token_id: item.id,
