@@ -71,4 +71,21 @@ export const whitelistedTokens = [
   },
 ];
 
+export const whitelistedLPs = [
+  {
+    address: '0x79cc7deA5eE05735a7503A32Dc4251C7f79F3Baf',
+    name: 'Sailfish LP NFT',
+    symbol: 'Sailfish LP NFT',
+    type: 'LP',
+  },
+  {
+    address: '0x9CC2B9F9a6194C5CC827C88571E42cEAA76FDF47',
+    name: 'Camelot LP NFT',
+    symbol: 'Camelot LP NFT',
+    type: 'LP',
+  },
+  {
+    
+  }
+];
 export const blockscoutApiUrl = 'https://educhain.blockscout.com/api/v2';

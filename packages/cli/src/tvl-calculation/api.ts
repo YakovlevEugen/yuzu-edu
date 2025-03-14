@@ -65,7 +65,7 @@ interface HolderAggregatedData {
 export const processTokenHolders = async (
   outputCsv?: string, 
   maxPages: number = 1000, // for testing, set to 5
-  minThreshold: number = 1 // 1 token as minimum threshold
+  minThreshold: number = 0.0000001 // 1 token as minimum threshold
 ): Promise<Map<string, HolderAggregatedData>> => {
   console.log('\n===== Processing Token Holders for TVL Calculation =====');
   

@@ -36,6 +36,7 @@ import {
 } from './helpers';
 import { rangeToChunks } from './persistence';
 import { formatPostHogReferrals } from './posthog/format';
+import { ingestLPHoldersData } from './lp-tokens/ingestLPHoldersData';
 
 program
   //
@@ -209,9 +210,20 @@ program
   });
 
 program
-  .command('generate-tvl-report')
+  .command('generate-tvl-report-erc20')
   .option('-o, --output <path>', 'Output file path', './tvl-report.csv')
   .action(async (options) => {
     await processTokenHolders(options.output);
     console.log(`TVL report generated at: ${options.output}`);
   });
+
+
+program
+  .command('ingest-lp-holders')
+  .option('-o, --output <path>', 'Output file path', './lpholders.csv')
+  .option('-p, --max-pages <number>', 'Maximum number of pages to fetch', '1000')
+  .action(async (options: { output: string; maxPages: string }) => {
+  await ingestLPHoldersData(options.output, parseInt(options.maxPages));
+ });
+
+  
