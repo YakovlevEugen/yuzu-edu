@@ -18,7 +18,7 @@ interface UniswapV3Position {
 interface TokenInfo {
   address: string;
   value: number;
-  decimals?: number;
+  decimals: number;
 }
 
 /**
@@ -27,7 +27,7 @@ interface TokenInfo {
  * @param currentTick The current tick of the pool (if not provided, uses middle of range)
  * @returns The USD value of the position
  */
-export async function calculatePositionValue( contractAddressLPNFT: string, positionID: number, currentTick?: number): Promise<number> {
+export async function calculatePositionValue( contractAddressLPNFT: string, positionID: number): Promise<number> {
   const position = await getLPNFTdata({
     positionID: positionID,
     contractAddressLPNFT: contractAddressLPNFT
@@ -36,21 +36,23 @@ export async function calculatePositionValue( contractAddressLPNFT: string, posi
   const token0Info = whitelistedTokens.find(t => 
     t.address.toLowerCase() === position.token0.toLowerCase()
   ) as TokenInfo;
+  console.log("Token 0: ", token0Info)
   
   const token1Info = whitelistedTokens.find(t => 
     t.address.toLowerCase() === position.token1.toLowerCase()
   ) as TokenInfo;
-  
+  console.log("Token 1: ", token1Info)
   if (!token0Info || !token1Info) {
     throw new Error('Token not found in whitelisted tokens');
   }
   
   // Set default decimals if not provided
-  const token0Decimals = token0Info.decimals || 6;
-  const token1Decimals = token1Info.decimals || 6;
+
+  const token0Decimals = token0Info.decimals ;
+  const token1Decimals = token1Info.decimals ;
   
   // GET TICK FROM POOL HERE
-  currentTick = -7
+  const currentTick = -7
   
   // Convert liquidity to BigNumber for precision
   const liquidity = new BigNumber(position.liquidity);
