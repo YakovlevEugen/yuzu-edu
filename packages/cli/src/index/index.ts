@@ -37,7 +37,8 @@ import {
 import { rangeToChunks } from './persistence';
 import { formatPostHogReferrals } from './posthog/format';
 import { ingestLPHoldersData } from './lp-tokens/ingestLPHoldersData';
-import { calculatePositionValue } from './lp-tokens/calculatePositionValue';
+import { calculateLPValues } from './lp-tokens/calculateLPValues';
+
 
 program
   //
@@ -227,6 +228,13 @@ program
   await ingestLPHoldersData(options.output, parseInt(options.maxPages));
  });
 
+ program.
+ command('generate-lp-report')
+ .option('-o, --output <path>', 'Output file path', './lpholders.csv')
+ .option('-p, --max-pages <number>', 'Maximum number of pages to fetch', '1000')
+ .action(async (options: { output: string; maxPages: string }) => {
+  await calculateLPValues()
+ });
   
 
  // Add this after your other program commands

@@ -10,10 +10,10 @@ export async function getCurrentTick(contractAddressPool: string) {
     // Determine which ABI to use based on the pool address
     let abi;
     if(Object.keys(camelotPairs).includes(contractAddressPool)) {
-        console.log("Using Camelot ABI")
+        // console.log("Using Camelot ABI")
         abi = camelotPool;
     } else if(Object.keys(sailfishPairs).includes(contractAddressPool)) {
-        console.log("Using Sailfish ABI")
+        // console.log("Using Sailfish ABI")
         abi = sailfishPool;
     } else {
         throw new Error("Invalid contract address");
@@ -54,8 +54,8 @@ export async function getCurrentTick(contractAddressPool: string) {
         functionName: 'globalState',
         });
         const tick = data[1]
-        console.log("Data: ", data)
-        console.log("Tick: ", tick)
+        // console.log("Data: ", data)
+        // console.log("Tick: ", tick)
         return tick;
     } else if(Object.keys(sailfishPairs).includes(contractAddressPool)) {
         //Function to get the current tick for sailfish is slot0
@@ -65,8 +65,8 @@ export async function getCurrentTick(contractAddressPool: string) {
             functionName: 'slot0',
         });
         const tick = data[1]
-        console.log("Data: ", data)
-        console.log("Tick: ", tick)
+        // console.log("Data: ", data)
+        // console.log("Tick: ", tick)
         return tick;
     }
 

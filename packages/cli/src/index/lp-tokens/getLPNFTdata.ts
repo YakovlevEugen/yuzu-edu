@@ -1,5 +1,6 @@
 import { createPublicClient, defineChain, http } from 'viem'
 import { sailfishLPNFT } from './abis/sailfishLPNFT'
+import { camelotLPNFT } from './abis/camelotLPNFT'
 import { calculatePositionValue } from './calculatePositionValue'
 
 export type LPNFTData = {
@@ -53,6 +54,8 @@ export const getLPNFTdata = async ({
         transport: http()
       })
 
+      const isSailfish = contractAddressLPNFT === "0x79cc7deA5eE05735a7503A32Dc4251C7f79F3Baf";
+
      
       const data = await publicClient.readContract({
         address: contractAddressLPNFT as `0x${string}`,
@@ -80,7 +83,7 @@ export const getLPNFTdata = async ({
       }
 
 
-      console.log(LPNFTData)
+      // console.log(LPNFTData)
 
       return LPNFTData
      

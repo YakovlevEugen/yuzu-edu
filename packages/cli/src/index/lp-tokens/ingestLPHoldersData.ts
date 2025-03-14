@@ -130,7 +130,7 @@ export const ingestLPHoldersData = async (
   }
   
   // Generate CSV
-  const csvHeader = 'address,token_id,lp';
+  const csvHeader = 'address,token_id,lp,contractAddress';
   const csvRows = holderData.map(row => 
     `${row.address},${row.token_id},${row.lp},${row.lpAddress}`
   );

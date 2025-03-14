@@ -38,12 +38,12 @@ export async function calculatePositionValue( contractAddressLPNFT: string, posi
   const token0Info = whitelistedTokens.find(t => 
     t.address.toLowerCase() === position.token0.toLowerCase()
   ) as TokenInfo;
-  console.log("Token 0: ", token0Info)
+  // console.log("Token 0: ", token0Info)
   
   const token1Info = whitelistedTokens.find(t => 
     t.address.toLowerCase() === position.token1.toLowerCase()
   ) as TokenInfo;
-  console.log("Token 1: ", token1Info)
+  // console.log("Token 1: ", token1Info)
   if (!token0Info || !token1Info) {
     throw new Error('Token not found in whitelisted tokens');
   }
@@ -56,15 +56,15 @@ export async function calculatePositionValue( contractAddressLPNFT: string, posi
   const isSailfish = contractAddressLPNFT === "0x79cc7deA5eE05735a7503A32Dc4251C7f79F3Baf";
   // GET TICK FROM POOL HERE
   const poolAddress = getPoolAddress(token0Info.address, token1Info.address, isSailfish);
-  console.log("Pool Address: ", poolAddress)
+  // console.log("Pool Address: ", poolAddress)
   const currentTick = await getCurrentTick(poolAddress as string)
-  console.log("Current Tick: ", currentTick)
+  // console.log("Current Tick: ", currentTick)
   // Convert liquidity to BigNumber for precision
   const liquidity = new BigNumber(position.liquidity);
   
   // Calculate square roots
   const sqrtPriceA = Math.sqrt(Math.pow(1.0001, position.tickLower));
-  const sqrtPriceB = Math.sqrt(Math.pow(1.0001, position.tickUpper));
+  const sqrtPriceB = Math.sqrt(Math.pow(1.0001, Number(position.tickUpper)));
   const sqrtPrice = Math.sqrt(Math.pow(1.0001, currentTick as number));
   
   let amount0 = new BigNumber(0);
@@ -96,8 +96,8 @@ export async function calculatePositionValue( contractAddressLPNFT: string, posi
   const usdValue1 = actualAmount1.multipliedBy(token1Info.value).toNumber();
 
 
-  console.log(`Token 0: ${token0Info.address}- USD Value: $${usdValue0}`);
-  console.log(`Token 1: ${token1Info.address} - USD Value: $${usdValue1}`);
+  // console.log(`Token 0: ${token0Info.address}- USD Value: $${usdValue0}`);
+  // console.log(`Token 1: ${token1Info.address} - USD Value: $${usdValue1}`);
   
   // Total USD value of the position
   const totalUsdValue = usdValue0 + usdValue1;
