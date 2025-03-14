@@ -114,4 +114,22 @@ export const sailfishPairs = {
   }
 }
 
+export const camelotPairs = {
+  // EDU - USDC 
+  "0x9E4Ea11eC3CbDD90A2bA74935F3267d4CE7C5e9F": {
+    token0: "0x836d275563bAb5E93Fd6Ca62a95dB7065Da94342",
+    token1: "0xd02E8c38a8E3db71f8b2ae30B8186d7874934e12"
+  },
+  // USDT - EDU
+  "0x5FF705BE9eF81C18ebD427d9a5ce971896685655": {
+    token0: "0x7277Cc818e3F3FfBb169c6Da9CC77Fc2d2a34895",
+    token1: "0xd02E8c38a8E3db71f8b2ae30B8186d7874934e12"
+  },
+  // USDT - USDC 
+  "0x9309F561576A901382D3de7Fdd30e0904F7Eb857": {
+    token0: "0x7277Cc818e3F3FfBb169c6Da9CC77Fc2d2a34895",
+    token1: "0x836d275563bAb5E93Fd6Ca62a95dB7065Da94342"
+  }
+}
+
 export const blockscoutApiUrl = 'https://educhain.blockscout.com/api/v2';
