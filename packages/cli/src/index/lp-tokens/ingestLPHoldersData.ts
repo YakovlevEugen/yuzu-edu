@@ -67,7 +67,7 @@ export const ingestLPHoldersData = async (
   console.log('\n===== Processing LP Token Holders =====');
   
   // Array to store all holder data
-  const holderData: { address: string; token_id: string; lp: string }[] = [];
+  const holderData: { address: string; token_id: string; lp: string ; lpAddress: string}[] = [];
   
   // Process each whitelisted LP token
   for (const lpToken of whitelistedLPs) {
@@ -104,7 +104,8 @@ export const ingestLPHoldersData = async (
           holderData.push({
             address: item.owner.hash,
             token_id: item.id,
-            lp: lpToken.symbol
+            lp: lpToken.symbol,
+            lpAddress: lpToken.address
           });
         }
 
@@ -129,7 +130,7 @@ export const ingestLPHoldersData = async (
   // Generate CSV
   const csvHeader = 'address,token_id,lp';
   const csvRows = holderData.map(row => 
-    `${row.address},${row.token_id},${row.lp}`
+    `${row.address},${row.token_id},${row.lp},${row.lpAddress}`
   );
   
   const csvContent = [csvHeader, ...csvRows].join('\n');

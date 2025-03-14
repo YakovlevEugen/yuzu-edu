@@ -1,5 +1,6 @@
 import { createPublicClient, defineChain, http } from 'viem'
 import { sailfishLPNFT } from './abis/sailfishLPNFT'
+import { calculatePositionValue } from './calculatePositionValue'
 
 export type LPNFTData = {
   nounce: number
@@ -18,9 +19,11 @@ export type LPNFTData = {
 
 
 export const getLPNFTdata = async ({
-    positionID
+    positionID,
+    contractAddressLPNFT
 }: {
-    positionID: number
+    positionID: number,
+    contractAddressLPNFT: string
 }) => {
 
     const edumainnetchain = defineChain({
@@ -52,7 +55,7 @@ export const getLPNFTdata = async ({
 
      
       const data = await publicClient.readContract({
-        address: '0x79cc7deA5eE05735a7503A32Dc4251C7f79F3Baf',
+        address: contractAddressLPNFT as `0x${string}`,
         abi: sailfishLPNFT,
         functionName: 'positions',
         args: [
@@ -62,7 +65,7 @@ export const getLPNFTdata = async ({
 
 
       const LPNFTData = {
-        nounce: String(data[0]),
+        nonce: String(data[0]),
         operator: data[1],
         token0: data[2],
         token1: data[3],
@@ -84,7 +87,3 @@ export const getLPNFTdata = async ({
     
 }
 
-
-getLPNFTdata({
-    positionID: 853
-})

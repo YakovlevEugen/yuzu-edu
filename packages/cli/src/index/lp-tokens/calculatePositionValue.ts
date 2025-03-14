@@ -1,4 +1,5 @@
 import { whitelistedTokens } from '../../tvl-calculation/constant';
+import { getLPNFTdata } from './getLPNFTdata';
 import { BigNumber } from 'bignumber.js';
 interface UniswapV3Position {
   nonce: string;
@@ -26,7 +27,11 @@ interface TokenInfo {
  * @param currentTick The current tick of the pool (if not provided, uses middle of range)
  * @returns The USD value of the position
  */
-export function calculatePositionValue(position: UniswapV3Position, currentTick?: number): number {
+export async function calculatePositionValue( contractAddressLPNFT: string, positionID: number, currentTick?: number): Promise<number> {
+  const position = await getLPNFTdata({
+    positionID: positionID,
+    contractAddressLPNFT: contractAddressLPNFT
+  })
   // Find token info from whitelisted tokens
   const token0Info = whitelistedTokens.find(t => 
     t.address.toLowerCase() === position.token0.toLowerCase()
