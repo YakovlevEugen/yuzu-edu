@@ -61,8 +61,8 @@ interface TokenInstancesResponse {
  * @param maxPages Maximum number of pages to fetch (for testing)
  */
 export const ingestLPHoldersData = async (
-  outputPath: string = './lpholders.csv',
-  maxPages: number = 1000
+  outputPath: string ,
+  maxPages: number = 1
 ): Promise<void> => {
   console.log('\n===== Processing LP Token Holders =====');
   

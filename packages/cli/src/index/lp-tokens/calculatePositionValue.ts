@@ -30,10 +30,19 @@ interface TokenInfo {
  * @returns The USD value of the position
  */
 export async function calculatePositionValue( contractAddressLPNFT: string, positionID: number): Promise<number> {
+
+  //sleep for 500ms
+   await new Promise(resolve => setTimeout(resolve, 500));
+
   const position = await getLPNFTdata({
     positionID: positionID,
     contractAddressLPNFT: contractAddressLPNFT
   })
+
+  if(!position) {
+    throw new Error('Position not found');
+  }
+
   // Find token info from whitelisted tokens
   const token0Info = whitelistedTokens.find(t => 
     t.address.toLowerCase() === position.token0.toLowerCase()

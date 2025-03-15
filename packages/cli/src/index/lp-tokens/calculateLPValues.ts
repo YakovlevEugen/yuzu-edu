@@ -14,13 +14,13 @@ interface AddressValue {
   total_usd_value: number;
 }
 
-export async function calculateLPValues() {
+export async function generateLPAggregatedReport(outputPath: string) {
   const holders: LPHolder[] = [];
   const addressValues: Map<string, number> = new Map();
   
   // Read the CSV file
   await new Promise<void>((resolve) => {
-    fs.createReadStream('lpholders.csv')
+    fs.createReadStream('./output/lpholders.csv')
       .pipe(csv())
       .on('data', (data: LPHolder) => {
         holders.push(data);
@@ -36,7 +36,6 @@ export async function calculateLPValues() {
   for (let i = 0; i < holders.length; i++) {
     const holder = holders[i];
     try {
-      console.log(`Processing position ${i+1}/${holders.length}: Address ${holder.address}, Token ID ${holder.token_id}`);
       
       // Calculate the position value
       const positionValue = await calculatePositionValue(
@@ -48,7 +47,7 @@ export async function calculateLPValues() {
       const currentValue = addressValues.get(holder.address) || 0;
       addressValues.set(holder.address, currentValue + positionValue);
       
-      console.log(`Position value: $${positionValue}`);
+      console.log(`Position ${i+1}/${holders.length}: Address ${holder.address}, Token ID ${holder.token_id} - Value: $${positionValue}`);
     } catch (error) {
       console.error(`Error processing position for ${holder.address}, token ID ${holder.token_id}:`, error);
     }
@@ -65,7 +64,7 @@ export async function calculateLPValues() {
   
   // Write the results to a CSV file
   const csvWriter = createObjectCsvWriter({
-    path: 'lp_values.csv',
+    path: outputPath,
     header: [
       { id: 'address', title: 'address' },
       { id: 'total_usd_value', title: 'total_usd_value' }
@@ -73,7 +72,7 @@ export async function calculateLPValues() {
   });
   
   await csvWriter.writeRecords(results);
-  console.log(`Results written to lp_values.csv`);
+  console.log(`Results written to ${outputPath}`);
   
   // Log some statistics
   const totalValue = results.reduce((sum, item) => sum + item.total_usd_value, 0);
@@ -81,7 +80,3 @@ export async function calculateLPValues() {
   console.log(`Number of unique addresses: ${results.length}`);
 }
 
-// Run the function
-calculateLPValues().catch(error => {
-  console.error('Error in main process:', error);
-});
