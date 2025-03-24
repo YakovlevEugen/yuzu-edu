@@ -53,7 +53,7 @@ export const getWEDUPoints = async (
   chain: IChain,
   address: Hex
 ) => {
-  const [emissions, deductions] = await Promise.all([
+  const [emissions /*, deductions*/] = await Promise.all([
     c.var.db
       .from('wedu_agg_point_balances_view')
       .select('*')
