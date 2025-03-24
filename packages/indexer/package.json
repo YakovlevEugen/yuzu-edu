@@ -14,7 +14,9 @@
     "crank:staging": "wrangler workflows trigger schedule-staging --env staging",
     "crank:production": "wrangler workflows trigger schedule-prod --env production",
     "terminate:staging": "wrangler workflows instances terminate schedule-staging latest --env staging",
-    "terminate:production": "wrangler workflows instances terminate schedule-prod latest --env production"
+    "terminate:production": "wrangler workflows instances terminate schedule-prod latest --env production",
+    "trigger:parallel:workflow": "wrangler workflows trigger parallel-prod",
+    "terminate:parallel:workflow": "wrangler workflows instances terminate parallel-prod latest"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",

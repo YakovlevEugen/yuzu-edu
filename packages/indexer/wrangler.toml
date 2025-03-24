@@ -4,10 +4,22 @@ compatibility_date = "2024-10-22"
 account_id = "ec96c85e8eae01bdf4c37e6ce90a7cce"
 workers_dev = true
 observability = { enabled = true }
-workflows = [{ name = "schedule", binding = "SCHEDULE", class_name = "ScheduleWorkflow" }]
+workflows = [
+  { name = "schedule", binding = "SCHEDULE", class_name = "ScheduleWorkflow" },
+  { name = "parallel", binding = "PARALLEL", class_name = "ParallelWorkflow" },
+  { name = "merkle-claim", binding = "MERKLE_CLAIM", class_name = "MerkleClaimWorkflow" }
+]
 
 [env.staging]
-workflows = [{ name = "schedule-staging", binding = "SCHEDULE", class_name = "ScheduleWorkflow" }]
+workflows = [
+  { name = "schedule-staging", binding = "SCHEDULE", class_name = "ScheduleWorkflow" },
+  { name = "parallel-staging", binding = "PARALLEL", class_name = "ParallelWorkflow" },
+  { name = "merkle-claim-staging", binding = "MERKLE_CLAIM", class_name = "MerkleClaimWorkflow" }
+]
 
 [env.production]
-workflows = [{ name = "schedule-prod", binding = "SCHEDULE", class_name = "ScheduleWorkflow" }]
+workflows = [
+  { name = "schedule-prod", binding = "SCHEDULE", class_name = "ScheduleWorkflow" },
+  { name = "parallel-prod", binding = "PARALLEL", class_name = "ParallelWorkflow" },
+  { name = "merkle-claim-prod", binding = "MERKLE_CLAIM", class_name = "MerkleClaimWorkflow" }
+]

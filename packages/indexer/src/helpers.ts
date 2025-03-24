@@ -1,16 +1,25 @@
 import type { WorkflowEvent } from 'cloudflare:workers';
 import { SupabaseClient } from '@supabase/supabase-js';
 import type { IChain } from '@yuzu/sdk';
-import type { Json } from '@yuzu/supabase';
+import type { Json, Tables } from '@yuzu/supabase';
 import type { Hex, Log } from 'viem';
-import type { IContext, IEnv } from './types';
+import type { IContext, IEnv, IPWPayload } from './types';
+
+export function assert(
+  statement: unknown,
+  message?: string
+): asserts statement {
+  if (!statement) {
+    throw new Error(message || 'Assertion failed');
+  }
+}
 
 (BigInt.prototype as unknown as Record<string, unknown>).toJSON = function () {
   return this.toString();
 };
 
-export const createContext = <T>(
-  event: ScheduledEvent | WorkflowEvent<T>,
+export const createContext = (
+  event: WorkflowEvent<IPWPayload>,
   env: IEnv,
   executionCtx: ExecutionContext
 ): IContext =>
@@ -50,6 +59,22 @@ export const setConfigValue = <T extends Json | undefined>(
       return res.data;
     });
 
+export const getShardState = <T extends Json>(
+  c: IContext,
+  scope: string,
+  shardId: number
+) =>
+  getConfigValue<T | undefined>(c, { key: `shard${shardId}State`, scope }).then(
+    (v) => v
+  );
+
+export const setShardState = <T extends Json>(
+  c: IContext,
+  scope: string,
+  shardId: number,
+  value: T
+) => setConfigValue(c, { key: `shard${shardId}State`, scope, value });
+
 export const getLastIndexedBlock = (c: IContext, scope: string) =>
   getConfigValue<number>(c, { key: 'lastIndexedBlock', scope }).then(
     (v) => v || 0
@@ -61,6 +86,22 @@ export const setLastIndexedBlock = (
   value: bigint
 ) =>
   setConfigValue(c, { key: 'lastIndexedBlock', scope, value: Number(value) });
+
+export const getLastIndexedMerkleClaimBlock = (c: IContext, scope: string) =>
+  getConfigValue<number>(c, { key: 'lastIndexedMerkleClaimBlock', scope }).then(
+    (v) => v || 0
+  );
+
+export const setLastIndexedMerkleClaimBlock = (
+  c: IContext,
+  scope: string,
+  value: bigint
+) =>
+  setConfigValue(c, {
+    key: 'lastIndexedMerkleClaimBlock',
+    scope,
+    value: Number(value)
+  });
 
 export const toBatches = <T>(arr: T[], size: number) => {
   const out: T[][] = [];
@@ -125,6 +166,19 @@ export const upsertWEDUBalance = (
     // @ts-expect-error
     .upsert(ops, {
       onConflict: 'chain,transactionHash,transactionIndex,logIndex,address',
+      ignoreDuplicates: false
+    })
+    .then((res) => {
+      if (res.error) throw new Error(res.error.message);
+    });
+
+export type IYuzuClaim = Tables<'yuzu_claims'>;
+
+export const upsertClaims = (c: IContext, items: IYuzuClaim[]) =>
+  c.var.db
+    .from('yuzu_claims')
+    .upsert(items, {
+      onConflict: 'address,txHash,logIndex,index',
       ignoreDuplicates: false
     })
     .then((res) => {

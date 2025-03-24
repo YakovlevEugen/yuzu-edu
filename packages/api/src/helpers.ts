@@ -1,3 +1,4 @@
+import { SupabaseClient } from '@supabase/supabase-js';
 import {
   type IChain,
   type IChainId,
@@ -11,7 +12,9 @@ import {
   getWithdrawRequest,
   hasClaimed
 } from '@yuzu/sdk';
+import type { Database } from '@yuzu/supabase';
 import Big from 'big.js';
+import type { ExecutionContext } from 'hono';
 import {
   type Address,
   type Hex,
@@ -22,7 +25,7 @@ import {
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import * as v from 'zod';
-import type { IContext, IEligibility } from './types';
+import type { IContext, IEligibility, IEnv } from './types';
 
 /**
  * General
@@ -43,6 +46,19 @@ export const isChainId = (chainId: string): chainId is IChainId =>
 export const vAddress = v.string().refine<Address>(isAddress);
 export const vHex = v.string().refine<Hex>(isHex);
 export const vChainId = v.string().refine<IChainId>(isChainId);
+
+/**
+ * Hono Context
+ */
+
+export const createContext = (env: IEnv['Bindings'], ctx: ExecutionContext) => {
+  return {
+    env,
+    vars: {
+      db: new SupabaseClient<Database>(env.SUPABASE_URL, env.SUPABASE_KEY)
+    }
+  } as unknown as IContext;
+};
 
 /**
  * Staking

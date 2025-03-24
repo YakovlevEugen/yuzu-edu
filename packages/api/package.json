@@ -16,12 +16,13 @@
     "target": "http://localhost:5172"
   },
   "dependencies": {
+    "@cloudflare/workers-types": "^4.20240919.0",
     "@hono/zod-validator": "^0.4.1",
     "@supabase/supabase-js": "^2.46.1",
     "@types/big.js": "^6.2.2",
     "@yuzu/sdk": "workspace:*",
-    "@yuzu/tunnel": "workspace:*",
     "@yuzu/supabase": "workspace:*",
+    "@yuzu/tunnel": "workspace:*",
     "big.js": "^6.2.2",
     "hono": "^4.6.11",
     "hono-do": "^2.0.0",

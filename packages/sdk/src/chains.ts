@@ -58,7 +58,23 @@ export const eduMainnet = defineChain({
     usdc: { address: '0x836d275563bAb5E93Fd6Ca62a95dB7065Da94342' },
     usdt: { address: '0x7277Cc818e3F3FfBb169c6Da9CC77Fc2d2a34895' },
     wedu: { address: '0xd02E8c38a8E3db71f8b2ae30B8186d7874934e12' },
-    weth: { address: '0xa572BF655F61930B6f0d4546A67cD1376220081a' }
+    weth: { address: '0xa572BF655F61930B6f0d4546A67cD1376220081a' },
+
+    sailfishPositionManager: {
+      address: '0x79cc7deA5eE05735a7503A32Dc4251C7f79F3Baf'
+    },
+    sailfishFactory: { address: '0x963A7f4eB46967A9fd3dFbabD354fC294FA2BF5C' },
+
+    camelotPositionManager: {
+      address: '0x9CC2B9F9a6194C5CC827C88571E42cEAA76FDF47'
+    },
+    camelotFactory: {
+      address: '0xCf4062Ee235BbeB4C7c0336ada689ed1c17547b6'
+    },
+
+    ocPointMerkleClaim: {
+      address: '0xA090B0eCb026b48BF7E607066c9Ab189B320FDD0'
+    }
   }
 });
 

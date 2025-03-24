@@ -227,3 +227,50 @@ export const getPointsSnapshot = async () => {
 
   return out;
 };
+
+export const toCSV = <T extends object>(items: T[]) => {
+  const header = [...new Set(items.flatMap((item) => Object.keys(item)))];
+  const rows = items
+    .map((item) => header.map((k) => item[k as keyof typeof item]).join(','))
+    .join('\n');
+
+  return [header.join(','), rows].join('\n');
+};
+
+export async function* sequence<T>(...items: AsyncIterableIterator<T>[]) {
+  for await (const item of items) yield* item;
+}
+
+export async function* batch<T>(
+  iterable: AsyncIterableIterator<T>,
+  batchSize: number
+) {
+  let items: T[] = [];
+  for await (const item of iterable) {
+    items.push(item);
+    if (items.length >= batchSize) {
+      yield items;
+      items = [];
+    }
+  }
+  if (items.length !== 0) {
+    yield items;
+  }
+}
+
+export async function* inspect<T>(iterable: AsyncIterableIterator<T>) {
+  for await (const item of iterable) {
+    console.log(item);
+    yield item;
+  }
+}
+
+export const collect = async <T>(iterable: AsyncIterableIterator<T>) => {
+  const out: T[] = [];
+
+  for await (const item of iterable) {
+    out.push(item);
+  }
+
+  return out;
+};

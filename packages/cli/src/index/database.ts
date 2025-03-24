@@ -11,7 +11,7 @@ import { resolve } from 'path';
 import dotnet from 'dotenv';
 dotnet.config({ path: resolve(__dirname, '..', '..', '.env') });
 
-const db = new SupabaseClient<Database>(
+export const db = new SupabaseClient<Database>(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_KEY as string
 );
@@ -51,6 +51,7 @@ export const upsertFaucetWhitelist = (entries: IAddressRow[]) =>
     });
 
 import * as v from 'zod';
+// import { rangeToChunks } from './persistence';
 
 export const vCommunityReward = v.object({
   name: v.string(),
@@ -120,3 +121,35 @@ export const getYuzuPointsPage = async (page: number) => {
       return res.data || [];
     });
 };
+
+export const dropHoldingsSnapshot = (snapshotId: number) =>
+  db
+    .from('holdings')
+    .delete()
+    .eq('snapshotId', snapshotId)
+    .then((res) => {
+      if (res.error) throw new Error(res.error.message);
+    });
+
+type IHoldingsParams = Omit<
+  Database['public']['Tables']['holdings']['Insert'],
+  'snapshotId'
+>;
+
+export const insertHoldings = (items: IHoldingsParams[], snapshotId: number) =>
+  db
+    .from('holdings')
+    .insert(items.map((item) => ({ ...item, snapshotId })))
+    .then((res) => {
+      if (res.error) throw new Error(res.error.message);
+    });
+
+export type IReferral = Database['public']['Tables']['referrals']['Row'];
+
+export const insertReferrals = (items: IReferral[]) =>
+  db
+    .from('referrals')
+    .insert(items)
+    .then((res) => {
+      if (res.error) throw new Error(res.error.message);
+    });

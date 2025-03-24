@@ -63,6 +63,57 @@ export type Database = {
         };
         Relationships: [];
       };
+      holdings: {
+        Row: {
+          amount: number;
+          id: string;
+          snapshotAt: string;
+          snapshotId: number;
+          symbol: string;
+          token: string;
+          value: number;
+          wallet: string;
+        };
+        Insert: {
+          amount: number;
+          id?: string;
+          snapshotAt?: string;
+          snapshotId: number;
+          symbol: string;
+          token: string;
+          value: number;
+          wallet: string;
+        };
+        Update: {
+          amount?: number;
+          id?: string;
+          snapshotAt?: string;
+          snapshotId?: number;
+          symbol?: string;
+          token?: string;
+          value?: number;
+          wallet?: string;
+        };
+        Relationships: [];
+      };
+      referrals: {
+        Row: {
+          address: string;
+          referral: string;
+          timestamp: string | null;
+        };
+        Insert: {
+          address: string;
+          referral: string;
+          timestamp?: string | null;
+        };
+        Update: {
+          address?: string;
+          referral?: string;
+          timestamp?: string | null;
+        };
+        Relationships: [];
+      };
       testnet_points: {
         Row: {
           address: string;
@@ -111,6 +162,75 @@ export type Database = {
         };
         Relationships: [];
       };
+      yuzu_claims: {
+        Row: {
+          address: string;
+          amount: string;
+          blockNumber: number;
+          chain: string;
+          depositReasonCode: string;
+          index: number;
+          indexedAt: string;
+          logIndex: number;
+          recipient: string;
+          txHash: string;
+        };
+        Insert: {
+          address: string;
+          amount: string;
+          blockNumber: number;
+          chain: string;
+          depositReasonCode: string;
+          index: number;
+          indexedAt: string;
+          logIndex: number;
+          recipient: string;
+          txHash: string;
+        };
+        Update: {
+          address?: string;
+          amount?: string;
+          blockNumber?: number;
+          chain?: string;
+          depositReasonCode?: string;
+          index?: number;
+          indexedAt?: string;
+          logIndex?: number;
+          recipient?: string;
+          txHash?: string;
+        };
+        Relationships: [];
+      };
+      yuzu_reservations: {
+        Row: {
+          createdAt: string;
+          points: number | null;
+          reason: string;
+          season: number;
+          source: string;
+          updatedAt: string;
+          wallet: string;
+        };
+        Insert: {
+          createdAt?: string;
+          points?: number | null;
+          reason: string;
+          season: number;
+          source: string;
+          updatedAt?: string;
+          wallet: string;
+        };
+        Update: {
+          createdAt?: string;
+          points?: number | null;
+          reason?: string;
+          season?: number;
+          source?: string;
+          updatedAt?: string;
+          wallet?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       community_rewards_by_address: {
@@ -127,7 +247,7 @@ export type Database = {
         };
         Relationships: [];
       };
-      wedu_agg_point_balances_view: {
+      wedu_points: {
         Row: {
           address: string | null;
           chain: string | null;

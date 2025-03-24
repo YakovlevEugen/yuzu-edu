@@ -6,6 +6,8 @@
   "scripts": {
     "typegen": "supabase gen types typescript --project-id enbmgxbedhmhxcdqxrpl > database.ts",
     "pull:staging": "supabase link --project-ref enbmgxbedhmhxcdqxrpl && supabase db pull",
+    "push:staging": "supabase link --project-ref enbmgxbedhmhxcdqxrpl && supabase db push --include-all",
+    "pull:production": "supabase link --project-ref wmdradcnjvpwkeywpxsi && supabase db pull",
     "push:production": "supabase link --project-ref wmdradcnjvpwkeywpxsi && supabase db push --include-all"
   },
   "keywords": [],

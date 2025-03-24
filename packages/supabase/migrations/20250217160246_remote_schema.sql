@@ -1,10 +1,7 @@
-create materialized view "public"."weth_point_reservations" as  SELECT wedu_agg_point_balances_view.chain,
-    wedu_agg_point_balances_view.address,
-    wedu_agg_point_balances_view.points,
-    wedu_agg_point_balances_view."timestamp",
-    'merkle_claim'::text AS reason
-   FROM wedu_agg_point_balances_view
-  WHERE (((wedu_agg_point_balances_view.address)::text = '0xb740Cb76224bE839a3Fc58CC4E93e72cc7Eef881'::text) OR ((wedu_agg_point_balances_view.address)::text = '0x91A05951A0BB9885D43f6CD56C1bD611BC0B3788'::text) OR ((wedu_agg_point_balances_view.address)::text = '0xDbD8e8bc1A1b6a563d4b9F75F72E577C42890fF7'::text));
-
-
-
+-- create materialized view "public"."weth_point_reservations" as  SELECT wedu_agg_point_balances_view.chain,
+--     wedu_agg_point_balances_view.address,
+--     wedu_agg_point_balances_view.points,
+--     wedu_agg_point_balances_view."timestamp",
+--     'merkle_claim'::text AS reason
+--    FROM wedu_agg_point_balances_view
+--   WHERE (((wedu_agg_point_balances_view.address)::text = '0xb740Cb76224bE839a3Fc58CC4E93e72cc7Eef881'::text) OR ((wedu_agg_point_balances_view.address)::text = '0x91A05951A0BB9885D43f6CD56C1bD611BC0B3788'::text) OR ((wedu_agg_point_balances_view.address)::text = '0xDbD8e8bc1A1b6a563d4b9F75F72E577C42890fF7'::text));

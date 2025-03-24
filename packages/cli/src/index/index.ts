@@ -7,18 +7,17 @@ import { resolve } from 'path';
 import { program } from '@commander-js/extra-typings';
 import { type Address, formatEther, getAddress, isAddress } from 'viem';
 import { context } from '../context';
-import { getTokenHolders } from '../tvl-calculation/api';
-import {
-  getTokenHoldersGenerator,
-  processTokenHolders
-} from '../tvl-calculation/api';
+import { createContext, ingestClaims } from './claims';
 import { getTestnetParticipantPoints } from './config';
 import { getDappAllocationPoints } from './dapps';
 import {
   type IAddressRow,
   type ICommunityAllocation,
   dropFaucetWhitelist,
+  dropHoldingsSnapshot,
   dropTestnetPoints,
+  insertHoldings,
+  insertReferrals,
   insertTestnetPoints,
   updateCommunityAllocations,
   updateFaucetWhitelist,
@@ -27,19 +26,23 @@ import {
   vCommunityAllocation
 } from './database';
 import {
+  batch,
   countWalletTxs,
   fromCSV,
   getPointsSnapshot,
   getTestnetActivityPoints,
   getTestnetWallets,
-  indexTransactions
+  indexTransactions,
+  inspect,
+  sequence
 } from './helpers';
 import { rangeToChunks } from './persistence';
-import { formatPostHogReferrals } from './posthog/format';
-import { ingestLPHoldersData } from './lp-tokens/ingestLPHoldersData';
-import { generateLPAggregatedReport } from './lp-tokens/calculateLPValues';
-import { generateLPComprehensiveReport } from './lp-tokens/lp-comprehensive-report';
-
+import { parseReferralData, vPosthogReferral } from './posthog/referrals';
+import {
+  dumpLPHoldings,
+  dumpNativeHolders,
+  dumpTokenHolders
+} from './tvl-calculation/helpers';
 
 program
   //
@@ -198,50 +201,60 @@ program
 
 program
   //
-  .command('format-posthog-referrals')
-  .action(async () => {
-    const outputPath = formatPostHogReferrals();
-    console.log(`Referral data written to ${outputPath}`);
+
+  .command('ingest-referrals')
+  .argument('<file>', 'path to csv with posthog referrals')
+  .action(async (path) => {
+    const rows = fromCSV(
+      fs.readFileSync(resolve(process.cwd(), path), 'utf-8'),
+      vPosthogReferral
+    );
+
+    const referrals = parseReferralData(rows);
+
+    for (const chunk of rangeToChunks(0, referrals.length, 200)) {
+      const page = referrals.slice(chunk.at(0), chunk.at(-1));
+      await insertReferrals(page);
+    }
+
+    console.log(`${referrals.length} referrals ingested.`);
   });
 
 program
   //
-  .command('format-posthog-referrals')
-  .action(async () => {
-    const outputPath = formatPostHogReferrals();
-    console.log(`Referral data written to ${outputPath}`);
-  });
-
-program
-  .command('generate-tvl-report-erc20')
-  .option('-o, --output <path>', 'Output file path', './output/tvl-report-erc20.csv')
+  .command('ingest-holdings')
   .action(async (options) => {
-    await processTokenHolders(options.output);
-    console.log(`TVL report generated at: ${options.output}`);
+    const snapshotId = 1;
+
+    await dropHoldingsSnapshot(snapshotId);
+
+    const stream = batch(
+      inspect(
+        sequence(
+          //
+          dumpLPHoldings(),
+          dumpNativeHolders(0.1),
+          dumpTokenHolders()
+        )
+      ),
+      100
+    );
+
+    for await (const items of stream) {
+      await insertHoldings(
+        items.map((item) => ({
+          ...item,
+          amount: Number(item.amount),
+          value: Number(item.value)
+        })),
+        snapshotId
+      );
+    }
+
+    console.log('Holdings ingested.');
   });
 
-
 program
-  .command('ingest-lp-holders')
-  .option('-o, --output <path>', 'Output file path', './output/lpholders.csv')
-  .option('-p, --max-pages <number>', 'Maximum number of pages to fetch', '1')
-  .action(async (options: { output: string; maxPages: string }) => {
-  await ingestLPHoldersData(options.output, parseInt(options.maxPages));
- });
-
- program.
- command('generate-lp-aggregated-report')
- .option('-o, --output <path>', 'Output file path', './output/lp-aggregated-report.csv')
- .action(async (options: { output: string }) => {
-  await generateLPAggregatedReport(options.output);
- });
-
- program.
- command('generate-lp-comprehensive-report')
- .option('-o, --output <path>', 'Output file path', './output/lp-comprehensive-report.csv')
- .action(async (options: { output: string }) => {
-  await generateLPComprehensiveReport(options.output)
- });
-  
-
- // Add this after your other program commands
+  //
+  .command('ingest-claims')
+  .action(() => ingestClaims(createContext()));

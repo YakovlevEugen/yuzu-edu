@@ -61,3 +61,12 @@ export const getERC20InboxAddress = (chainId: IChainId) => {
       throw new Error('unsupported chain');
   }
 };
+
+export const getMerkeClaimAddress = (chainId: IChainId) => {
+  switch (chainId) {
+    case 'eduMainnet':
+      return eduMainnet.contracts.ocPointMerkleClaim.address;
+    default:
+      throw new Error('unsupported chain');
+  }
+};
