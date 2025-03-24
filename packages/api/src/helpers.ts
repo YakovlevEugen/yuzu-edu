@@ -60,21 +60,22 @@ export const getWEDUPoints = async (
       .eq('address', address)
       .eq('chain', chain.name)
       .maybeSingle()
-      .then((res) => Number.parseFloat(res.data?.points?.toFixed(6) || '0')),
-    c.var.db
-      .from('weth_point_reservations')
-      .select('*')
-      .eq('address', address)
-      .eq('chain', chain.name)
-      .then((res) => res.data || [])
-      .then((res) =>
-        res
-          .reduce((mem, item) => mem.add(item.points || '0'), new Big(0))
-          .toNumber()
-      )
+      .then((res) => Number.parseFloat(res.data?.points?.toFixed(6) || '0'))
+    // c.var.db
+    //   .from("weth_point_reservations")
+    //   .select("*")
+    //   .eq("address", address)
+    //   .eq("chain", chain.name)
+    //   .then((res) => res.data || [])
+    //   .then((res) =>
+    //     res
+    //       .reduce((mem, item) => mem.add(item.points || "0"), new Big(0))
+    //       .toNumber()
+    //   ),
   ]);
 
-  return new Big(emissions).minus(deductions).toNumber();
+  return new Big(emissions).toNumber();
+  //.minus(deductions).toNumber();
 };
 
 export const getWEDUTransfers = async (
