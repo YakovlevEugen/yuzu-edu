@@ -1,8 +1,7 @@
-import type { ScheduledEvent } from '@cloudflare/workers-types';
 import { zValidator } from '@hono/zod-validator';
 import { getChain, unwrapWEDU, wrapEDU } from '@yuzu/sdk';
 import Big from 'big.js';
-import { type ExecutionContext, Hono } from 'hono';
+import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import * as v from 'zod';
 import {
@@ -10,7 +9,6 @@ import {
   createBridgeApproveDepositReq,
   createBridgeDepositReq,
   createBridgeWithdrawReq,
-  createContext,
   execClaimTx,
   getBridgePoints,
   getBridgeTest,
@@ -21,13 +19,11 @@ import {
   getCommunityRewardsHistory,
   getTestnetActivityPoints,
   getWEDUPoints,
-  getWEDUTransfers,
   vAddress,
   vChainId,
   verifyCaptcha
 } from './helpers';
 import { database } from './middleware';
-import { indexClaims } from './schedule';
 import type { IEnv } from './types';
 import { getTokenBalance } from './web3';
 
@@ -67,18 +63,18 @@ const app = new Hono<IEnv>()
     }
   )
 
-  .get(
-    '/staking/:chainId/:address/history',
-    zValidator('query', v.object({ page: v.string() })),
-    zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
-    async (c) => {
-      const { chainId, address } = c.req.valid('param');
-      const page = parseInt(c.req.valid('query').page);
-      const chain = getChain(chainId);
-      const transfers = await getWEDUTransfers(c, chain, address, page);
-      return c.json(transfers);
-    }
-  )
+  // .get(
+  //   '/staking/:chainId/:address/history',
+  //   zValidator('query', v.object({ page: v.string() })),
+  //   zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
+  //   async (c) => {
+  //     const { chainId, address } = c.req.valid('param');
+  //     const page = parseInt(c.req.valid('query').page);
+  //     const chain = getChain(chainId);
+  //     const transfers = await getWEDUTransfers(c, chain, address, page);
+  //     return c.json(transfers);
+  //   }
+  // )
 
   .get(
     '/staking/:chainId/:address/estimate',
@@ -86,6 +82,7 @@ const app = new Hono<IEnv>()
     zValidator('param', v.object({ chainId: vChainId, address: vAddress })),
     async (c) => {
       const { value } = c.req.valid('query');
+      // TODO: bump to 0.1 after March 27, 5pm HKT
       const estimate = new Big(value || 0).mul(0.05).toNumber();
       return c.json(estimate);
     }
@@ -293,19 +290,6 @@ const app = new Hono<IEnv>()
     }
   );
 
-// export default app;
+export default app;
 export type IApp = typeof app;
-export class Nonces {}
-
-export default {
-  async fetch(req: Request, env: IEnv['Bindings'], ctx: ExecutionContext) {
-    return app.fetch(req, env, ctx);
-  },
-  async scheduled(
-    event: ScheduledEvent,
-    env: IEnv['Bindings'],
-    ctx: ExecutionContext
-  ) {
-    return ctx.waitUntil(indexClaims(createContext(env, ctx)));
-  }
-};
+// export class Nonces {}

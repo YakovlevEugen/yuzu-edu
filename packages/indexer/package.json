@@ -13,8 +13,12 @@
     "deploy:production": "wrangler secret bulk .production.vars.json --env production && wrangler deploy --env production",
     "crank:staging": "wrangler workflows trigger schedule-staging --env staging",
     "crank:production": "wrangler workflows trigger schedule-prod --env production",
+    "crank:claim:staging": "wrangler workflows trigger merkle-claim-staging --env staging",
+    "crank:claim:production": "wrangler workflows trigger merkle-claim-prod --env production",
     "terminate:staging": "wrangler workflows instances terminate schedule-staging latest --env staging",
     "terminate:production": "wrangler workflows instances terminate schedule-prod latest --env production",
+    "terminate:claim:staging": "wrangler workflows instances terminate merkle-claim-staging latest --env staging",
+    "terminate:claim:production": "wrangler workflows instances terminate merkle-claim-prod latest --env production",
     "trigger:parallel:workflow": "wrangler workflows trigger parallel-prod",
     "terminate:parallel:workflow": "wrangler workflows instances terminate parallel-prod latest"
   },
@@ -25,11 +29,11 @@
     "cloudflare": "^4.1.0",
     "dotenv": "^16.4.5",
     "hono": "^4.6.1",
-    "viem": "2.x",
-    "wrangler": "^3.109.0"
+    "viem": "2.x"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240919.0",
-    "@types/node": "^22.7.7"
+    "@cloudflare/workers-types": "^4.20250321.0",
+    "@types/node": "^22.7.7",
+    "wrangler": "^4.5.0"
   }
 }

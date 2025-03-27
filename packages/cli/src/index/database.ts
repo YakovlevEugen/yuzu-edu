@@ -4,7 +4,7 @@
 
 import { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@yuzu/supabase';
-import type { Hex } from 'viem';
+import type { Address, Hex } from 'viem';
 import { getAddress, isAddress } from 'viem';
 
 import { resolve } from 'path';
@@ -50,6 +50,7 @@ export const upsertFaucetWhitelist = (entries: IAddressRow[]) =>
       if (res.error) throw new Error(res.error.message);
     });
 
+import type { IChainName } from '@yuzu/sdk';
 import * as v from 'zod';
 // import { rangeToChunks } from './persistence';
 
@@ -153,3 +154,24 @@ export const insertReferrals = (items: IReferral[]) =>
     .then((res) => {
       if (res.error) throw new Error(res.error.message);
     });
+
+export const upsertWEDUBalance = (ops: IWEDUBalanceChange[]) =>
+  db
+    .from('wedu_balance_changes')
+    .upsert(ops, {
+      onConflict: 'chain,transactionHash,logIndex,address',
+      ignoreDuplicates: true
+    })
+    .then((res) => {
+      if (res.error) throw new Error(res.error.message);
+    });
+
+export type IWEDUBalanceChange = {
+  chain: IChainName;
+  transactionHash: Hex;
+  logIndex: number;
+  address: Address;
+  amount: number; // has to be string
+  blockNumber: number;
+  blockTimestamp: string;
+};

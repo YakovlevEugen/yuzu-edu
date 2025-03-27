@@ -15,14 +15,7 @@ import {
 import type { Database } from '@yuzu/supabase';
 import Big from 'big.js';
 import type { ExecutionContext } from 'hono';
-import {
-  type Address,
-  type Hex,
-  type PrivateKeyAccount,
-  getAddress,
-  isAddress,
-  isHex
-} from 'viem';
+import { type Address, type Hex, getAddress, isAddress, isHex } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import * as v from 'zod';
 import type { IContext, IEligibility, IEnv } from './types';
@@ -69,57 +62,47 @@ export const getWEDUPoints = async (
   chain: IChain,
   address: Hex
 ) => {
-  const [emissions /*, deductions*/] = await Promise.all([
-    c.var.db
-      .from('wedu_agg_point_balances_view')
-      .select('*')
-      .eq('address', address)
-      .eq('chain', chain.name)
-      .maybeSingle()
-      .then((res) => Number.parseFloat(res.data?.points?.toFixed(6) || '0'))
-    // c.var.db
-    //   .from("weth_point_reservations")
-    //   .select("*")
-    //   .eq("address", address)
-    //   .eq("chain", chain.name)
-    //   .then((res) => res.data || [])
-    //   .then((res) =>
-    //     res
-    //       .reduce((mem, item) => mem.add(item.points || "0"), new Big(0))
-    //       .toNumber()
-    //   ),
-  ]);
-
-  return new Big(emissions).toNumber();
-  //.minus(deductions).toNumber();
-};
-
-export const getWEDUTransfers = async (
-  c: IContext,
-  chain: IChain,
-  address: Hex,
-  page: number
-) => {
-  const limit = 5;
-  const from = page * limit;
-  const to = (page + 1) * limit - 1;
-
-  return c.var.db
-    .from('wedu_point_balances_view')
-    .select('blockTimestamp,amount,points')
+  const result = await c.var.db
+    .from('wedu_points')
+    .select('*')
     .eq('address', address)
     .eq('chain', chain.name)
-    .order('blockTimestamp', { ascending: false })
-    .range(from, to)
-    .then(
-      (res) =>
-        res.data?.map((item) => ({
-          timestamp: new Date(item.blockTimestamp as string).toISOString(),
-          amount: new Big(item.amount as number).div(1e18).toFixed(18),
-          points: new Big(item.points as number).toFixed(6)
-        })) || []
-    );
+    .maybeSingle()
+    .then((res) => {
+      if (res.error) throw new Error(res.error.message);
+      return Number.parseFloat(res.data?.points?.toFixed(6) || '0');
+    });
+
+  return new Big(result).toNumber();
 };
+
+// NOTE: TBD
+// export const getWEDUTransfers = async (
+//   c: IContext,
+//   chain: IChain,
+//   address: Hex,
+//   page: number
+// ) => {
+//   const limit = 5;
+//   const from = page * limit;
+//   const to = (page + 1) * limit - 1;
+
+//   return c.var.db
+//     .from('wedu_point_balances_view')
+//     .select('blockTimestamp,amount,points')
+//     .eq('address', address)
+//     .eq('chain', chain.name)
+//     .order('blockTimestamp', { ascending: false })
+//     .range(from, to)
+//     .then(
+//       (res) =>
+//         res.data?.map((item) => ({
+//           timestamp: new Date(item.blockTimestamp as string).toISOString(),
+//           amount: new Big(item.amount as number).div(1e18).toFixed(18),
+//           points: new Big(item.points as number).toFixed(6)
+//         })) || []
+//     );
+// };
 
 /**
  * Bridge
@@ -224,7 +207,18 @@ export const getBridgePoints = async (
   chain: IChain,
   address: Address
 ) => {
-  return '0'; // NOTE: will be assigned at the end of the season
+  const result = await c.var.db
+    .from('yuzu_reservations')
+    .select('*')
+    .eq('source', 'tvl')
+    .eq('wallet', address)
+    .then((res) => res.data || []);
+
+  const points = result
+    .reduce((mem, item) => mem.add(item.points || '0'), new Big(0))
+    .toFixed(0);
+
+  return points;
 };
 
 /**

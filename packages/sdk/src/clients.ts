@@ -7,10 +7,10 @@ import {
 } from 'viem';
 import { type IChainId, getChain } from './chains';
 
-export const getPublicClient = (chainId: IChainId) =>
+export const getPublicClient = (chainId: IChainId, rpcUrl?: string) =>
   createPublicClient({
     chain: getChain(chainId),
-    transport: http(undefined, {
+    transport: http(rpcUrl, {
       retryCount: 100,
       retryDelay: 10000
     })

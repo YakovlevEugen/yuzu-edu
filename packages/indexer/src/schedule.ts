@@ -78,8 +78,8 @@ const getDefaultIndexShardState = (
   shardId: number,
   totalShards: number
 ): IIndexShardState => {
-  const start = 4_738_953;
-  const end = 10_878_910;
+  const start = 10_878_910;
+  const end = 11_347_561;
   const chunk = (end - start) / totalShards;
 
   const range = Array(totalShards)

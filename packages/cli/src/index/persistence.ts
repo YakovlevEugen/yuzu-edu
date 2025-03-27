@@ -13,7 +13,7 @@ import fs from 'fs';
 import readline from 'readline';
 import type { IChainId } from '@yuzu/sdk';
 import Big from 'big.js';
-import type { Hex, Transaction } from 'viem';
+import type { Transaction } from 'viem';
 
 (BigInt.prototype as unknown as Record<string, unknown>).toJSON = function () {
   return this.toString();
@@ -103,6 +103,7 @@ export const rangeToChunks = (since: number, until: number, size: number) => {
  * Files
  */
 
+import { resolve } from 'path';
 import { Presets, SingleBar } from 'cli-progress';
 
 export async function* readTransactions(chainId: IChainId) {
@@ -147,3 +148,22 @@ export async function* filter<T>(
     }
   }
 }
+
+/**
+ * Checkpointing
+ */
+
+export const createCheckpoint = <T>(chainId: IChainId, name: string) => {
+  const path = resolve(`${getStoragePath(chainId)}/${name}.json`);
+
+  return {
+    get(defaultValue?: T): T | undefined {
+      return fs.existsSync(path)
+        ? (JSON.parse(fs.readFileSync(path, 'utf8')) as T)
+        : defaultValue;
+    },
+    set(value: T) {
+      fs.writeFileSync(path, JSON.stringify(value, null, 2));
+    }
+  };
+};

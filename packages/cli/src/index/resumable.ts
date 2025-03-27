@@ -74,32 +74,18 @@ class DiskStore<T> implements IStore<T> {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-const resumable = createResumable({
-  enabled: true,
-  path: `${__dirname}/checkpoint1.json`
-});
+// const resumable = createResumable({
+//   enabled: true,
+//   path: `${__dirname}/checkpoint1.json`
+// });
 
-const countLog = resumable<number>(
-  (state, checkpoint) => async (message: string) => {
-    console.log(state);
-    await sleep(100);
-    console.log(message);
-    checkpoint(state ? state + 1 : 1);
-  }
-);
+// const countLog = resumable<number>(
+//   (state, checkpoint) => async (message: string) => {
+//     console.log(state);
+//     await sleep(100);
+//     console.log(message);
+//     checkpoint(state ? state + 1 : 1);
+//   }
+// );
 
-countLog('hello world');
-
-// function test<T extends (...args: any[]) => any>(fn: T) {
-//   type Fn = <U>(state: U, callback: (param: U) => void) => T;
-
-//   const handle: Fn = (state: any, callback: (arg: any) => any) => {
-//     return (...args: any[]): any => {
-//       return fn(...args);
-//     };
-//   };
-
-//   return handle;
-// }
-
-// test((a: 1) =)
+// countLog('hello world');

@@ -71,25 +71,25 @@ export const useStakingEstimate = (value: string) => {
   });
 };
 
-export const useStakingHistory = () => {
-  const account = useAccount();
-  const address = account.address as Hex;
-  const chainId = useChainId();
+// export const useStakingHistory = () => {
+//   const account = useAccount();
+//   const address = account.address as Hex;
+//   const chainId = useChainId();
 
-  return useInfiniteQuery({
-    queryKey: ['staking', address, 'history'],
-    queryFn: ({ pageParam }) =>
-      client.staking[':chainId'][':address'].history
-        .$get({
-          param: { chainId, address },
-          query: { page: pageParam.toString() }
-        })
-        .then((res) => res.json()),
-    getNextPageParam: (pages) => pages.length,
-    initialPageParam: 0,
-    enabled: Boolean(address)
-  });
-};
+//   return useInfiniteQuery({
+//     queryKey: ['staking', address, 'history'],
+//     queryFn: ({ pageParam }) =>
+//       client.staking[':chainId'][':address'].history
+//         .$get({
+//           param: { chainId, address },
+//           query: { page: pageParam.toString() }
+//         })
+//         .then((res) => res.json()),
+//     getNextPageParam: (pages) => pages.length,
+//     initialPageParam: 0,
+//     enabled: Boolean(address)
+//   });
+// };
 
 export const useCreateStakeTx = () => {
   const account = useAccount();

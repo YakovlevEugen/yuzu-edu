@@ -20,7 +20,9 @@ export class ScheduleWorkflow extends WorkflowEntrypoint<IEnv, IPWPayload> {
       const context = createContext(event, this.env, this.ctx);
       await runScheduledJobs(context);
     });
-    // await step.sleep('idle', '1 second');
+
+    await step.sleep('idle', '1 second');
+
     await step.do('loop', async () => {
       await this.env.SCHEDULE.create().catch((err) => console.error(err));
     });
@@ -61,6 +63,8 @@ export class MerkleClaimWorkflow extends WorkflowEntrypoint<IEnv, IPWPayload> {
         break;
       }
     });
+
+    await step.sleep('idle', '1 second');
 
     await step.do('loop', async () => {
       await this.env.MERKLE_CLAIM.create().catch((err) => console.error(err));

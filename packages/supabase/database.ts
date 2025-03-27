@@ -138,7 +138,6 @@ export type Database = {
           chain: string;
           logIndex: number;
           transactionHash: string;
-          transactionIndex: string;
         };
         Insert: {
           address: string;
@@ -148,7 +147,6 @@ export type Database = {
           chain: string;
           logIndex: number;
           transactionHash: string;
-          transactionIndex: string;
         };
         Update: {
           address?: string;
@@ -158,7 +156,6 @@ export type Database = {
           chain?: string;
           logIndex?: number;
           transactionHash?: string;
-          transactionIndex?: string;
         };
         Relationships: [];
       };
@@ -248,58 +245,6 @@ export type Database = {
         Relationships: [];
       };
       wedu_points: {
-        Row: {
-          address: string | null;
-          chain: string | null;
-          points: number | null;
-          timestamp: string | null;
-        };
-        Relationships: [];
-      };
-      wedu_balances_changes_view: {
-        Row: {
-          address: string | null;
-          amount: number | null;
-          balance: number | null;
-          blockNumber: number | null;
-          blockTimestamp: string | null;
-          chain: string | null;
-          logIndex: number | null;
-          rowNumber: number | null;
-          transactionHash: string | null;
-          transactionIndex: string | null;
-          untilBlockTimestamp: string | null;
-        };
-        Relationships: [];
-      };
-      wedu_point_balances_view: {
-        Row: {
-          address: string | null;
-          amount: number | null;
-          balance: number | null;
-          blockNumber: number | null;
-          blockTimestamp: string | null;
-          chain: string | null;
-          logIndex: number | null;
-          points: number | null;
-          rowNumber: number | null;
-          transactionHash: string | null;
-          transactionIndex: string | null;
-          untilBlockTimestamp: string | null;
-        };
-        Relationships: [];
-      };
-      weth_point_reservations: {
-        Row: {
-          address: string | null;
-          chain: string | null;
-          points: number | null;
-          reason: string | null;
-          timestamp: string | null;
-        };
-        Relationships: [];
-      };
-      yuzu_snapshot: {
         Row: {
           address: string | null;
           chain: string | null;

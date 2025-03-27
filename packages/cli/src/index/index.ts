@@ -5,11 +5,18 @@
 import fs from 'fs';
 import { resolve } from 'path';
 import { program } from '@commander-js/extra-typings';
-import { type Address, formatEther, getAddress, isAddress } from 'viem';
+import { type Address, getAddress, isAddress } from 'viem';
 import { context } from '../context';
-import { createContext, ingestClaims } from './claims';
-import { getTestnetParticipantPoints } from './config';
-import { getDappAllocationPoints } from './dapps';
+import { countWalletTxs } from './commands/countWalletTxs';
+import { getDappAllocationPoints } from './commands/getDappAllocationPoints';
+import { getTestnetActivityPoints } from './commands/getTestnetActivityPoints';
+import { getTestnetParticipantPoints } from './commands/getTestnetParticipantPoints';
+import { indexTransactions } from './commands/indexTransactions';
+import { createContext, ingestClaims } from './commands/ingestClaims';
+import {
+  parseReferralData,
+  vPosthogReferral
+} from './commands/parseReferralData';
 import {
   type IAddressRow,
   type ICommunityAllocation,
@@ -27,34 +34,30 @@ import {
 } from './database';
 import {
   batch,
-  countWalletTxs,
   fromCSV,
   getPointsSnapshot,
-  getTestnetActivityPoints,
   getTestnetWallets,
-  indexTransactions,
   inspect,
   sequence
 } from './helpers';
 import { rangeToChunks } from './persistence';
-import { parseReferralData, vPosthogReferral } from './posthog/referrals';
 import {
   dumpLPHoldings,
   dumpNativeHolders,
   dumpTokenHolders
-} from './tvl-calculation/helpers';
+} from './tvl/helpers';
 
 program
   //
-  .command('index')
-  .action(async (args) => {
+  .command('index-transactions')
+  .action(async () => {
     await indexTransactions(context.chainId);
   });
 
 program
   //
   .command('count-wallet-txs')
-  .action(async (args) => {
+  .action(async () => {
     const result = await countWalletTxs(context.chainId);
     const filename = `${process.cwd()}/wallet-tx-counts-${new Date().toISOString()}.csv`;
 
@@ -184,19 +187,6 @@ program
     const csv = cols.join(',').concat('\n').concat(rows);
     fs.writeFileSync(filename, csv);
     console.log(`Written ${filename}.`);
-  });
-
-program
-  //
-  .command('get-token-holders')
-  .action(async () => {
-    const holdersData = await getTokenHolders();
-    holdersData.items.forEach((item) => {
-      console.log(`Address: ${item.address.hash}`);
-      console.log(`Token: ${item.token.name} (${item.token.symbol})`);
-      console.log(`Value: ${formatEther(BigInt(item.value))}`);
-      console.log('-------------------');
-    });
   });
 
 program

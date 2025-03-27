@@ -16,7 +16,7 @@
     "target": "http://localhost:5172"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20240919.0",
+    "@cloudflare/workers-types": "^4.20250321.0",
     "@hono/zod-validator": "^0.4.1",
     "@supabase/supabase-js": "^2.46.1",
     "@types/big.js": "^6.2.2",
@@ -27,7 +27,9 @@
     "hono": "^4.6.11",
     "hono-do": "^2.0.0",
     "viem": "^2.22.2",
-    "wrangler": "^3.109.0",
     "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "wrangler": "^4.5.0"
   }
 }

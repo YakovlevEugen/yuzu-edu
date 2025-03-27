@@ -42,19 +42,10 @@ export const getExcludedAddresses = (chainId: IChainId) => {
   }
 };
 
-export const getTestnetParticipantPoints = (address: Address) => {
-  // based on address, how much points gets produced?
-  return getTestnetWalletTxs(address)
-    .then((txs) =>
-      txs.map((tx) => getAddressBoost(tx.to?.toLowerCase() as Address))
-    )
-    .then((points) => points.reduce((mem, elem) => mem + elem, 0));
-};
-
-const getTestnetWalletTxs = async (address: Address) =>
+export const getTestnetWalletTxs = async (address: Address) =>
   getWalletTxs('eduTestnet', address.toLowerCase() as Address);
 
-const getAddressBoost = (address?: Address) =>
+export const getAddressBoost = (address?: Address) =>
   contracts.find((c) => address && c.addresses.includes(address))?.boost || 1;
 
 export const contracts = [

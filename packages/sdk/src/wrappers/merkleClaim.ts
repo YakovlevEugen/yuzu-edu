@@ -15,9 +15,10 @@ export const getMerkleClaimLogs = (params: {
   chainId: IChainId;
   fromBlock: bigint;
   toBlock: bigint;
+  rpcUrl: string;
 }) => {
-  const { chainId, fromBlock, toBlock } = params;
-  return getPublicClient(chainId)
+  const { chainId, fromBlock, toBlock, rpcUrl } = params;
+  return getPublicClient(chainId, rpcUrl)
     .getLogs({
       address: getMerkeClaimAddress(chainId),
       event: parseAbiItem(

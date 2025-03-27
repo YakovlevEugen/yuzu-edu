@@ -14,7 +14,13 @@ export const indexMerkleClaimLogs = async (
   const { chain, fromBlock, toBlock } = params;
   const chainId = toChainId(chain);
 
-  const logs = await getMerkleClaimLogs({ chainId, fromBlock, toBlock });
+  const logs = await getMerkleClaimLogs({
+    chainId,
+    fromBlock,
+    toBlock,
+    rpcUrl: c.env.EDUCHAIN_RPC_URL
+  });
+
   console.log(`Got: ${logs.length} logs from ${fromBlock} to ${toBlock}`);
 
   for (const batch of toBatches(logs, 100)) {

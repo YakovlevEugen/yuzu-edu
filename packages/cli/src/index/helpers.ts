@@ -1,88 +1,12 @@
-import { type IChainId, getPublicClient } from '@yuzu/sdk';
-import Big from 'big.js';
+import type { IChainId } from '@yuzu/sdk';
 import { type Address, type Hex, type Transaction, getAddress } from 'viem';
 import {
-  contracts,
   getEndingBlock,
   getExcludedAddresses,
   getStartingBlock
 } from './config';
 import { getYuzuPointsPage } from './database';
-import {
-  filter,
-  getLastIndexedBlock,
-  insertTransactions,
-  rangeToChunks,
-  readTransactions,
-  setLastIndexedBlock
-} from './persistence';
-
-export const indexTransactions = async (chainId: IChainId) => {
-  const client = getPublicClient(chainId);
-  const blockNumber = await client.getBlockNumber();
-  const lastIndexedBlock = getLastIndexedBlock(chainId);
-
-  const chunks = rangeToChunks(
-    Number.parseInt(lastIndexedBlock),
-    Number(blockNumber),
-    100
-  );
-
-  for (const chunk of chunks) {
-    const transactions = await Promise.all(
-      chunk.map(async (blockNumber) => {
-        const block = await client.getBlock({
-          includeTransactions: true,
-          blockNumber: BigInt(blockNumber)
-        });
-
-        return block.transactions;
-      })
-    );
-
-    const txs = transactions.flat();
-    await insertTransactions(chainId, txs);
-
-    console.log({
-      since: chunk.at(0),
-      until: chunk.at(-1),
-      txCount: txs.length
-    });
-
-    setLastIndexedBlock(chainId, (chunk.at(-1) as number).toString());
-  }
-};
-
-export const countWalletTxs = async (chainId: IChainId) => {
-  const index = new Map<string, number>();
-
-  const blacklist = getExcludedAddresses(chainId);
-  const startingBlock = getStartingBlock(chainId);
-  const endingBlock = getEndingBlock(chainId);
-  const transactions = readTransactions(chainId);
-
-  const eligibleTxs = filter(
-    transactions,
-    (tx) =>
-      tx.blockNumber &&
-      tx.blockNumber >= startingBlock &&
-      tx.blockNumber <= endingBlock &&
-      !blacklist.includes(tx.from.toLowerCase())
-  );
-
-  for await (const tx of eligibleTxs) {
-    const sender = tx.from.toLowerCase();
-
-    if (index.has(sender)) {
-      const value = index.get(sender) as number;
-      index.set(sender, value + 1);
-    } else {
-      index.set(sender, 1);
-    }
-  }
-
-  return index;
-};
+import { filter, readTransactions } from './persistence';
 
 export const getWalletTxs = async (chainId: IChainId, address: Address) => {
   const set = new Set<Transaction>();
@@ -110,46 +34,6 @@ export const getWalletTxs = async (chainId: IChainId, address: Address) => {
   }
 
   return Array.from(set);
-};
-
-export const getTestnetActivityPoints = async () => {
-  const points = new Map<Hex, string>();
-
-  const blacklist = getExcludedAddresses('eduTestnet');
-  const startingBlock = getStartingBlock('eduTestnet');
-  const endingBlock = getEndingBlock('eduTestnet');
-  const transactions = readTransactions('eduTestnet');
-
-  const eligibleTxs = filter(
-    transactions,
-    (tx) =>
-      tx.blockNumber &&
-      tx.blockNumber >= startingBlock &&
-      tx.blockNumber <= endingBlock &&
-      !blacklist.includes(tx.from.toLowerCase())
-  );
-
-  for await (const tx of eligibleTxs) {
-    const sender = tx.from;
-    const receiver = tx.to as Hex;
-    const dapp = contracts.find((c) =>
-      c.addresses.includes(receiver?.toLowerCase())
-    );
-    const amount = dapp?.boost || 1;
-
-    points.set(sender, new Big(amount).add(points.get(sender) || 0).toFixed(0));
-
-    if (dapp)
-      points.set(
-        receiver,
-        new Big(amount)
-          .mul(0.1)
-          .add(points.get(sender) || 0)
-          .toFixed(2)
-      );
-  }
-
-  return Array.from(points.entries());
 };
 
 export const getTestnetWallets = async () => {
@@ -274,3 +158,100 @@ export const collect = async <T>(iterable: AsyncIterableIterator<T>) => {
 
   return out;
 };
+
+export async function* map<T, U>(
+  iterable: AsyncIterableIterator<T>,
+  fn: (item: T) => U
+) {
+  for await (const item of iterable) {
+    yield fn(item);
+  }
+}
+
+export async function* mapAsync<T, U>(
+  iterable: AsyncIterableIterator<T>,
+  fn: (item: T) => U
+) {
+  for await (const item of iterable) {
+    yield await fn(item);
+  }
+}
+
+export async function* flatMap<T, U>(
+  iterable: AsyncIterableIterator<T>,
+  fn: (item: T) => U[]
+) {
+  for await (const item of iterable) {
+    const results = fn(item);
+    for (const result of results) yield result;
+  }
+}
+
+export async function* flatMapAsync<T, U>(
+  iterable: AsyncIterableIterator<T>,
+  fn: (item: T) => Promise<U[]>
+) {
+  for await (const item of iterable) {
+    const results = await fn(item);
+    for (const result of results) yield result;
+  }
+}
+
+export async function* filterAsync<T>(
+  iterable: AsyncIterableIterator<T>,
+  fn: (item: T) => Promise<boolean>
+) {
+  for await (const item of iterable) {
+    const result = await fn(item);
+    if (result) yield item;
+  }
+}
+
+export async function* dedup<T>(iterable: AsyncIterableIterator<T>) {
+  const set = new Set<T>();
+
+  for await (const item of iterable) {
+    if (!set.has(item)) {
+      set.add(item);
+      yield item;
+    }
+  }
+}
+
+import fs from 'fs';
+import type * as v from 'zod';
+
+export async function* readCSV<T>(path: string, schema: v.Schema<T>) {
+  const file = fs.readFileSync(path, 'utf-8');
+  const lines = file.split('\n');
+  const header = lines.shift()?.split(',') as string[];
+
+  for (const line of lines) {
+    const values = line.split(',').map((col) => col.trim());
+    const obj = Object.fromEntries(
+      header.map((col, index) => [col, values[index]])
+    );
+    yield schema.parse(obj);
+  }
+}
+
+export async function writeJson<T>(
+  path: string,
+  iterable: AsyncIterableIterator<T>
+) {
+  const stream = fs.createWriteStream(path);
+
+  for await (const item of iterable) {
+    stream.write(JSON.stringify(item) + '\n');
+  }
+
+  return new Promise<void>((resolve, reject) =>
+    stream.close((err) => {
+      if (err) return reject(err);
+      resolve();
+    })
+  );
+}
+
+export const sleep = (sec: number) =>
+  new Promise((r) => setTimeout(r, sec * 1000));

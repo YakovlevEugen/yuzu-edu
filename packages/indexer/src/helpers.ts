@@ -165,6 +165,7 @@ export const upsertWEDUBalance = (
     .from('wedu_balance_changes')
     // @ts-expect-error
     .upsert(ops, {
+      // TODO: remove transactionIndex once migrations land
       onConflict: 'chain,transactionHash,transactionIndex,logIndex,address',
       ignoreDuplicates: false
     })

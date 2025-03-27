@@ -19,7 +19,13 @@ export const indexWEDULogs = async (
 
   const chainId = toChainId(chain);
 
-  const logs = await getWEDULogs({ chainId, fromBlock, toBlock });
+  const logs = await getWEDULogs({
+    chainId,
+    fromBlock,
+    toBlock,
+    rpcUrl: c.env.EDUCHAIN_RPC_URL
+  });
+
   console.log(`Got: ${logs.length} logs from ${fromBlock} to ${toBlock}`);
 
   const getTimestamp = getBlockTimestamp(chainId);

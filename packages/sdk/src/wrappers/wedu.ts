@@ -17,9 +17,10 @@ export const getWEDULogs = (params: {
   chainId: IChainId;
   fromBlock: bigint;
   toBlock: bigint;
+  rpcUrl: string;
 }) => {
-  const { chainId, fromBlock, toBlock } = params;
-  return getPublicClient(chainId).getContractEvents({
+  const { chainId, fromBlock, toBlock, rpcUrl } = params;
+  return getPublicClient(chainId, rpcUrl).getContractEvents({
     address: getWEDUAddress(chainId),
     abi: wethAbi,
     fromBlock,

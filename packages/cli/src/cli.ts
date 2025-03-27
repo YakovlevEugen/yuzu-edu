@@ -1,5 +1,6 @@
 #!/usr/bin/env -S pnpm tsx
 
+import { resolve } from 'path';
 import dotnet from 'dotenv';
 dotnet.config({ path: resolve(__dirname, '..', '.env') });
 
@@ -37,7 +38,6 @@ program
  */
 
 import './index';
-import { resolve } from 'path';
 
 /**
  * Parse cli args
